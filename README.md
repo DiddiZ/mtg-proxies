@@ -10,6 +10,12 @@ Create a high quality printable PDF from your decklist or a list of cards you wa
 git clone git@github.com:DiddiZ/mtg-proxies.git
 ```
 
+2. Install requirements.
+
+```bash
+python -m pip install --user -U -r requirements.txt
+```
+
 2. Prepare your decklist in MtG Arena format.
 
 E.g.:
