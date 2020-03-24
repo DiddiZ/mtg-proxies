@@ -11,6 +11,7 @@ from tempfile import gettempdir
 from tqdm import tqdm
 
 cache = Path(gettempdir()) / 'scryfall_cache'
+cache.mkdir(parents=True, exist_ok=True)  # Create cach folder
 last_scryfall_api_call = 0
 scryfall_api_call_delay = 0.1
 _lock = threading.Lock()
