@@ -7,7 +7,7 @@ Create a high quality printable PDF from your decklist or a list of cards you wa
 1. Clone or download this repo.
 
 ```bash
-git clone git@github.com:DiddiZ/mtg-proxies.git
+git clone https://github.com/DiddiZ/mtg-proxies.git
 ```
 
 2. Install requirements.
@@ -17,6 +17,10 @@ python -m pip install --user -U -r requirements.txt
 ```
 
 2. Prepare your decklist in MtG Arena format.
+
+```txt
+COUNT FULL_NAME (SET) COLLECTOR_NUMBER
+```
 
 E.g.:
 
@@ -30,7 +34,7 @@ E.g.:
 3. Create a PDF file.
 
 ```bash
-python print.py my_decklist.txt my_decklist.pdf
+python print.py examples/decklist.txt decklist.pdf
 ```
 
 ## Help
