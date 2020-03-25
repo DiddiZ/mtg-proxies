@@ -28,6 +28,8 @@ def print_cards(
 
     # Cards per figure
     N = np.floor(papersize / cardsize).astype(int)
+    if N[0] == 0 or N[1] == 0:
+        raise ValueError(f"Paper size too small: {papersize}")
 
     if filepath[-4:] == ".pdf":
         saver = PdfPages
@@ -64,3 +66,4 @@ def print_cards(
             ax.axis('off')
 
             saver.savefig(dpi=dpi)
+            plt.close()
