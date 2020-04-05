@@ -4,6 +4,10 @@ from matplotlib.backends.backend_pdf import PdfPages
 from mtgproxies.plotting import SplitPages
 
 
+def _occupied_space(cardsize, pos, border_crop, image_size, closed=False):
+    return cardsize * (pos * image_size - np.clip(2 * pos - 1 - closed, 0, None) * border_crop) / image_size
+
+
 def print_cards(
     images,
     filepath,
@@ -22,10 +26,6 @@ def print_cards(
         cardsize: Size of a card in inches.
         border_crop: How many pixel to crop from the border of each card.
     """
-    if border_crop > 0:
-        cardsize[0] *= (745 - 2 * border_crop) / 745
-        cardsize[1] *= (1040 - 2 * border_crop) / 1040
-
     # Cards per figure
     N = np.floor(papersize / cardsize).astype(int)
     if N[0] == 0 or N[1] == 0:
@@ -41,20 +41,34 @@ def print_cards(
             fig = plt.figure(figsize=papersize)
             ax = fig.add_axes([0, 0, 1, 1])  # ax covers the whole figure
 
-            offset = (papersize - cardsize * N) / 2
+            offset = (papersize - _occupied_space(cardsize, N, border_crop, [745, 1040], closed=True)) / 2
 
             for y in range(N[1]):
                 for x in range(N[0]):
                     if len(images) > 0:
                         img = plt.imread(images.pop(0))
 
-                        if border_crop > 0:
-                            img = img[border_crop:-border_crop, border_crop:-border_crop]
+                        # Crop left and top if not on border of sheet
+                        left = border_crop if x > 0 else 0
+                        top = border_crop if y > 0 else 0
+                        img = img[top:, left:]
+
+                        # Compute extent
+                        lower = (
+                            offset + _occupied_space(cardsize, np.array([x, y]), border_crop, [745, 1040])
+                        ) / papersize
+                        upper = (
+                            offset + _occupied_space(cardsize, np.array([x, y]), border_crop, [745, 1040]) +
+                            cardsize * [
+                                (745 - left) / 745,
+                                (1040 - top) / 1040,
+                            ]
+                        ) / papersize
+                        extent = [lower[0], upper[0], 1 - upper[1], 1 - lower[1]]  # flip y-axis
 
                         plt.imshow(
                             img,
-                            extent=((offset + np.array([[x, N[1] - y - 1], [x + 1, N[1] - y]]) * cardsize) /
-                                    papersize).T.flatten(),
+                            extent=extent,
                             aspect=papersize[1] / papersize[0],
                             interpolation=interpolation,
                         )
