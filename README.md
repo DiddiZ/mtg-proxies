@@ -46,12 +46,14 @@ python print.py [-h] [--dpi DPI] decklist outfile
 Prepare a decklist for printing.
 
 positional arguments:
-  decklist    a decklist in MtG Arena format
-  outfile     output file. Supports pdf, png and jpg.
+  decklist              a decklist in MtG Arena format
+  outfile               output file. Supports pdf, png and jpg.
 
 optional arguments:
-  -h, --help  show this help message and exit
-  --dpi DPI   dpi of output file
+  -h, --help            show this help message and exit
+  --dpi DPI             dpi of output file
+  --paper PAPER         paper size of output
+  --border_crop PIXELS  How much to crop inner borders of printed cards
 ```
 
 ## Acknowledgements

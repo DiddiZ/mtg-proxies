@@ -20,6 +20,9 @@ if __name__ == "__main__":
     parser.add_argument('outfile', help='output file. Supports pdf, png and jpg.')
     parser.add_argument('--dpi', help='dpi of output file', type=int, default=300)
     parser.add_argument('--paper', help='paper size of output', type=papersize, default="a4")
+    parser.add_argument(
+        '--border_crop', help='How much to crop inner borders of printed cards', type=int, default=14, metavar="PIXELS"
+    )
     args = parser.parse_args()
 
     decklist = parse_decklist_arena(args.decklist)
@@ -29,4 +32,5 @@ if __name__ == "__main__":
         args.outfile,
         papersize=args.paper,
         dpi=args.dpi,
+        border_crop=args.border_crop,
     )
