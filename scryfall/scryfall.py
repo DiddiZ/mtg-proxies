@@ -156,8 +156,9 @@ def recommend_print(card_name, set_id=None, collector_number=None):
         cards = search(f'!"{card_name}" ' + query, unique="art")
         if len(cards) > 0:
             card = cards[0]
-            if card["set"].lower() == set_id.lower() and card["collector_number"].lower() == collector_number.lower():
-                return None  # No better recommendation
+            if set_id is None or card["set"].lower() == set_id.lower():
+                if collector_number is None or card["collector_number"].lower() == collector_number.lower():
+                    return None  # No better recommendation
             return card
 
     return None
