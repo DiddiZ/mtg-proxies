@@ -25,8 +25,20 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
+    # Parse decklist
+    print("Parsing decklist ...")
     decklist = parse_decklist_arena(args.decklist)
+    print(
+        "Found %d cards in total with %d unique cards." % (
+            sum([count for count, _, _, _ in decklist]),
+            len(decklist),
+        )
+    )
+
+    # Fetch scans
     images = fetch_scans_scryfall(decklist)
+
+    # Plot cards
     print_cards(
         images,
         args.outfile,

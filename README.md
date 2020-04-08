@@ -28,7 +28,7 @@ E.g.:
 1 Alela, Artful Provocateur (ELD) 324
 1 Korvold, Fae-Cursed King (ELD) 329
 1 Liliana, Dreadhorde General (WAR) 97
-1 Murderous Rider (ELD) 287
+1 Murderous Rider // Swift End (ELD) 287
 ```
 
 3. Create a PDF file.
