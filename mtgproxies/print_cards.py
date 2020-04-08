@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 from mtgproxies.plotting import SplitPages
+from tqdm import tqdm
 
 
 def _occupied_space(cardsize, pos, border_crop, image_size, closed=False):
@@ -36,7 +37,7 @@ def print_cards(
     else:
         saver = SplitPages
 
-    with saver(filepath) as saver:
+    with saver(filepath) as saver, tqdm(total=len(images), desc="Plotting cards") as pbar:
         while len(images) > 0:
             fig = plt.figure(figsize=papersize)
             ax = fig.add_axes([0, 0, 1, 1])  # ax covers the whole figure
@@ -72,6 +73,7 @@ def print_cards(
                             aspect=papersize[1] / papersize[0],
                             interpolation=interpolation,
                         )
+                        pbar.update(1)
 
             plt.xlim(0, 1)
             plt.ylim(0, 1)
