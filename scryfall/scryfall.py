@@ -90,7 +90,6 @@ def depaginate(url):
     assert response["object"]
 
     if "data" not in response:
-        print(url)
         return []
     data = response["data"]
     if response["has_more"]:
