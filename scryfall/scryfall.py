@@ -144,3 +144,20 @@ def get_card(card_name, set_id=None, collector_number=None):
         cards = [card for card in cards if card["collector_number"].lower() == collector_number.lower()]
 
     return cards[0] if len(cards) > 0 else None
+
+
+def recommend_print(card_name, set_id=None, collector_number=None):
+    for query in [
+        "is:hires border=black"  # High-res and black border preferred
+        "is:hires",  # Only high-res
+        "border=black",  # Only black border
+        "",  # Anything goes
+    ]:
+        cards = search(f'!"{card_name}" ' + query, unique="art")
+        if len(cards) > 0:
+            card = cards[0]
+            if card["set"].lower() == set_id.lower() and card["collector_number"].lower() == collector_number.lower():
+                return None  # No better recommendation
+            return card
+
+    return None
