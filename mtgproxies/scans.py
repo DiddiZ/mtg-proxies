@@ -15,8 +15,14 @@ def fetch_scans_scryfall(decklist):
     for count, card_name, set_id, collector_number in tqdm(decklist, desc="Fetching artwork"):
         card = scryfall.get_card(card_name, set_id, collector_number)
         if card is None:
-            print(f"Unable to find scan of {card_name} in {set_id} with collector number {collector_number}.")
+            tqdm.write(f"ERROR: Unable to find scan of {card_name} ({set_id}) {collector_number}.")
             continue
+
+        # Warnings for low-quality scans
+        if not card["highres_image"]:
+            tqdm.write(f"WARNING: Low resolution scan of {card_name} ({set_id}) {collector_number}.")
+        if card["border_color"] != "black":
+            tqdm.write(f"WARNING: Non-black border on {card_name} ({set_id}) {collector_number}.")
 
         if card["layout"] == "normal" or card["layout"] == "split" or card["layout"] == "adventure":
             image_uri = card["image_uris"]["png"]
