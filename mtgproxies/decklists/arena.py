@@ -31,3 +31,14 @@ def parse_decklist_arena(filepath):
                     collector_number,
                 ))
     return decklist
+
+
+def write_decklist_arena(filepath, decklist):
+    """Writes a decklist in arena format.
+
+    See:
+        parse_decklist_arena
+    """
+    with open(filepath, 'w') as f:
+        for count, card_name, set_id, collector_number in decklist:
+            f.write(f'{count} {card_name} ({set_id}) {collector_number}\n')
