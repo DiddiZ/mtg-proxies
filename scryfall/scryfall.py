@@ -117,7 +117,7 @@ def _get_database(database_name="scryfall-default-cards"):
     global _databases
 
     if database_name not in _databases:
-        bulk_file = get_file(database_name + ".json", "https://archive.scryfall.com/" + database_name + ".json")
+        bulk_file = get_file(database_name + ".json", "https://archive.scryfall.com/json/" + database_name + ".json")
         with io.open(bulk_file, mode="r", encoding="utf-8") as json_file:
             data = json.load(json_file)
         _databases[database_name] = data
