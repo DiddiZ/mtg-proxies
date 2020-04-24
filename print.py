@@ -1,7 +1,7 @@
 import numpy as np
 import argparse
 from mtgproxies import print_cards, fetch_scans_scryfall
-from mtgproxies.decklists import parse_decklist_arena
+from mtgproxies.decklists import parse_decklist_arena, validate_card_names, validate_prints
 
 
 def papersize(string):
@@ -34,6 +34,13 @@ if __name__ == "__main__":
             len(decklist),
         )
     )
+
+    # Sanitizing decklist
+    decklist, ok = validate_card_names(decklist)
+    decklist = validate_prints(decklist)
+    if not ok:
+        print("Decklist contains invalid card names. Fix errors above before reattempting.")
+        quit()
 
     # Fetch scans
     images = fetch_scans_scryfall(decklist)
