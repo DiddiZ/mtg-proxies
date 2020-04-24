@@ -10,6 +10,7 @@ import requests
 import threading
 from pathlib import Path
 from tempfile import gettempdir
+import numpy as np
 from tqdm import tqdm
 
 cache = Path(gettempdir()) / 'scryfall_cache'
@@ -147,18 +148,41 @@ def get_card(card_name, set_id=None, collector_number=None):
 
 
 def recommend_print(card_name, set_id=None, collector_number=None):
-    for query in [
-        "is:hires border=black",  # High-res and black border preferred
-        "is:hires",  # Only high-res
-        "border=black",  # Only black border
-        "",  # Anything goes
-    ]:
-        cards = search(f'!"{card_name}" ' + query, unique="art")
-        if len(cards) > 0:
-            card = cards[0]
-            if set_id is not None and card["set"].lower() == set_id.lower():
-                if collector_number is not None and card["collector_number"].lower() == collector_number.lower():
-                    return None  # No better recommendation
-            return card
+    if set_id is not None and collector_number is not None:
+        current = get_card(card_name, set_id, collector_number)
+    else:
+        current = None
 
-    return None
+    alternatives = [
+        card for card in _get_database("scryfall-default-cards") if card["name"].lower() == card_name.lower()
+    ]
+
+    def score(card):
+        points = 0
+        if card["set_type"] != "funny":
+            points += 1
+        if card["frame"] == "2015":
+            points += 2
+        if not card["digital"]:
+            points += 4
+        if card["border_color"] == "black" and (
+            "frame_effects" not in card or "extendedart" not in card["frame_effects"]
+        ):
+            points += 8
+        if not card["promo"] and card["nonfoil"]:
+            points += 16
+        if card["highres_image"]:
+            points += 32
+        if card["lang"] == "en":
+            points += 64
+
+        return points
+
+    scores = [score(card) for card in alternatives]
+
+    if current is not None and scores[alternatives.index(current)] == np.max(scores):
+        return None  # No better recommendation
+
+    # Return print with highest score
+    recommendation = alternatives[np.argmax(scores)]
+    return recommendation
