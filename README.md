@@ -93,10 +93,6 @@ optional arguments:
   -h, --help  show this help message and exit
 ```
 
-## ToDo
-
-* Crop marks
-
 ## Acknowledgements
 
 * [MTG Press](http://www.mtgpress.net/) for being a very handy online tool, which inspired this project.
