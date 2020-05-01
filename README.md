@@ -25,7 +25,7 @@ The convert tool can automatically selects the best print for each card in a dec
 git clone https://github.com/DiddiZ/mtg-proxies.git
 ```
 
-2. Install requirements. Requires at least [Python 3.7](https://www.python.org/downloads/).
+2. Install requirements. Requires at least [Python 3.6](https://www.python.org/downloads/).
 
 ```bash
 python -m pip install --user -U -r requirements.txt
