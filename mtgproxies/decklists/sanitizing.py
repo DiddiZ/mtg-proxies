@@ -25,7 +25,7 @@ def merge_duplicates(decklist):
     )
 
 
-def validate_card_names(decklist):
+def validate_card_names(decklist, silent=False):
     """Validate card names of a decklist against the Scryfall database.
 
     Returns:
@@ -36,21 +36,25 @@ def validate_card_names(decklist):
     names = {card["name"].lower(): card["name"] for card in scryfall.scryfall._get_database("scryfall-default-cards")}
 
     validated_decklist = []
-    for count, card_name, set_id, collector_number in decklist:
+    for card in decklist:
+        count, card_name = card[:2]
         if card_name.lower() in names:  # Exact match
-            validated_decklist.append((count, names[card_name.lower()], set_id, collector_number))
+            validated_decklist.append((count, names[card_name.lower()], *card[2:]))
         else:  # No exact match
             # Try partial matching
             candidates = [names[name] for name in names if all(elem in name for elem in card_name.lower().split(" "))]
 
             if len(candidates) == 1:  # Found unique candidate
-                print(f"WARNING: Misspelled card name '{card_name}'. Assuming you mean {candidates[0]}.")
-                validated_decklist.append((count, candidates[0], set_id, collector_number))
+                if not silent:
+                    print(f"WARNING: Misspelled card name '{card_name}'. Assuming you mean {candidates[0]}.")
+                validated_decklist.append((count, candidates[0], *card[2:]))
             elif len(candidates) == 0:  # No matching card
-                print(f"ERROR: Unable to find card '{card_name}'.")
+                if not silent:
+                    print(f"ERROR: Unable to find card '{card_name}'.")
             else:  # Multiple matching cards
-                alternatives = listing(["'" + card + "'" for card in candidates], ", ", " or ", 6)
-                print(f"ERROR: Unable to find card '{card_name}'. Did you mean {alternatives}?")
+                if not silent:
+                    alternatives = listing(["'" + card + "'" for card in candidates], ", ", " or ", 6)
+                    print(f"ERROR: Unable to find card '{card_name}'. Did you mean {alternatives}?")
 
     return validated_decklist, len(validated_decklist) == len(decklist)
 

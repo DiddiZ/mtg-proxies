@@ -56,6 +56,21 @@ optional arguments:
   --border_crop PIXELS  How much to crop inner borders of printed cards
 ```
 
+### convert
+
+```txt
+usage: python convert.py [-h] decklist outfile
+
+Convert a decklist from text format to arena format.
+
+positional arguments:
+  decklist    a decklist in text format
+  outfile     output file
+
+optional arguments:
+  -h, --help  show this help message and exit
+```
+
 ## Acknowledgements
 
 * [MTG Press](http://www.mtgpress.net/) for being a very handy online tool, which almost exactly does the same as this project.

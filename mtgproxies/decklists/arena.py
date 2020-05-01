@@ -42,4 +42,4 @@ def write_decklist_arena(filepath, decklist):
     """
     with codecs.open(filepath, 'w', 'utf-8') as f:
         for count, card_name, set_id, collector_number in decklist:
-            f.write(f'{count} {card_name} ({set_id}) {collector_number}\n')
+            f.write(f'{count} {card_name} ({set_id.upper()}) {collector_number}\n')
