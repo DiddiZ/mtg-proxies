@@ -34,12 +34,18 @@ def validate_card_names(decklist, silent=False):
     """
     # Unique names of all cards
     names = {card["name"].lower(): card["name"] for card in scryfall.scryfall._get_database("scryfall-default-cards")}
+    double_faced_names = {name.split("//")[0].strip().lower(): name for name in names.values() if "//" in name}
 
     validated_decklist = []
     for card in decklist:
         count, card_name = card[:2]
         if card_name.lower() in names:  # Exact match
             validated_decklist.append((count, names[card_name.lower()], *card[2:]))
+        elif card_name.lower() in double_faced_names:  # Exact match of front of double faced card
+            full_name = double_faced_names[card_name.lower()]
+            if not silent:
+                print(f"WARNING: Misspelled card name '{card_name}'. Assuming you mean {full_name}.")
+            validated_decklist.append((count, full_name, *card[2:]))
         else:  # No exact match
             # Try partial matching
             candidates = [names[name] for name in names if all(elem in name for elem in card_name.lower().split(" "))]
