@@ -2,6 +2,19 @@
 
 Create a high quality printable PDF from your decklist or a list of cards you want to proxy.
 
+## Features
+
+* **High resolution prints**  
+In contrast to online tools that provide this service (e.g. [MTG Press](http://www.mtgpress.net/)), this project creates the PDF file locally.
+This allows to use highest resolution Scryfall scans to create a large, high-dpi PDF file without regard for bandwidth limitations. For example, the generated PDF for a complete Commander decklist has a size of about 140MB.
+
+* **Up-to-date card scans**  
+By directly utilizing the Scryfall API, all the latest sets are automatically availble as soon as they're available on Scryfall (which is usually incredibly fast). To not overrun Scryfall with requests, this project makes use of [Scryfall bulk data](https://scryfall.com/docs/api/bulk-data) to reduce API calls as much as possible. As requested by Scryfall, a small delay of 100ms is added between requests. However, as most work is done with a local copy of the bulk data, this is hardly noticeable.
+
+* **Sanity checks and recommender engine**  
+`mtg-proxies` warns you if you attempt to print a low-resolution scan and is able to offer alternatives.
+The convert tool can automatically selects the best print for each card in a decklist with high accuracy, eliminating the need to manually select good prints.
+
 ## Usage
 
 1. Clone or download this repo.
@@ -16,7 +29,7 @@ git clone https://github.com/DiddiZ/mtg-proxies.git
 python -m pip install --user -U -r requirements.txt
 ```
 
-2. Prepare your decklist in MtG Arena format.
+3. Prepare your decklist in MtG Arena format.
 
 ```txt
 COUNT FULL_NAME (SET) COLLECTOR_NUMBER
@@ -31,7 +44,9 @@ E.g.:
 1 Murderous Rider // Swift End (ELD) 287
 ```
 
-3. Create a PDF file.
+(or use the `convert.py` tool to convert a plain decklist to Arena format)
+
+4. Create a PDF file.
 
 ```bash
 python print.py examples/decklist.txt decklist.pdf
@@ -39,6 +54,7 @@ python print.py examples/decklist.txt decklist.pdf
 
 ## Help
 
+### print
 
 ```txt
 python print.py [-h] [--dpi DPI] decklist outfile
@@ -71,7 +87,12 @@ optional arguments:
   -h, --help  show this help message and exit
 ```
 
+## ToDo
+
+* Backs of double-faced cards
+* Crop marks
+
 ## Acknowledgements
 
-* [MTG Press](http://www.mtgpress.net/) for being a very handy online tool, which almost exactly does the same as this project.
+* [MTG Press](http://www.mtgpress.net/) for being a very handy online tool, which inspired this project.
 * [Scryfall](https://scryfall.com/) for their [excellent API](https://scryfall.com/docs/api).
