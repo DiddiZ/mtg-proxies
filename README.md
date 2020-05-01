@@ -44,7 +44,11 @@ E.g.:
 1 Murderous Rider // Swift End (ELD) 287
 ```
 
-(or use the `convert.py` tool to convert a plain decklist to Arena format)
+Or use the `convert.py` tool to convert a plain decklist to Arena format:
+
+```bash
+python convert.py examples/decklist_text.txt examples/decklist.txt
+```
 
 4. Create a PDF file.
 
