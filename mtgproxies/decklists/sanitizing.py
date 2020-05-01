@@ -37,10 +37,8 @@ def validate_card_names(decklist):
 
     validated_decklist = []
     for count, card_name, set_id, collector_number in decklist:
-        card_name = card_name.lower()
-
-        if card_name in names:  # Exact match
-            validated_decklist.append((count, names[card_name], set_id, collector_number))
+        if card_name.lower() in names:  # Exact match
+            validated_decklist.append((count, names[card_name.lower()], set_id, collector_number))
         else:  # No exact match
             # Try partial matching
             candidates = [names[name] for name in names if all(elem in name for elem in card_name.lower().split(" "))]
