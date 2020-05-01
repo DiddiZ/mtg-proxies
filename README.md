@@ -2,6 +2,8 @@
 
 Create a high quality printable PDF from your decklist or a list of cards you want to proxy.
 
+![alt text](examples/decklist.png)
+
 ## Features
 
 * **High resolution prints**  
