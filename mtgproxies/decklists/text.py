@@ -17,7 +17,7 @@ def parse_decklist_text(filepath):
     Ignores all non-card rows and does not discern between main deck and sideboard.
 
     Returns:
-        [(int, str)]: List of (count, name)-tuples.
+        [(int, str, None, None)]: List of (count, name, None, None)-tuples.
     """
     decklist = []
     with codecs.open(filepath, 'r', 'utf-8') as fp:
@@ -30,5 +30,7 @@ def parse_decklist_text(filepath):
                 decklist.append((
                     count,
                     name,
+                    None,
+                    None,
                 ))
     return decklist

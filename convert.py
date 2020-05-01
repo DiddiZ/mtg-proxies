@@ -14,10 +14,12 @@ if __name__ == "__main__":
     # Parse decklist
     print("Parsing decklist ...")
     decklist = parse_decklist_text(args.decklist)
-    print("Found %d cards in total with %d unique cards." % (
-        sum([count for count, _ in decklist]),
-        len(decklist),
-    ))
+    print(
+        "Found %d cards in total with %d unique cards." % (
+            sum([count for count, _, _, _ in decklist]),
+            len(decklist),
+        )
+    )
 
     # Sanitizing decklist
     decklist, ok = validate_card_names(decklist)
@@ -35,7 +37,7 @@ if __name__ == "__main__":
                 card_name = m.group(2)
 
                 # Fetch name changes again
-                card_name = validate_card_names([(count, card_name)], silent=True)[0][0][1]
+                card_name = validate_card_names([(count, card_name, None, None)], silent=True)[0][0][1]
 
                 card = scryfall.recommend_print(card_name)
                 f_out.write(f'{count} {card["name"]} ({card["set"].upper()}) {card["collector_number"]}\n')
