@@ -89,7 +89,6 @@ optional arguments:
 
 ## ToDo
 
-* Backs of double-faced cards
 * Crop marks
 
 ## Acknowledgements

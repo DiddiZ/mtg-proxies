@@ -1,0 +1,50 @@
+normal
+1 Animate Wall (CEI) 1
+
+token
+1 1997 World Championships Ad (WC97) 0
+
+emblem
+1 Sorin, Lord of Innistrad Emblem (TDKA) 3
+
+split
+1 Stand // Deliver (INV) 292
+
+flip
+1 Bushi Tenderfoot // Kenzo the Hardhearted (CHK) 2
+
+host
+1 Adorable Kitten (UND) 1
+
+augment
+1 Half-Kitten, Half- (UST) 9
+
+saga
+1 Fall of the Thran (DOM) 18
+
+adventure
+1 Ardenvale Tactician // Dizzying Swoop (ELD) 5
+
+vanguard
+1 Ertai (PVAN) 101
+
+leveler
+1 Caravan Escort (DDP) 3
+
+transform
+1 Ludevic's Test Subject // Ludevic's Abomination
+
+art_series
+1 Chillerpillar // Chillerpillar (AMH1) 1
+
+planar
+1 Tazeem (OPCA) 78
+
+double_faced_token
+1 Human // Wolf (F12) 1a
+
+meld
+1 Bruna, the Fading Light (EMN) 15a
+
+scheme
+1 Plots That Span Centuries (PARC) 54
