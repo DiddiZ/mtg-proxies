@@ -17,6 +17,9 @@ By directly utilizing the Scryfall API, all the latest sets are automatically av
 `mtg-proxies` warns you if you attempt to print a low-resolution scan and is able to offer alternatives.
 The convert tool can automatically selects the best print for each card in a decklist with high accuracy, eliminating the need to manually select good prints.
 
+* **Token support**  
+The `tokens.py` tool appends the tokens created by the cards in a decklist to it, so you don't miss one accidentally. Caveat: This only works when Scryfall has the data on associated tokens. This is the case for cards printed or reprinted since Tenth Edition.
+
 ## Usage
 
 1. Clone or download this repo.
@@ -91,6 +94,26 @@ positional arguments:
 
 optional arguments:
   -h, --help  show this help message and exit
+```
+
+### tokens
+
+```txt
+usage: python tokens.py [-h] decklist
+
+Append the tokens created by the cards in a decklist to it.
+
+positional arguments:
+  decklist    a decklist in Arena format
+
+optional arguments:
+  -h, --help  show this help message and exit
+```
+
+Example:
+
+```bash
+python tokens.py examples/token_generators.txt
 ```
 
 ## Acknowledgements

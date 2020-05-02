@@ -165,13 +165,13 @@ def get_cards(database="scryfall-default-cards", **kwargs):
     return cards
 
 
-def recommend_print(card_name, set_id=None, collector_number=None):
+def recommend_print(card_name, set_id=None, collector_number=None, oracle_id=None):
     if set_id is not None and collector_number is not None:
         current = get_card(card_name, set_id, collector_number)
     else:
         current = None
 
-    alternatives = get_cards(name=card_name)
+    alternatives = get_cards(name=card_name, oracle_id=oracle_id)
 
     def score(card):
         points = 0
