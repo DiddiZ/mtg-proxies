@@ -136,15 +136,33 @@ def get_card(card_name, set_id=None, collector_number=None):
         collector_number: Collector number, may be a string for e.g. promo suffixes
 
     Returns:
-        card: Dictionary of card, or `None` if non found.
+        card: Dictionary of card, or `None` if not found.
     """
-    cards = [card for card in _get_database("scryfall-default-cards") if card["name"].lower() == card_name.lower()]
-    if set_id is not None:  # Filter for set
-        cards = [card for card in cards if card["set"].lower() == set_id.lower()]
-    if collector_number is not None:  # Filter for cn
-        cards = [card for card in cards if card["collector_number"].lower() == collector_number.lower()]
+    cards = get_cards(name=card_name, set=set_id, collector_number=collector_number)
 
     return cards[0] if len(cards) > 0 else None
+
+
+def get_cards(database="scryfall-default-cards", **kwargs):
+    """Get all cards matching certain attributes.
+
+    Matching is case insensitive.
+
+    Args:
+        kwargs: (key, value) pairs, e.g. `name="Tendershoot Dryad", set="RIX"`.
+                keys with a `None` value are ignored
+
+    Returns:
+        List of all matching cards
+    """
+    cards = _get_database(database)
+
+    for key, value in kwargs.items():
+        if value is not None:
+            value = value.lower()
+            cards = [card for card in cards if key in card and card[key].lower() == value]
+
+    return cards
 
 
 def recommend_print(card_name, set_id=None, collector_number=None):
@@ -153,9 +171,7 @@ def recommend_print(card_name, set_id=None, collector_number=None):
     else:
         current = None
 
-    alternatives = [
-        card for card in _get_database("scryfall-default-cards") if card["name"].lower() == card_name.lower()
-    ]
+    alternatives = get_cards(name=card_name)
 
     def score(card):
         points = 0

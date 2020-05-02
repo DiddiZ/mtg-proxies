@@ -33,7 +33,7 @@ def validate_card_names(decklist, silent=False):
         ok: Whether all cards could be found.
     """
     # Unique names of all cards
-    names = {card["name"].lower(): card["name"] for card in scryfall.scryfall._get_database("scryfall-default-cards")}
+    names = {card["name"].lower(): card["name"] for card in scryfall.get_cards()}
     double_faced_names = {name.split("//")[0].strip().lower(): name for name in names.values() if "//" in name}
 
     validated_decklist = []
