@@ -8,6 +8,21 @@ def format_print(card_name, set_id=None, collector_number=None):
     return f"'{card_name} ({set_id.upper()}) {collector_number}'"
 
 
+color_names = {
+    'W': 'white',
+    'U': 'blue',
+    'B': 'black',
+    'R': 'red',
+    'G': 'green',
+}
+
+
+def format_colors(colors):
+    if len(colors) == 0:
+        return "colorless"
+    return listing([color_names[c] for c in colors], ", ", " and ")
+
+
 def listing(items, sep, final_sep, max_items=None):
     if len(items) == 0:
         return ""
