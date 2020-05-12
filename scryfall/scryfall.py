@@ -175,7 +175,7 @@ def recommend_print(card_name, set_id=None, collector_number=None, oracle_id=Non
 
     def score(card):
         points = 0
-        if card["set_type"] != "funny":
+        if card["set"] != "mb1":
             points += 1
         if card["frame"] == "2015":
             points += 2
