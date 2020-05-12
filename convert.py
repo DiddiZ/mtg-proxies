@@ -56,7 +56,7 @@ if __name__ == "__main__":
     # Write to target. Re-read file to preserve comments.
     with codecs.open(args.decklist, 'r', 'utf-8') as f_in, codecs.open(args.outfile, 'w', 'utf-8') as f_out:
         for line in f_in:
-            m = re.search(r'([0-9]+) (.+)', line.strip())
+            m = re.search(r'([0-9]+)\s(.+?)\s*$', line)
             if m:
                 # Extract relevant data
                 count = int(m.group(1))
