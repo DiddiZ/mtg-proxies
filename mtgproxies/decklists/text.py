@@ -22,7 +22,7 @@ def parse_decklist_text(filepath):
     decklist = []
     with codecs.open(filepath, 'r', 'utf-8') as fp:
         for line in fp:
-            m = re.search(r'([0-9]+) (.+)', line.strip())
+            m = re.search(r'([0-9]+)\s(.+?)\s*$', line)
             if m:
                 # Extract relevant data
                 count = int(m.group(1))
