@@ -35,6 +35,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Convert a decklist from text format to arena format.')
     parser.add_argument('decklist', help='a decklist in text format')
     parser.add_argument('outfile', help='output file')
+    parser.add_argument('--clean', action='store_true', help='Remove all non-card lines.')
     args = parser.parse_args()
 
     # Parse decklist
@@ -73,6 +74,7 @@ if __name__ == "__main__":
 
                 f_out.write(f'{count} {card["name"]} ({card["set"].upper()}) {card["collector_number"]}\n')
             else:
-                f_out.write(line)
+                if not args.clean:
+                    f_out.write(line)
 
     print(f"Successfully wrote decklist to {Path(args.outfile).resolve()}.")
