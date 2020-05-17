@@ -77,7 +77,7 @@ positional arguments:
 optional arguments:
   -h, --help            show this help message and exit
   --dpi DPI             dpi of output file
-  --paper PAPER         paper size of output
+  --paper WIDTHxHEIGHT  paper size in inches or preconfigured format (e.g. a4)
   --border_crop PIXELS  How much to crop inner borders of printed cards
 ```
 
