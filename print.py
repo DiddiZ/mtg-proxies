@@ -18,16 +18,27 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Prepare a decklist for printing.')
     parser.add_argument('decklist', help='a decklist in MtG Arena format')
     parser.add_argument('outfile', help='output file. Supports pdf, png and jpg.')
-    parser.add_argument('--dpi', help='dpi of output file', type=int, default=300)
+    parser.add_argument('--dpi', help='dpi of output file (default: %(default)d)', type=int, default=300)
     parser.add_argument(
         '--paper',
-        help='paper size in inches or preconfigured format (e.g. a4)',
+        help='paper size in inches or preconfigured format (default: %(default)s)',
         type=papersize,
         default="a4",
         metavar="WIDTHxHEIGHT"
     )
     parser.add_argument(
-        '--border_crop', help='How much to crop inner borders of printed cards', type=int, default=14, metavar="PIXELS"
+        '--border_crop',
+        help='how much to crop inner borders of printed cards (default: %(default)s)',
+        type=int,
+        default=14,
+        metavar="PIXELS"
+    )
+    parser.add_argument(
+        '--background',
+        help='background color, either by name or by hex code (e.g. black or "#ff0000", default: %(default)s)',
+        type=str,
+        default=None,
+        metavar="COLOR"
     )
     args = parser.parse_args()
 
@@ -58,4 +69,5 @@ if __name__ == "__main__":
         papersize=args.paper,
         dpi=args.dpi,
         border_crop=args.border_crop,
+        background_color=args.background,
     )
