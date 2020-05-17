@@ -76,9 +76,10 @@ positional arguments:
 
 optional arguments:
   -h, --help            show this help message and exit
-  --dpi DPI             dpi of output file
-  --paper WIDTHxHEIGHT  paper size in inches or preconfigured format (e.g. a4)
-  --border_crop PIXELS  How much to crop inner borders of printed cards
+  --dpi DPI             dpi of output file (default: 300)
+  --paper WIDTHxHEIGHT  paper size in inches or preconfigured format (default: a4)
+  --border_crop PIXELS  how much to crop inner borders of printed cards (default: 14)
+  --background COLOR    background color, either by name or by hex code (e.g. black or "#ff0000", default: None)
 ```
 
 ### convert

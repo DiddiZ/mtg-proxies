@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
+from matplotlib.patches import Rectangle
 from mtgproxies.plotting import SplitPages
 from tqdm import tqdm
 
@@ -17,6 +18,7 @@ def print_cards(
     border_crop=14,
     interpolation="lanczos",
     dpi=600,
+    background_color=None,
 ):
     """Print a list of cards to a pdf file.
 
@@ -41,6 +43,9 @@ def print_cards(
         while len(images) > 0:
             fig = plt.figure(figsize=papersize)
             ax = fig.add_axes([0, 0, 1, 1])  # ax covers the whole figure
+            #  Background
+            if background_color is not None:
+                plt.gca().add_patch(Rectangle((0, 0), 1, 1, color=background_color, zorder=-1000))
 
             offset = (papersize - _occupied_space(cardsize, N, border_crop, [745, 1040], closed=True)) / 2
 
