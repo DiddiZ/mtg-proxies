@@ -64,6 +64,20 @@ def validate_card_names(decklist, silent=False):
     return validated_decklist, len(validated_decklist) == len(decklist)
 
 
+def get_print_warnings(card):
+    """Returns warnings for low-resolution scans."""
+    warnings = []
+    if not card["highres_image"] or card["digital"]:
+        warnings.append("low resolution scan")
+    if card["collector_number"][-1] in ['p', 's']:
+        warnings.append("promo")
+    if card["lang"] != "en":
+        warnings.append("non-english print")
+    if card["border_color"] != "black":
+        warnings.append(card["border_color"] + " border")
+    return warnings
+
+
 def validate_prints(decklist):
     """Validate prints of a decklist against the Scryfall database.
 
@@ -88,11 +102,7 @@ def validate_prints(decklist):
             collector_number = card["collector_number"]
 
         # Warnings for low-quality scans
-        warnings = []
-        if not card["highres_image"]:
-            warnings.append("low resolution scan")
-        elif card["border_color"] != "black":
-            warnings.append("non-black border")
+        warnings = get_print_warnings(card)
         if len(warnings) > 0:
             # Get recommendation
             recommendation = scryfall.recommend_print(card_name, set_id, collector_number)
