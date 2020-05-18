@@ -165,7 +165,7 @@ def get_cards(database="scryfall-default-cards", **kwargs):
     return cards
 
 
-def recommend_print(card_name, set_id=None, collector_number=None, oracle_id=None):
+def recommend_print(card_name, set_id=None, collector_number=None, oracle_id=None, mode="best"):
     if set_id is not None and collector_number is not None:
         current = get_card(card_name, set_id, collector_number)
     else:
@@ -196,9 +196,21 @@ def recommend_print(card_name, set_id=None, collector_number=None, oracle_id=Non
 
     scores = [score(card) for card in alternatives]
 
-    if current is not None and scores[alternatives.index(current)] == np.max(scores):
-        return None  # No better recommendation
+    if mode == "best":
+        if current is not None and scores[alternatives.index(current)] == np.max(scores):
+            return None  # No better recommendation
 
-    # Return print with highest score
-    recommendation = alternatives[np.argmax(scores)]
-    return recommendation
+        # Return print with highest score
+        recommendation = alternatives[np.argmax(scores)]
+        return recommendation
+    elif mode == "all":
+        recommendations = list(np.array(alternatives)[np.argsort(scores)][::-1])
+
+        # Bring current print to front
+        if current is not None:
+            if current in recommendations:
+                recommendations.remove(current)
+            recommendations = [current] + recommendations
+
+        # Return all card in descending order
+        return recommendations
