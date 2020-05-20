@@ -27,6 +27,13 @@ if __name__ == "__main__":
         metavar="WIDTHxHEIGHT"
     )
     parser.add_argument(
+        '--scale',
+        help='scaling factor for printed cards (default: %(default)s)',
+        type=float,
+        default=1.0,
+        metavar="FLOAT"
+    )
+    parser.add_argument(
         '--border_crop',
         help='how much to crop inner borders of printed cards (default: %(default)s)',
         type=int,
@@ -67,6 +74,7 @@ if __name__ == "__main__":
         images,
         args.outfile,
         papersize=args.paper,
+        cardsize=np.array([2.5, 3.5]) * args.scale,
         dpi=args.dpi,
         border_crop=args.border_crop,
         background_color=args.background,
