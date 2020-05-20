@@ -185,7 +185,7 @@ def recommend_print(card_name, set_id=None, collector_number=None, oracle_id=Non
             "frame_effects" not in card or "extendedart" not in card["frame_effects"]
         ):
             points += 8
-        if not card["promo"] and card["nonfoil"]:
+        if card["collector_number"][-1] not in ['p', 's'] and card["nonfoil"]:
             points += 16
         if card["highres_image"]:
             points += 32
