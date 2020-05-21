@@ -86,31 +86,35 @@ optional arguments:
 ### convert
 
 ```txt
-usage: python convert.py [-h] decklist outfile
+usage: python convert.py decklist outfile [OPTIONAL ARGUMENTS]
 
-Convert a decklist from text format to arena format.
+Convert a decklist from text format to arena format or vice-versa.
 
 positional arguments:
-  decklist    a decklist in text format
-  outfile     output file
+  decklist              a decklist in text or arena format
+  outfile               output file
 
 optional arguments:
-  -h, --help  show this help message and exit
-  --clean     Remove all non-card lines.
+  -h, --help            show this help message and exit
+  --format {arena,text}
+                        output format (default: arena)
+  --clean               remove all non-card lines
 ```
 
 ### tokens
 
 ```txt
-usage: python tokens.py [-h] decklist
+usage: python tokens.py decklist [OPTIONAL ARGUMENTS]
 
 Append the tokens created by the cards in a decklist to it.
 
 positional arguments:
-  decklist    a decklist in Arena format
+  decklist              a decklist in Arena format
 
 optional arguments:
-  -h, --help  show this help message and exit
+  -h, --help            show this help message and exit
+  --format {arena,text}
+                        output format (default: arena)
 ```
 
 Example:

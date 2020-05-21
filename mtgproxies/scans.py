@@ -13,19 +13,15 @@ def fetch_scans_scryfall(decklist):
         List: List of image files
     """
     images = []
-    for count, card_name, set_id, collector_number in tqdm(decklist, desc="Fetching artwork"):
-        card = scryfall.get_card(card_name, set_id, collector_number)
-        if card is None:  # name/set/cn combination not found
-            raise ValueError(f"Unable to find card {format_print(card_name, set_id, collector_number)}")
-
+    for card in tqdm(decklist.cards, desc="Fetching artwork"):
         if "image_uris" in card:
             image_uris = [card["image_uris"]["png"]]
         elif "card_faces" in card and "image_uris" in card["card_faces"][0]:
             image_uris = [face["image_uris"]["png"] for face in card["card_faces"]]
         else:
-            assert False, f"Unknown layout {card['layout']}"
+            raise ValueError(f"Unknown layout {card['layout']}")
 
         for image_uri in image_uris:
             image_file = scryfall.get_image(image_uri, silent=True)
-            images.extend([image_file for _ in range(count)])
+            images.extend([image_file for _ in range(card.count)])
     return images
