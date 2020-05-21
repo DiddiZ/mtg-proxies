@@ -20,12 +20,11 @@ There are even cases (i.e. tokens) where the name alone is not sufficient to uni
 The Arena format helps in these case, as set and collector number are unique identifiers.
 However, as tools often only work with one of these formats, `mtg-proxies` is a flexible as possible, even supporting mixed mode.
 This is especially when you are making quick additions to a decklist and don't want to search for set and collector numbers.
-
-The `convert.py` tool can be used to convert decklists between the two formats. When converting to Arena format, it automatically makes sure to pick good prints.
+The `convert.py` tool can be used to convert decklists between the two formats.
 
 * **Sanity checks and recommender engine**  
 `mtg-proxies` warns you if you attempt to print a low-resolution scan and is able to offer alternatives.
-The convert tool can automatically selects the best print for each card in a decklist with high accuracy, eliminating the need to manually select good prints.
+The `convert.py` tool can automatically selects the best print for each card in a decklist with high accuracy, eliminating the need to manually select good prints.
 
 * **Token support**  
 The `tokens.py` tool appends the tokens created by the cards in a decklist to it, so you don't miss one accidentally. Caveat: This only works when Scryfall has the data on associated tokens. This is the case for cards printed or reprinted since Tenth Edition.
