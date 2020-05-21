@@ -13,6 +13,16 @@ This allows to use highest resolution Scryfall scans to create a large, high-dpi
 * **Up-to-date card scans**  
 By directly utilizing the Scryfall API, all the latest sets are automatically availble as soon as they're available on Scryfall (which is usually incredibly fast). To not overrun Scryfall with requests, this project makes use of [Scryfall bulk data](https://scryfall.com/docs/api/bulk-data) to reduce API calls as much as possible. As requested by Scryfall, a small delay of 100ms is added between requests. However, as most work is done with a local copy of the bulk data, this is hardly noticeable.
 
+* **Support for both text and Arena format decklists**
+`mtg-proxies` can work with both text and Arena format decklists.
+The Arena format is recommended, as it allows you to keep the same prints when moving decklists between multiple tools.
+There are even cases (i.e. tokens) where the name alone is not sufficient to uniquely specify a card.
+The Arena format helps in these case, as set and collector number are unique identifiers.
+However, as tools often only work with one of these formats, `mtg-proxies` is a flexible as possible, even supporting mixed mode.
+This is especially when you are making quick additions to a decklist and don't want to search for set and collector numbers.
+
+The `convert.py` tool can be used to convert decklists between the two formats. When converting to Arena format, it automatically makes sure to pick good prints.
+
 * **Sanity checks and recommender engine**  
 `mtg-proxies` warns you if you attempt to print a low-resolution scan and is able to offer alternatives.
 The convert tool can automatically selects the best print for each card in a decklist with high accuracy, eliminating the need to manually select good prints.
@@ -34,7 +44,8 @@ git clone https://github.com/DiddiZ/mtg-proxies.git
 python -m pip install --user -U -r requirements.txt
 ```
 
-3. Prepare your decklist in MtG Arena format.
+3. (Optional) Prepare your decklist in MtG Arena format.
+This is not required, but recommended as it allows for more control over the process.
 
 ```txt
 COUNT FULL_NAME (SET) COLLECTOR_NUMBER
