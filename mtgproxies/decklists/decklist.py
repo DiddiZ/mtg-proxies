@@ -20,6 +20,19 @@ class Card():
     def __contains__(self, key):
         return key in self.card
 
+    @property
+    def image_uris(self):
+        """Image uris of all faces on this card.
+
+        For single faced cards, this is just the front.
+        """
+        if "image_uris" in self.card:
+            return [self.card["image_uris"]]
+        elif "card_faces" in self.card and "image_uris" in self.card["card_faces"][0]:
+            return [face["image_uris"] for face in self.card["card_faces"]]
+        else:
+            raise ValueError(f"Unknown layout {self.card['layout']}")
+
     def __format__(self, format_spec):
         if format_spec == "text":
             return f"{self.count} {self['name']}"
