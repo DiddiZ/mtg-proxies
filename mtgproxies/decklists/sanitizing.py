@@ -1,5 +1,6 @@
 import pandas as pd
 import scryfall
+from functools import lru_cache
 from mtgproxies.format import format_print, listing, format_token
 
 
@@ -25,8 +26,18 @@ def merge_duplicates(decklist):
     )
 
 
-cards_by_name = None
-double_faced_by_front = None
+@lru_cache(maxsize=None)
+def card_names():
+    """Sets of valid card names.
+
+    Cached for performance.
+    """
+    cards_by_name = {card["name"].lower(): card["name"] for card in scryfall.get_cards()}
+    double_faced_by_front = {
+        name.split("//")[0].strip().lower(): name
+        for name in cards_by_name.values() if "//" in name
+    }
+    return cards_by_name, double_faced_by_front
 
 
 def validate_card_name(card_name):
@@ -38,13 +49,7 @@ def validate_card_name(card_name):
         ok: whether the card could be found.
     """
     # Unique names of all cards
-    global cards_by_name, double_faced_by_front
-    if cards_by_name is None:
-        cards_by_name = {card["name"].lower(): card["name"] for card in scryfall.get_cards()}
-        double_faced_by_front = {
-            name.split("//")[0].strip().lower(): name
-            for name in cards_by_name.values() if "//" in name
-        }
+    cards_by_name, double_faced_by_front = card_names()
 
     validated_name = None
     warnings = []

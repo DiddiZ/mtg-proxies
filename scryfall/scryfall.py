@@ -10,6 +10,7 @@ import requests
 import threading
 from pathlib import Path
 from tempfile import gettempdir
+from functools import lru_cache
 import numpy as np
 from tqdm import tqdm
 
@@ -114,15 +115,11 @@ def search(q, include_extras="false", include_multilingual="false", unique="card
     )
 
 
+@lru_cache(maxsize=None)
 def _get_database(database_name="scryfall-default-cards"):
-    global _databases
-
-    if database_name not in _databases:
-        bulk_file = get_file(database_name + ".json", "https://archive.scryfall.com/json/" + database_name + ".json")
-        with io.open(bulk_file, mode="r", encoding="utf-8") as json_file:
-            data = json.load(json_file)
-        _databases[database_name] = data
-    return _databases[database_name]
+    bulk_file = get_file(database_name + ".json", "https://archive.scryfall.com/json/" + database_name + ".json")
+    with io.open(bulk_file, mode="r", encoding="utf-8") as json_file:
+        return json.load(json_file)
 
 
 def get_card(card_name, set_id=None, collector_number=None):
