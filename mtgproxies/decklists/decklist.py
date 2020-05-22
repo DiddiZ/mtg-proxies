@@ -107,33 +107,42 @@ def parse_decklist(filepath):
         decklist: Decklist object
         ok: whether all cards could be found.
     """
+    with codecs.open(filepath, 'r', 'utf-8') as f:
+        return parse_decklist_stream(f)
+
+
+def parse_decklist_stream(stream):
+    """Parse card information from a decklist in text or MtG Arena (or mixed) format from a stream
+
+    See:
+        parse_decklist
+    """
     decklist = Decklist()
     ok = True
-    with codecs.open(filepath, 'r', 'utf-8') as fp:
-        for line in fp:
-            m = re.search(r'([0-9]+)\s+(.+?)(?:\s+\((\S*)\)\s+(\S+))?\s*$', line)
-            if m:
-                # Extract relevant data
-                count = int(m.group(1))
-                card_name = m.group(2)
-                set_id = m.group(3)  # May be None
-                collector_number = m.group(4)  # May be None
+    for line in stream:
+        m = re.search(r'([0-9]+)\s+(.+?)(?:\s+\((\S*)\)\s+(\S+))?\s*$', line)
+        if m:
+            # Extract relevant data
+            count = int(m.group(1))
+            card_name = m.group(2)
+            set_id = m.group(3)  # May be None
+            collector_number = m.group(4)  # May be None
 
-                # Validate card name
-                card_name, warnings = validate_card_name(card_name)
-                for warning in warnings:
-                    print(warning)
-                if card_name is None:
-                    decklist.append_comment(line.strip())
-                    ok = False
-                    continue
-
-                # Validate card print
-                card, warnings = validate_print(card_name, set_id, collector_number)
-                for warning in warnings:
-                    print(warning)
-
-                decklist.append_card(count, card)
-            else:
+            # Validate card name
+            card_name, warnings = validate_card_name(card_name)
+            for warning in warnings:
+                print(warning)
+            if card_name is None:
                 decklist.append_comment(line.strip())
+                ok = False
+                continue
+
+            # Validate card print
+            card, warnings = validate_print(card_name, set_id, collector_number)
+            for warning in warnings:
+                print(warning)
+
+            decklist.append_card(count, card)
+        else:
+            decklist.append_comment(line.strip())
     return decklist, ok
