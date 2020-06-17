@@ -116,8 +116,13 @@ def search(q, include_extras="false", include_multilingual="false", unique="card
 
 
 @lru_cache(maxsize=None)
-def _get_database(database_name="scryfall-default-cards"):
-    bulk_file = get_file(database_name + ".json", "https://archive.scryfall.com/json/" + database_name + ".json")
+def _get_database(database_name="default_cards"):
+    databases = depaginate("https://api.scryfall.com/bulk-data")
+    bulk_data = [database for database in databases if database["type"] == database_name]
+    if len(bulk_data) != 1:
+        raise ValueError(f"Unknown database {database_name}")
+
+    bulk_file = get_file(bulk_data[0]["download_uri"].split("/")[-1], bulk_data[0]["download_uri"])
     with io.open(bulk_file, mode="r", encoding="utf-8") as json_file:
         return json.load(json_file)
 
@@ -140,7 +145,7 @@ def get_card(card_name, set_id=None, collector_number=None):
     return cards[0] if len(cards) > 0 else None
 
 
-def get_cards(database="scryfall-default-cards", **kwargs):
+def get_cards(database="default_cards", **kwargs):
     """Get all cards matching certain attributes.
 
     Matching is case insensitive.
