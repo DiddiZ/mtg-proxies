@@ -167,6 +167,22 @@ def get_cards(database="default_cards", **kwargs):
     return cards
 
 
+def get_faces(card):
+    """All faces on this card.
+
+    For single faced cards, this is just the card.
+
+    Args:
+        card: Scryfall card object
+    """
+    if "image_uris" in card:
+        return [card]
+    elif "card_faces" in card and "image_uris" in card["card_faces"][0]:
+        return [face for face in card["card_faces"]]
+    else:
+        raise ValueError(f"Unknown layout {card['layout']}")
+
+
 def recommend_print(card_name, set_id=None, collector_number=None, oracle_id=None, mode="best"):
     if set_id is not None and collector_number is not None:
         current = get_card(card_name, set_id, collector_number)

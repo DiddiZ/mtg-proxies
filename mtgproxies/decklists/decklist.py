@@ -3,6 +3,7 @@ from typing import List, Any, Union
 import codecs
 import re
 import os
+import scryfall
 from mtgproxies.decklists.sanitizing import validate_card_name, validate_print
 
 
@@ -26,12 +27,7 @@ class Card():
 
         For single faced cards, this is just the front.
         """
-        if "image_uris" in self.card:
-            return [self.card["image_uris"]]
-        elif "card_faces" in self.card and "image_uris" in self.card["card_faces"][0]:
-            return [face["image_uris"] for face in self.card["card_faces"]]
-        else:
-            raise ValueError(f"Unknown layout {self.card['layout']}")
+        return [face["image_uris"] for face in scryfall.get_faces(self.card)]
 
     def __format__(self, format_spec):
         if format_spec == "text":
