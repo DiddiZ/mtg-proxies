@@ -1,3 +1,4 @@
+from pathlib import Path
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
@@ -34,6 +35,10 @@ def print_cards(
     if N[0] == 0 or N[1] == 0:
         raise ValueError(f"Paper size too small: {papersize}")
 
+    # Ensure directory exists
+    Path(filepath).parent.mkdir(parents=True, exist_ok=True)
+
+    # Choose pdf of image saver
     if filepath[-4:] == ".pdf":
         saver = PdfPages
     else:
