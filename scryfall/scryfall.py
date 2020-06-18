@@ -183,11 +183,9 @@ def get_faces(card):
         raise ValueError(f"Unknown layout {card['layout']}")
 
 
-def recommend_print(card_name, set_id=None, collector_number=None, oracle_id=None, mode="best"):
-    if set_id is not None and collector_number is not None:
-        current = get_card(card_name, set_id, collector_number)
-    else:
-        current = None
+def recommend_print(current=None, card_name=None, oracle_id=None, mode="best"):
+    if current is not None and oracle_id is None:  # Use oracle id of current
+        oracle_id = current["oracle_id"]
 
     alternatives = get_cards(name=card_name, oracle_id=oracle_id)
 
@@ -216,7 +214,7 @@ def recommend_print(card_name, set_id=None, collector_number=None, oracle_id=Non
 
     if mode == "best":
         if current is not None and scores[alternatives.index(current)] == np.max(scores):
-            return None  # No better recommendation
+            return current  # No better recommendation
 
         # Return print with highest score
         recommendation = alternatives[np.argmax(scores)]

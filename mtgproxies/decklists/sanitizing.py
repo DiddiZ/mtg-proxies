@@ -79,7 +79,7 @@ def validate_print(card_name, set_id, collector_number):
     warnings = []
 
     if set_id is None:
-        card = scryfall.recommend_print(card_name)
+        card = scryfall.recommend_print(card_name=card_name)
         # Warn for tokens, as they are not unique by name
         if card["layout"] in ["token", "double_faced_token"]:
             warnings.append(
@@ -89,7 +89,7 @@ def validate_print(card_name, set_id, collector_number):
         card = scryfall.get_card(card_name, set_id, collector_number)
         if card is None:  # No exact match
             # Find alternative print
-            card = scryfall.recommend_print(card_name)
+            card = scryfall.recommend_print(card_name=card_name)
             warnings.append(
                 f"WARNING: Unable to find scan of {format_print(card_name, set_id, collector_number)}." +
                 f" Using {format_print(card)} instead."
@@ -99,13 +99,13 @@ def validate_print(card_name, set_id, collector_number):
     quality_warnings = get_print_warnings(card)
     if len(quality_warnings) > 0:
         # Get recommendation
-        recommendation = scryfall.recommend_print(card["name"], card["set"], card["collector_number"])
+        recommendation = scryfall.recommend_print(card)
 
         # Format warnings string
         quality_warnings = listing(quality_warnings, ", ", " and ").capitalize()
 
         warnings.append(
             f"WARNING: {quality_warnings} for {format_print(card)}." +
-            (f" Maybe you want {format_print(recommendation)}?" if recommendation is not None else "")
+            (f" Maybe you want {format_print(recommendation)}?" if recommendation != card else "")
         )
     return card, warnings

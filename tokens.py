@@ -5,7 +5,7 @@ from mtgproxies.decklists import Decklist, parse_decklist
 
 
 def get_tokens(decklist):
-    tokens = set()
+    tokens = {}
     for card in decklist.cards:
         if card["layout"] in ["token", "double_faced_token"]:
             continue
@@ -16,12 +16,12 @@ def get_tokens(decklist):
                 for related_card in card_print["all_parts"]:
                     if related_card["component"] == "token":
                         # Related cards are only provided by their id.
-                        # We need the oracle id to weed out doublicates
+                        # We need the oracle id to weed out duplicates
                         related = scryfall.get_cards(id=related_card["id"])[0]
-                        tokens.add(related["oracle_id"])
+                        tokens[related["oracle_id"]] = related
 
     # Resolve oracle ids to actual cards.
-    return [scryfall.recommend_print(card_name=None, oracle_id=token) for token in tokens]
+    return [scryfall.recommend_print(token) for token in tokens.values()]
 
 
 if __name__ == "__main__":

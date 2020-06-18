@@ -8,7 +8,7 @@ Only front of double faced card
 Wrong collector number
 1 Forbidden Friendship (IKO) 120
 
-Incomplete name (but unique)
+Incomplete name (but unique), non-black border with alternative
 1 Counterspel (5ED) 77
 
 Incomplete name (ambiguous, few options)
@@ -16,6 +16,9 @@ Incomplete name (ambiguous, few options)
 
 Incomplete name (ambiguous, many options)
 1 Counter (5ED) 77
+
+Non-black border without alternative
+1 Adorable Kitten (UST) 1
 
 Wrong card name
 1 Countersark (5ED) 77
