@@ -197,7 +197,9 @@ def recommend_print(current=None, card_name=None, oracle_id=None, mode="best"):
             points += 2
         if not card["digital"]:
             points += 4
-        if card["border_color"] == "black":
+        if card["border_color"] == "black" and (
+            mode != "best" or "frame_effects" not in card or "extendedart" not in card["frame_effects"]
+        ):
             points += 8
         if card["collector_number"][-1] not in ['p', 's'] and card["nonfoil"]:
             points += 16
