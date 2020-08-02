@@ -100,7 +100,7 @@ def depaginate(url):
     return data
 
 
-def search(q, include_extras="false", include_multilingual="false", unique="cards"):
+def search(q):
     """Perform Scryfall search.
 
     Returns:
@@ -109,10 +109,7 @@ def search(q, include_extras="false", include_multilingual="false", unique="card
     See:
         https://scryfall.com/docs/api/cards/search
     """
-    return depaginate(
-        f"https://api.scryfall.com/cards/search?q={q}&format=json&include_extras={include_extras}" +
-        f"&include_multilingual={include_multilingual}&unique={unique}"
-    )
+    return depaginate(f"https://api.scryfall.com/cards/search?q={q}&format=json")
 
 
 @lru_cache(maxsize=None)
@@ -230,3 +227,23 @@ def recommend_print(current=None, card_name=None, oracle_id=None, mode="best"):
 
         # Return all card in descending order
         return recommendations
+    elif mode == "choices":
+        artworks = np.array([get_faces(card)[0]["illustration_id"] for card in alternatives])
+        choices = []
+        for artwork in set(artworks):
+            artwork_alternatives = np.array(alternatives)[artworks == artwork]
+            artwork_scores = np.array(scores)[artworks == artwork]
+
+            recommendations = artwork_alternatives[artwork_scores == np.max(artwork_scores)]
+            # TODO Sort again
+            choices.extend(recommendations)
+
+        # Bring current print to front
+        if current is not None:
+            if current in choices:
+                choices.remove(current)
+            choices = [current] + choices
+
+        return choices
+    else:
+        raise ValueError(f"Unknown mode '{mode}'")
