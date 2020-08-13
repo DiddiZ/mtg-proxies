@@ -18,13 +18,14 @@ cache = Path(gettempdir()) / 'scryfall_cache'
 cache.mkdir(parents=True, exist_ok=True)  # Create cach folder
 last_scryfall_api_call = 0
 scryfall_api_call_delay = 0.1
-_lock = threading.Lock()
+_scryfall_lock = threading.Lock()
+_download_lock = threading.Lock()
 _databases = {}
 
 
 def rate_limit():
     """Sleep to ensure 100ms delay between Scryfall API calls, as requested by Scryfall."""
-    with _lock:
+    with _scryfall_lock:
         global last_scryfall_api_call
         if time.time() < last_scryfall_api_call + scryfall_api_call_delay:
             time.sleep(last_scryfall_api_call + scryfall_api_call_delay - time.time())
@@ -54,9 +55,10 @@ def get_file(file_name, url, silent=False):
         string: Path to local file.
     """
     file_path = cache / file_name
-    if not file_path.is_file():
-        rate_limit()
-        download(url, file_path, silent=silent)
+    with _download_lock:
+        if not file_path.is_file():
+            rate_limit()
+            download(url, file_path, silent=silent)
 
     return str(file_path)
 
