@@ -6,28 +6,28 @@ Create a high quality printable PDF from your decklist or a list of cards you wa
 
 ## Features
 
-* **High resolution prints**  
-In contrast to online tools that provide this service (e.g. [MTG Press](http://www.mtgpress.net/)), this project creates the PDF file locally.
-This allows to use highest resolution Scryfall scans to create a large, high-dpi PDF file without regard for bandwidth limitations. For example, the generated PDF for a complete Commander decklist has a size of about 140MB.
+- **High resolution prints**  
+  In contrast to online tools that provide this service (e.g. [MTG Press](http://www.mtgpress.net/)), this project creates the PDF file locally.
+  This allows to use highest resolution Scryfall scans to create a large, high-dpi PDF file without regard for bandwidth limitations. For example, the generated PDF for a complete Commander decklist has a size of about 140MB.
 
-* **Up-to-date card scans**  
-By directly utilizing the Scryfall API, all the latest sets are automatically availble as soon as they're available on Scryfall (which is usually incredibly fast). To not overrun Scryfall with requests, this project makes use of [Scryfall bulk data](https://scryfall.com/docs/api/bulk-data) to reduce API calls as much as possible. As requested by Scryfall, a small delay of 100ms is added between requests. However, as most work is done with a local copy of the bulk data, this is hardly noticeable.
+- **Up-to-date card scans**  
+  By directly utilizing the Scryfall API, all the latest sets are automatically availble as soon as they're available on Scryfall (which is usually incredibly fast). To not overrun Scryfall with requests, this project makes use of [Scryfall bulk data](https://scryfall.com/docs/api/bulk-data) to reduce API calls as much as possible. As requested by Scryfall, a small delay of 100ms is added between requests. However, as most work is done with a local copy of the bulk data, this is hardly noticeable.
 
-* **Support for both text and Arena format decklists**
-`mtg-proxies` can work with both text and Arena format decklists.
-The Arena format is recommended, as it allows you to keep the same prints when moving decklists between multiple tools.
-There are even cases (i.e. tokens) where the name alone is not sufficient to uniquely specify a card.
-The Arena format helps in these case, as set and collector number are unique identifiers.
-However, as tools often only work with one of these formats, `mtg-proxies` is a flexible as possible, even supporting mixed mode.
-This is especially when you are making quick additions to a decklist and don't want to search for set and collector numbers.
-The `convert.py` tool can be used to convert decklists between the two formats.
+- **Support for both text and Arena format decklists**
+  `mtg-proxies` can work with both text and Arena format decklists.
+  The Arena format is recommended, as it allows you to keep the same prints when moving decklists between multiple tools.
+  There are even cases (i.e. tokens) where the name alone is not sufficient to uniquely specify a card.
+  The Arena format helps in these case, as set and collector number are unique identifiers.
+  However, as tools often only work with one of these formats, `mtg-proxies` is a flexible as possible, even supporting mixed mode.
+  This is especially when you are making quick additions to a decklist and don't want to search for set and collector numbers.
+  The `convert.py` tool can be used to convert decklists between the two formats.
 
-* **Sanity checks and recommender engine**  
-`mtg-proxies` warns you if you attempt to print a low-resolution scan and is able to offer alternatives.
-The `convert.py` tool can automatically selects the best print for each card in a decklist with high accuracy, eliminating the need to manually select good prints.
+- **Sanity checks and recommender engine**  
+  `mtg-proxies` warns you if you attempt to print a low-resolution scan and is able to offer alternatives.
+  The `convert.py` tool can automatically selects the best print for each card in a decklist with high accuracy, eliminating the need to manually select good prints.
 
-* **Token support**  
-The `tokens.py` tool appends the tokens created by the cards in a decklist to it, so you don't miss one accidentally. Caveat: This only works when Scryfall has the data on associated tokens. This is the case for cards printed or reprinted since Tenth Edition.
+- **Token support**  
+  The `tokens.py` tool appends the tokens created by the cards in a decklist to it, so you don't miss one accidentally. Caveat: This only works when Scryfall has the data on associated tokens. This is the case for cards printed or reprinted since Tenth Edition.
 
 ## Usage
 
@@ -35,16 +35,21 @@ The `tokens.py` tool appends the tokens created by the cards in a decklist to it
 
 ```bash
 git clone https://github.com/DiddiZ/mtg-proxies.git
+cd mtg-proxies
 ```
 
 2. Install requirements. Requires at least [Python 3.6](https://www.python.org/downloads/).
 
 ```bash
-python -m pip install --user -U -r requirements.txt
+# On Linux, use `python3` instead of `python`
+python -m pip install --user -U pipenv
+
+# Make sure pipenv is included in your PATH, otherwise the next step will fail
+pipenv install --deploy
 ```
 
 3. (Optional) Prepare your decklist in MtG Arena format.
-This is not required, but recommended as it allows for more control over the process.
+   This is not required, but recommended as it allows for more control over the process.
 
 ```txt
 COUNT FULL_NAME (SET) COLLECTOR_NUMBER
@@ -62,13 +67,13 @@ E.g.:
 Or use the `convert.py` tool to convert a plain decklist to Arena format:
 
 ```bash
-python convert.py examples/decklist_text.txt examples/decklist.txt
+pipenv run python convert.py examples/decklist_text.txt examples/decklist.txt
 ```
 
 4. Create a PDF file.
 
 ```bash
-python print.py examples/decklist.txt decklist.pdf
+pipenv run python print.py examples/decklist.txt decklist.pdf
 ```
 
 ## Help
@@ -76,7 +81,7 @@ python print.py examples/decklist.txt decklist.pdf
 ### print
 
 ```txt
-python print.py [-h] [--dpi DPI] decklist outfile
+pipenv run python print.py [-h] [--dpi DPI] decklist outfile
 
 Prepare a decklist for printing.
 
@@ -96,7 +101,7 @@ optional arguments:
 ### convert
 
 ```txt
-usage: python convert.py decklist outfile [OPTIONAL ARGUMENTS]
+usage: pipenv run python convert.py decklist outfile [OPTIONAL ARGUMENTS]
 
 Convert a decklist from text format to arena format or vice-versa.
 
@@ -114,7 +119,7 @@ optional arguments:
 ### tokens
 
 ```txt
-usage: python tokens.py decklist [OPTIONAL ARGUMENTS]
+usage: pipenv run python tokens.py decklist [OPTIONAL ARGUMENTS]
 
 Append the tokens created by the cards in a decklist to it.
 
@@ -130,10 +135,10 @@ optional arguments:
 Example:
 
 ```bash
-python tokens.py examples/token_generators.txt
+pipenv run python tokens.py examples/token_generators.txt
 ```
 
 ## Acknowledgements
 
-* [MTG Press](http://www.mtgpress.net/) for being a very handy online tool, which inspired this project.
-* [Scryfall](https://scryfall.com/) for their [excellent API](https://scryfall.com/docs/api).
+- [MTG Press](http://www.mtgpress.net/) for being a very handy online tool, which inspired this project.
+- [Scryfall](https://scryfall.com/) for their [excellent API](https://scryfall.com/docs/api).
