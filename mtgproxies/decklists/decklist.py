@@ -65,7 +65,7 @@ class Decklist:
         Args:
             fmt: Decklist format, either "arena" or "text".
         """
-        with codecs.open(file, mode, 'utf-8') as f:
+        with open(file, mode, encoding="utf-8") as f:
             f.write(format(self, fmt) + os.linesep)
 
     def __format__(self, format_spec):
