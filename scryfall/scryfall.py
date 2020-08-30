@@ -245,9 +245,7 @@ def recommend_print(current=None, card_name=None, oracle_id=None, mode="best"):
 
         # Bring current print to front
         if current is not None:
-            if current in choices:
-                choices.remove(current)
-            choices = [current] + choices
+            choices = [current] + [c for c in choices if c['id'] != current['id']]
 
         return choices
     else:
