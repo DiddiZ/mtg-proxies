@@ -230,7 +230,10 @@ def recommend_print(current=None, card_name=None, oracle_id=None, mode="best"):
         # Return all card in descending order
         return recommendations
     elif mode == "choices":
-        artworks = np.array([get_faces(card)[0]["illustration_id"] for card in alternatives])
+        artworks = np.array(
+            [get_faces(card)[0]["illustration_id"]
+             for card in alternatives if "illustration_id" in get_faces(card)[0]]  # Not all cards have illustrations
+        )
         choices = []
         for artwork in set(artworks):
             artwork_alternatives = np.array(alternatives)[artworks == artwork]
