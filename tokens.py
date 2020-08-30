@@ -34,7 +34,9 @@ if __name__ == "__main__":
 
     # Parse decklist
     print("Parsing decklist ...")
-    decklist, ok = parse_decklist(args.decklist)
+    decklist, ok, warnings = parse_decklist(args.decklist)
+    for _, warning in warnings:
+        print(warning)
     if not ok:
         print("Decklist contains invalid card names. Fix errors above before reattempting.")
         quit()

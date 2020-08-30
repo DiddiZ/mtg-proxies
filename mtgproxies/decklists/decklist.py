@@ -65,7 +65,7 @@ class Decklist:
         Args:
             fmt: Decklist format, either "arena" or "text".
         """
-        with open(file, mode, encoding="utf-8") as f:
+        with open(file, mode, encoding="utf-8", newline='') as f:
             f.write(format(self, fmt) + os.linesep)
 
     def __format__(self, format_spec):
@@ -101,6 +101,7 @@ def parse_decklist(filepath):
     Returns:
         decklist: Decklist object
         ok: whether all cards could be found.
+        warnings: List of (entry, warning) tuples
     """
     with open(filepath, 'r', encoding="utf-8") as f:
         return parse_decklist_stream(f)
@@ -113,6 +114,7 @@ def parse_decklist_stream(stream):
         parse_decklist
     """
     decklist = Decklist()
+    warnings = []
     ok = True
     for line in stream:
         m = re.search(r'([0-9]+)\s+(.+?)(?:\s+\((\S*)\)\s+(\S+))?\s*$', line)
@@ -124,20 +126,18 @@ def parse_decklist_stream(stream):
             collector_number = m.group(4)  # May be None
 
             # Validate card name
-            card_name, warnings = validate_card_name(card_name)
-            for warning in warnings:
-                print(warning)
+            card_name, warnings_name = validate_card_name(card_name)
             if card_name is None:
-                decklist.append_comment(line.strip())
+                decklist.append_comment(line.rstrip())
+                warnings.extend([(decklist.entries[-1], w) for w in warnings_name])
                 ok = False
                 continue
 
             # Validate card print
-            card, warnings = validate_print(card_name, set_id, collector_number)
-            for warning in warnings:
-                print(warning)
+            card, warnings_print = validate_print(card_name, set_id, collector_number)
 
             decklist.append_card(count, card)
+            warnings.extend([(decklist.entries[-1], w) for w in warnings_name + warnings_print])
         else:
-            decklist.append_comment(line.strip())
-    return decklist, ok
+            decklist.append_comment(line.rstrip())
+    return decklist, ok, warnings
