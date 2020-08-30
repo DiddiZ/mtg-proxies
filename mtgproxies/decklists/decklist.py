@@ -1,6 +1,5 @@
 from dataclasses import dataclass, field
 from typing import List, Any, Union
-import codecs
 import re
 import os
 import scryfall
@@ -103,7 +102,7 @@ def parse_decklist(filepath):
         decklist: Decklist object
         ok: whether all cards could be found.
     """
-    with codecs.open(filepath, 'r', 'utf-8') as f:
+    with open(filepath, 'r', encoding="utf-8") as f:
         return parse_decklist_stream(f)
 
 
