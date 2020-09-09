@@ -190,7 +190,7 @@ def recommend_print(current=None, card_name=None, oracle_id=None, mode="best"):
 
     def score(card):
         points = 0
-        if card["set"] != "mb1":
+        if card["set"] != "mb1" and card["border_color"] != "gold":
             points += 1
         if card["frame"] == "2015":
             points += 2
