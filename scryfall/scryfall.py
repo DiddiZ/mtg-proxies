@@ -57,7 +57,8 @@ def get_file(file_name, url, silent=False):
     file_path = cache / file_name
     with _download_lock:
         if not file_path.is_file():
-            rate_limit()
+            if url.startswith("https://api.scryfall.com"):  # Images are no longer rate limited
+                rate_limit()
             download(url, file_path, silent=silent)
 
     return str(file_path)

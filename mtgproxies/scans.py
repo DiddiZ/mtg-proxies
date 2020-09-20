@@ -1,5 +1,4 @@
 import scryfall
-from mtgproxies.format import format_print
 from tqdm import tqdm
 
 
@@ -12,9 +11,7 @@ def fetch_scans_scryfall(decklist):
     Returns:
         List: List of image files
     """
-    images = []
-    for card in tqdm(decklist.cards, desc="Fetching artwork"):
-        for image_uri in card.image_uris:
-            image_file = scryfall.get_image(image_uri['png'], silent=True)
-            images.extend([image_file for _ in range(card.count)])
-    return images
+    return [
+        scan for card in tqdm(decklist.cards, desc="Fetching artwork") for image_uri in card.image_uris
+        for scan in [scryfall.get_image(image_uri['png'], silent=True)] * card.count
+    ]
