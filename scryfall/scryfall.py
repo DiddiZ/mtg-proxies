@@ -10,6 +10,7 @@ import requests
 import threading
 from pathlib import Path
 from tempfile import gettempdir
+from collections import defaultdict
 from functools import lru_cache
 import numpy as np
 from tqdm import tqdm
@@ -253,3 +254,30 @@ def recommend_print(current=None, card_name=None, oracle_id=None, mode="best"):
         return choices
     else:
         raise ValueError(f"Unknown mode '{mode}'")
+
+
+@lru_cache(maxsize=None)
+def card_by_id():
+    """Create dictionary to look up cards by their id.
+
+    Faster than repeated lookup via get_cards().
+
+    Returns:
+        dict {id: card}
+    """
+    return {c['id']: c for c in get_cards()}
+
+
+@lru_cache(maxsize=None)
+def cards_oracle_id():
+    """Create dictionary to look up cards by their oracle id.
+
+    Faster than repeated lookup via get_cards().
+
+    Returns:
+        dict {id: [cards]}
+    """
+    cards_by_oracle_id = defaultdict(list)
+    for c in get_cards():
+        cards_by_oracle_id[c['oracle_id']].append(c)
+    return cards_by_oracle_id
