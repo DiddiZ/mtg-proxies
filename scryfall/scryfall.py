@@ -269,7 +269,7 @@ def card_by_id():
 
 
 @lru_cache(maxsize=None)
-def cards_oracle_id():
+def cards_by_oracle_id():
     """Create dictionary to look up cards by their oracle id.
 
     Faster than repeated lookup via get_cards().
@@ -281,3 +281,25 @@ def cards_oracle_id():
     for c in get_cards():
         cards_by_oracle_id[c['oracle_id']].append(c)
     return cards_by_oracle_id
+
+
+@lru_cache(maxsize=None)
+def card_by_name():
+    """Create dictionary to look up cards by their name.
+
+    Faster than repeated lookup via get_cards().
+    Does _not_ include tokens or funny cards (by includem them, names are not unique)
+    Also matches the front side of double faced cards.
+
+    Returns:
+        dict {name: card}
+    """
+    card_by_name = {}
+    for c in get_cards():
+        if c['layout'] in ["art_series", "token", "double_faced_token"] or c['set_type'] in ["funny"]:
+            continue
+        name = c['name'].lower()
+        card_by_name[name] = c
+        if "//" in name:
+            card_by_name[name.split(" // ")[0]] = c
+    return card_by_name
