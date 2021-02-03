@@ -67,7 +67,7 @@ def get_print_warnings(card):
     return warnings
 
 
-def validate_print(card_name, set_id, collector_number):
+def validate_print(card_name, set_id, collector_number, warn_quality=True):
     """Validate a print against the Scryfall database.
 
     Assumes card name is valid.
@@ -96,16 +96,17 @@ def validate_print(card_name, set_id, collector_number):
             )
 
     # Warnings for low-quality scans
-    quality_warnings = get_print_warnings(card)
-    if len(quality_warnings) > 0:
-        # Get recommendation
-        recommendation = scryfall.recommend_print(card)
+    if warn_quality:
+        quality_warnings = get_print_warnings(card)
+        if len(quality_warnings) > 0:
+            # Get recommendation
+            recommendation = scryfall.recommend_print(card)
 
-        # Format warnings string
-        quality_warnings = listing(quality_warnings, ", ", " and ").capitalize()
+            # Format warnings string
+            quality_warnings = listing(quality_warnings, ", ", " and ").capitalize()
 
-        warnings.append(
-            f"WARNING: {quality_warnings} for {format_print(card)}." +
-            (f" Maybe you want {format_print(recommendation)}?" if recommendation != card else "")
-        )
+            warnings.append(
+                f"WARNING: {quality_warnings} for {format_print(card)}." +
+                (f" Maybe you want {format_print(recommendation)}?" if recommendation != card else "")
+            )
     return card, warnings
