@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from typing import List, Any, Union
 import re
 import os
+from pathlib import Path
 import scryfall
 from mtgproxies.decklists.sanitizing import validate_card_name, validate_print
 
@@ -52,6 +53,7 @@ class Decklist:
     Contains cards and comment lines.
     """
     entries: List[Union[Card, Comment]] = field(default_factory=list)
+    name: str = None
 
     def append_card(self, count, card):
         self.entries.append(Card(count, card))
@@ -104,7 +106,12 @@ def parse_decklist(filepath):
         warnings: List of (entry, warning) tuples
     """
     with open(filepath, 'r', encoding="utf-8") as f:
-        return parse_decklist_stream(f)
+        decklist, ok, warnings = parse_decklist_stream(f)
+
+    # Use file name without extension as name
+    decklist.name = Path(filepath).stem
+
+    return decklist, ok, warnings
 
 
 def parse_decklist_stream(stream):

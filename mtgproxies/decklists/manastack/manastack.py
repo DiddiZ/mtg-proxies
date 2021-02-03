@@ -18,11 +18,11 @@ def parse_decklist(manastack_id: str, zones=["commander", "mainboard"]):
     if r.status_code != 200:
         raise (ValueError(f"Manastack returned statuscode {r.status_code}"))
 
-    data = r.json()["list"]
+    data = r.json()
     for zone in zones:
-        if len(data[zone]) > 0:
+        if len(data["list"][zone]) > 0:
             decklist.append_comment(zone.capitalize())
-            for item in data[zone]:
+            for item in data["list"][zone]:
                 # Extract relevant data
                 count = item['count']
                 card_name = item['card']['name']
@@ -45,5 +45,7 @@ def parse_decklist(manastack_id: str, zones=["commander", "mainboard"]):
 
             if zone != zones[-1]:
                 decklist.append_comment("")
+
+    decklist.name = data['info']['name']
 
     return decklist, ok, warnings
