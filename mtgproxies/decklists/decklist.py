@@ -136,7 +136,7 @@ def parse_decklist_stream(stream):
             card_name, warnings_name = validate_card_name(card_name)
             if card_name is None:
                 decklist.append_comment(line.rstrip())
-                warnings.extend([(decklist.entries[-1], w) for w in warnings_name])
+                warnings.extend([(decklist.entries[-1], level, msg) for level, msg in warnings_name])
                 ok = False
                 continue
 

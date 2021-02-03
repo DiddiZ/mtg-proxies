@@ -89,7 +89,7 @@ pipenv run python print.py [-h] [--dpi DPI] decklist outfile
 Prepare a decklist for printing.
 
 positional arguments:
-  decklist              a decklist in MtG Arena format
+  decklist              a decklist in text or Arena format, or ManaStack id
   outfile               output file. Supports pdf, png and jpg.
 
 optional arguments:
@@ -109,7 +109,7 @@ usage: pipenv run python convert.py decklist outfile [OPTIONAL ARGUMENTS]
 Convert a decklist from text format to arena format or vice-versa.
 
 positional arguments:
-  decklist              a decklist in text or arena format
+  decklist              a decklist in text or Arena format, or ManaStack id
   outfile               output file
 
 optional arguments:
@@ -127,7 +127,7 @@ usage: pipenv run python tokens.py decklist [OPTIONAL ARGUMENTS]
 Append the tokens created by the cards in a decklist to it.
 
 positional arguments:
-  decklist              a decklist in Arena format
+  decklist              a decklist in text or Arena format, or ManaStack id
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -139,6 +139,28 @@ Example:
 
 ```bash
 pipenv run python tokens.py examples/token_generators.txt
+```
+
+### Deck Value Decomposition
+
+```txt
+usage: deck_value.py decklist [OPTIONAL ARGUMENTS]
+
+Show deck value decomposition.
+
+positional arguments:
+  decklist              a decklist in text or Arena format, or ManaStack id
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --lump-threshold FLOAT
+                        lump together cards with lesser proportional value
+```
+
+Example:
+
+```bash
+pipenv run python deck_value.py 1234536
 ```
 
 ## Acknowledgements

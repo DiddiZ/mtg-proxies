@@ -307,3 +307,21 @@ def oracle_ids_by_name():
         for key in [name] + [(name.split(" // ")[0] if "//" in name else [])]:
             oracle_ids_by_name[key].add(oracle_id)
     return oracle_ids_by_name
+
+
+def get_price(oracle_id: str, currency: str = "eur"):
+    """Find lowest price for oracle id.
+
+    Args:
+        oracle_id: oracle_id of card
+        currency: `usd`, `eur` or `tix`
+    """
+    cards = cards_by_oracle_id()[oracle_id]
+
+    slots = [currency]
+    if currency != "tix":  # "TIX has no foil"
+        slots += [currency + "_foil"]
+
+    prices = [float(c['prices'][slot]) for c in cards for slot in slots if c['prices'][slot] is not None]
+
+    return min(prices) if len(prices) > 0 else None
