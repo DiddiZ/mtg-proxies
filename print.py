@@ -1,7 +1,7 @@
 import numpy as np
 import argparse
 from mtgproxies import print_cards, fetch_scans_scryfall
-from mtgproxies.decklists import parse_decklist
+from mtgproxies.cli import parse_decklist_spec
 
 
 def papersize(string):
@@ -16,7 +16,7 @@ def papersize(string):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Prepare a decklist for printing.')
-    parser.add_argument('decklist', help='a decklist in MtG Arena format')
+    parser.add_argument('decklist', help='a decklist in MtG Arena format, or Manastack id')
     parser.add_argument('outfile', help='output file. Supports pdf, png and jpg.')
     parser.add_argument('--dpi', help='dpi of output file (default: %(default)d)', type=int, default=300)
     parser.add_argument(
@@ -50,18 +50,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Parse decklist
-    print("Parsing decklist ...")
-    decklist, ok, warnings = parse_decklist(args.decklist)
-    for _, warning in warnings:
-        print(warning)
-    if not ok:
-        print("Decklist contains invalid card names. Fix errors above before reattempting.")
-        quit()
-
-    print("Found %d cards in total with %d unique cards." % (
-        decklist.total_count,
-        decklist.total_count_unique,
-    ))
+    decklist = parse_decklist_spec(args.decklist)
 
     # Fetch scans
     images = fetch_scans_scryfall(decklist)

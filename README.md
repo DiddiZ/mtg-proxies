@@ -29,6 +29,9 @@ Create a high quality printable PDF from your decklist or a list of cards you wa
 - **Token support**  
   The `tokens.py` tool appends the tokens created by the cards in a decklist to it, so you don't miss one accidentally. Caveat: This only works when Scryfall has the data on associated tokens. This is the case for cards printed or reprinted since Tenth Edition.
 
+- **ManaStack integration**
+  Directly use ManaStack deck ids input for many functions instead of local decklist files.
+
 ## Usage
 
 1. Clone or download this repo.

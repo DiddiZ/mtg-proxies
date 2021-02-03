@@ -1,7 +1,7 @@
 import argparse
 from pathlib import Path
 import scryfall
-from mtgproxies.decklists import Decklist, parse_decklist
+from mtgproxies.cli import parse_decklist_spec
 
 
 def get_tokens(decklist):
@@ -26,38 +26,27 @@ def get_tokens(decklist):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Append the tokens created by the cards in a decklist to it.')
-    parser.add_argument('decklist', help='a decklist in Arena format')
+    parser.add_argument('decklist', help='a decklist in Arena format, or Manastack id')
     parser.add_argument(
         '--format', help='output format (default: %(default)s)', choices=['arena', 'text'], default='arena'
     )
     args = parser.parse_args()
 
     # Parse decklist
-    print("Parsing decklist ...")
-    decklist, ok, warnings = parse_decklist(args.decklist)
-    for _, warning in warnings:
-        print(warning)
-    if not ok:
-        print("Decklist contains invalid card names. Fix errors above before reattempting.")
-        quit()
-
-    print("Found %d cards in total with %d unique cards." % (
-        decklist.total_count,
-        decklist.total_count_unique,
-    ))
+    decklist = parse_decklist_spec(args.decklist, warn_levels=["ERROR", "WARNING"])
 
     # Find tokens
     tokens = get_tokens(decklist)
     print(f"Found {len(tokens)} created tokens.")
 
-    # Create decklist of tokens
-    token_list = Decklist()
-    token_list.append_comment("")
-    token_list.append_comment("Tokens")
+    # Append tokens
+    decklist.append_comment("")
+    decklist.append_comment("Tokens")
     for token in tokens:
-        token_list.append_card(1, token)
+        decklist.append_card(1, token)
 
     # Write decklist
-    token_list.save(args.decklist, fmt=args.format, mode='a')
+    out_file = args.decklist if Path(args.decklist).is_file() else f"{args.decklist}.txt"
+    decklist.save(out_file, fmt=args.format)
 
-    print(f"Successfully appended to {Path(args.decklist).resolve()}.")
+    print(f"Successfully appended to {Path(out_file).resolve()}.")

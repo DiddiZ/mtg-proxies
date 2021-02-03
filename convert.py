@@ -1,10 +1,10 @@
 import argparse
 from pathlib import Path
-from mtgproxies.decklists import parse_decklist
+from mtgproxies.cli import parse_decklist_spec
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Convert a decklist from text format to arena format or vice-versa.')
-    parser.add_argument('decklist', help='a decklist in text or arena format')
+    parser.add_argument('decklist', help='a decklist in text or arena format, or Manastack id')
     parser.add_argument('outfile', help='output file')
     parser.add_argument(
         '--format', help='output format (default: %(default)s)', choices=['arena', 'text'], default='arena'
@@ -13,18 +13,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Parse decklist
-    print("Parsing decklist ...")
-    decklist, ok, warnings = parse_decklist(args.decklist)
-    for _, warning in warnings:
-        print(warning)
-    if not ok:
-        print("Decklist contains invalid card names. Fix errors above before reattempting.")
-        quit()
-
-    print("Found %d cards in total with %d unique cards." % (
-        decklist.total_count,
-        decklist.total_count_unique,
-    ))
+    decklist = parse_decklist_spec(args.decklist, warn_levels=["ERROR", "WARNING"])
 
     # Write decklist
     decklist.save(args.outfile, fmt=args.format)

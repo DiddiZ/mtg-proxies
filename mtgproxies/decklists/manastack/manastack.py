@@ -38,11 +38,12 @@ def parse_decklist(manastack_id: str, zones=["commander", "mainboard"]):
                     continue
 
                 # Validate card print
-                card, warnings_print = validate_print(card_name, set_id, collector_number, warn_quality=False)
+                card, warnings_print = validate_print(card_name, set_id, collector_number)
 
                 decklist.append_card(count, card)
-                warnings.extend([(decklist.entries[-1], w) for w in warnings_name + warnings_print])
+                warnings.extend([(decklist.entries[-1], level, msg) for level, msg in warnings_name + warnings_print])
 
-            decklist.append_comment("")
+            if zone != zones[-1]:
+                decklist.append_comment("")
 
     return decklist, ok, warnings
