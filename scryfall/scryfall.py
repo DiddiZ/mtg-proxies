@@ -188,7 +188,10 @@ def recommend_print(current=None, card_name=None, oracle_id=None, mode="best"):
     if current is not None and oracle_id is None:  # Use oracle id of current
         oracle_id = current["oracle_id"]
 
-    alternatives = get_cards(name=card_name, oracle_id=oracle_id)
+    if oracle_id is not None:
+        alternatives = cards_by_oracle_id()[oracle_id]
+    else:
+        alternatives = get_cards(name=card_name)
 
     def score(card):
         points = 0
@@ -284,22 +287,23 @@ def cards_by_oracle_id():
 
 
 @lru_cache(maxsize=None)
-def card_by_name():
-    """Create dictionary to look up cards by their name.
+def oracle_ids_by_name():
+    """Create dictionary to look up oracle ids by their name.
 
-    Faster than repeated lookup via get_cards().
-    Does _not_ include tokens or funny cards (by includem them, names are not unique)
+    Faster than repeated lookup via `get_cards(oracle_id=oracle_id)`.
     Also matches the front side of double faced cards.
+    Names are lower case.
 
     Returns:
-        dict {name: card}
+        dict {name: [oracle_ids]}
     """
-    card_by_name = {}
-    for c in get_cards():
-        if c['layout'] in ["art_series", "token", "double_faced_token"] or c['set_type'] in ["funny"]:
+    oracle_ids_by_name = defaultdict(set)
+    for oracle_id, cards in cards_by_oracle_id().items():
+        card = cards[0]
+        if card['layout'] in ["art_series"]:  # Skip art series, as they have double faced names
             continue
-        name = c['name'].lower()
-        card_by_name[name] = c
-        if "//" in name:
-            card_by_name[name.split(" // ")[0]] = c
-    return card_by_name
+        name = card['name'].lower()
+        # Use name and also front face only for double faced cards
+        for key in [name] + [(name.split(" // ")[0] if "//" in name else [])]:
+            oracle_ids_by_name[key].add(oracle_id)
+    return oracle_ids_by_name

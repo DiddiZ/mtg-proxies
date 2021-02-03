@@ -1,5 +1,6 @@
 from scryfall.scryfall import (
-    get_image, search, get_card, get_cards, get_faces, recommend_print, card_by_id, cards_by_oracle_id, card_by_name
+    get_image, search, get_card, get_cards, get_faces, recommend_print, card_by_id, cards_by_oracle_id,
+    oracle_ids_by_name
 )
 
 __all__ = [
@@ -11,5 +12,5 @@ __all__ = [
     'recommend_print',
     'card_by_id',
     'cards_by_oracle_id',
-    'card_by_name',
+    'oracle_ids_by_name',
 ]
