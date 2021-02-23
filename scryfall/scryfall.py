@@ -309,19 +309,26 @@ def oracle_ids_by_name():
     return oracle_ids_by_name
 
 
-def get_price(oracle_id: str, currency: str = "eur"):
+def get_price(oracle_id: str, currency: str = "eur", foil: bool = None):
     """Find lowest price for oracle id.
 
     Args:
         oracle_id: oracle_id of card
         currency: `usd`, `eur` or `tix`
+        foil: `False`, `True`, or `None` for any
     """
     cards = cards_by_oracle_id()[oracle_id]
 
-    slots = [currency]
-    if currency != "tix":  # "TIX has no foil"
+    slots = []
+    if not foil:
+        slots += [currency]
+    if (foil or foil is None) and currency != "tix":  # "TIX has no foil"
         slots += [currency + "_foil"]
 
     prices = [float(c['prices'][slot]) for c in cards for slot in slots if c['prices'][slot] is not None]
+
+    if len(prices) == 0 and currency == "eur":  # Try dollar and apply conversion
+        usd = get_price(oracle_id, "usd")
+        return 0.83 * usd if usd is not None else None
 
     return min(prices) if len(prices) > 0 else None
