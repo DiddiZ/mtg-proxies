@@ -304,8 +304,9 @@ def oracle_ids_by_name():
             continue
         name = card['name'].lower()
         # Use name and also front face only for double faced cards
-        for key in [name] + [(name.split(" // ")[0] if "//" in name else [])]:
-            oracle_ids_by_name[key].add(oracle_id)
+        oracle_ids_by_name[name].add(oracle_id)
+        if "//" in name:
+            oracle_ids_by_name[name.split(" // ")[0]].add(oracle_id)
     return oracle_ids_by_name
 
 
