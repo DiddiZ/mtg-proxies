@@ -20,7 +20,14 @@ if __name__ == "__main__":
     decklist = parse_decklist_spec(args.decklist, warn_levels=["ERROR", "WARNING"])
 
     # Fetch prices
-    card_prices = [(c['name'], c.count * scryfall.get_price(c['oracle_id'])) for c in decklist.cards]
+    card_prices = []
+    for card in decklist.cards:
+        price = scryfall.get_price(card['oracle_id'])
+        if price is not None:
+            card_prices.append((card['name'], card.count * price))
+        else:
+            print(f"WARNING: Unable to find price for {card['name']}")
+
     card_prices.sort(key=lambda x: x[1], reverse=True)
     price_total = sum(p for _, p in card_prices)
 
