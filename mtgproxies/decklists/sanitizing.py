@@ -9,7 +9,10 @@ def card_names():
 
     Cached for performance.
     """
-    cards_by_name = {card["name"].lower(): card["name"] for card in scryfall.get_cards()}
+    cards_by_name = {
+        card["name"].lower(): card["name"]
+        for card in scryfall.get_cards() if card['layout'] not in ["art_series"]
+    }
     double_faced_by_front = {
         name.split("//")[0].strip().lower(): name
         for name in cards_by_name.values() if "//" in name
