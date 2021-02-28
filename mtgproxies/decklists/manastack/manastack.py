@@ -7,7 +7,7 @@ def parse_decklist(manastack_id: str, zones=["commander", "mainboard"]):
     """Parse a decklist from manastack.
 
     Args:
-        manastack_id: Deck list id as shown in the bdeckbuilder URL
+        manastack_id: Deck list id as shown in the deckbuilder URL
         zones: List of zones to include. Available are: `mainboard`, `commander`, `sideboard` and `maybeboard`
     """
     decklist = Decklist()

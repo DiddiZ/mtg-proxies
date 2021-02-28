@@ -5,7 +5,11 @@ import scryfall
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Show deck value decomposition.')
-    parser.add_argument('decklist', help='a decklist in text or arena format, or Manastack id')
+    parser.add_argument(
+        'decklist',
+        metavar='decklist_spec',
+        help='path to a decklist in text/arena format, or manastack:{manastack_id}, or archidekt:{archidekt_id}'
+    )
     parser.add_argument(
         '--lump-threshold',
         help='lump together cards with lesser proportional value',

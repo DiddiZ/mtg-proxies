@@ -29,8 +29,10 @@ Create a high quality printable PDF from your decklist or a list of cards you wa
 - **Token support**  
   The `tokens.py` tool appends the tokens created by the cards in a decklist to it, so you don't miss one accidentally. Caveat: This only works when Scryfall has the data on associated tokens. This is the case for cards printed or reprinted since Tenth Edition.
 
-- **ManaStack integration**
-  Directly use ManaStack deck ids input for many functions instead of local decklist files.
+- **ManaStack and Archidekt integration**
+  Directly use ManaStack and Archidekt deck ids as input for many functions instead of local decklist files.
+
+  Decks on Archidekt must be set to public to be read.
 
 ## Usage
 
@@ -89,7 +91,7 @@ pipenv run python print.py [-h] [--dpi DPI] decklist outfile
 Prepare a decklist for printing.
 
 positional arguments:
-  decklist              a decklist in text or Arena format, or ManaStack id
+  decklist_spec         path to a decklist in text/arena format, or manastack:{manastack_id}, or archidekt:{archidekt_id}
   outfile               output file. Supports pdf, png and jpg.
 
 optional arguments:
@@ -109,7 +111,7 @@ usage: pipenv run python convert.py decklist outfile [OPTIONAL ARGUMENTS]
 Convert a decklist from text format to arena format or vice-versa.
 
 positional arguments:
-  decklist              a decklist in text or Arena format, or ManaStack id
+  decklist_spec         path to a decklist in text/arena format, or manastack:{manastack_id}, or archidekt:{archidekt_id}
   outfile               output file
 
 optional arguments:
@@ -127,7 +129,7 @@ usage: pipenv run python tokens.py decklist [OPTIONAL ARGUMENTS]
 Append the tokens created by the cards in a decklist to it.
 
 positional arguments:
-  decklist              a decklist in text or Arena format, or ManaStack id
+  decklist_spec         path to a decklist in text/arena format, or manastack:{manastack_id}, or archidekt:{archidekt_id}
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -149,7 +151,7 @@ usage: deck_value.py decklist [OPTIONAL ARGUMENTS]
 Show deck value decomposition.
 
 positional arguments:
-  decklist              a decklist in text or Arena format, or ManaStack id
+  decklist_spec         path to a decklist in text/arena format, or manastack:{manastack_id}, or archidekt:{archidekt_id}
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -160,7 +162,8 @@ optional arguments:
 Example:
 
 ```bash
-pipenv run python deck_value.py 1234536
+pipenv run python deck_value.py manastack:1234536
+pipenv run python deck_value.py archidekt:365563
 ```
 
 ## Acknowledgements

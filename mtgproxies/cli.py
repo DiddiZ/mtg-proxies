@@ -1,5 +1,5 @@
 from pathlib import Path
-from mtgproxies.decklists import parse_decklist, manastack
+from mtgproxies.decklists import parse_decklist, manastack, archidekt
 
 
 def parse_decklist_spec(decklist_spec: str, warn_levels=["ERROR", "WARNING", "COSMETIC"]):
@@ -12,8 +12,14 @@ def parse_decklist_spec(decklist_spec: str, warn_levels=["ERROR", "WARNING", "CO
     print("Parsing decklist ...")
     if Path(decklist_spec).is_file():  # Decklist is file
         decklist, ok, warnings = parse_decklist(decklist_spec)
-    elif decklist_spec.isdigit():  # Assume Manastack id
-        decklist, ok, warnings = manastack.parse_decklist(decklist_spec)
+    elif decklist_spec.lower().startswith("manastack:") and decklist_spec.split(":")[-1].isdigit():
+        # Decklist on Manastack
+        manastack_id = decklist_spec.split(":")[-1]
+        decklist, ok, warnings = manastack.parse_decklist(manastack_id)
+    elif decklist_spec.lower().startswith("archidekt:") and decklist_spec.split(":")[-1].isdigit():
+        # Decklist on Archidekt
+        manastack_id = decklist_spec.split(":")[-1]
+        decklist, ok, warnings = archidekt.parse_decklist(manastack_id)
     else:
         print(f"Cant find decklist '{decklist_spec}'")
         quit()

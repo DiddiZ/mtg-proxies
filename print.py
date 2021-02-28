@@ -16,7 +16,11 @@ def papersize(string):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Prepare a decklist for printing.')
-    parser.add_argument('decklist', help='a decklist in MtG Arena format, or Manastack id')
+    parser.add_argument(
+        'decklist',
+        metavar='decklist_spec',
+        help='path to a decklist in text/arena format, or manastack:{manastack_id}, or archidekt:{archidekt_id}'
+    )
     parser.add_argument('outfile', help='output file. Supports pdf, png and jpg.')
     parser.add_argument('--dpi', help='dpi of output file (default: %(default)d)', type=int, default=300)
     parser.add_argument(
