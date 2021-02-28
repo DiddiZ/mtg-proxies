@@ -48,4 +48,5 @@ if __name__ == "__main__":
         startangle=90,
     )
     plt.title(f"{decklist.name} ({price_total:0.2f}€)")
+    plt.tight_layout()
     plt.show()

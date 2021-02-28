@@ -2,7 +2,7 @@
 
 Create a high quality printable PDF from your decklist or a list of cards you want to proxy.
 
-![alt text](examples/decklist.png)
+![](examples/decklist.png)
 
 ## Features
 
@@ -165,6 +165,8 @@ Example:
 pipenv run python deck_value.py manastack:1234536
 pipenv run python deck_value.py archidekt:365563
 ```
+
+![](examples/deck_value.png)
 
 ## Acknowledgements
 
