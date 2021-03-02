@@ -81,6 +81,13 @@ pipenv run python convert.py examples/decklist_text.txt examples/decklist.txt
 pipenv run python print.py examples/decklist.txt decklist.pdf
 ```
 
+## Updating
+
+```bash
+git pull --ff-only
+pipenv install --deploy
+```
+
 ## Help
 
 ### print
