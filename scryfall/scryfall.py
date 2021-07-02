@@ -163,6 +163,8 @@ def get_cards(database="default_cards", **kwargs):
     for key, value in kwargs.items():
         if value is not None:
             value = value.lower()
+            if key == 'name':  # Normalize card name
+                value = value.replace("æ", "ae")
             cards = [card for card in cards if key in card and card[key].lower() == value]
 
     return cards
@@ -307,6 +309,9 @@ def oracle_ids_by_name():
         oracle_ids_by_name[name].add(oracle_id)
         if "//" in name:
             oracle_ids_by_name[name.split(" // ")[0]].add(oracle_id)
+
+    # Converts sets to lists
+    oracle_ids_by_name = {k: list(v) for k, v in oracle_ids_by_name.items()}
     return oracle_ids_by_name
 
 
