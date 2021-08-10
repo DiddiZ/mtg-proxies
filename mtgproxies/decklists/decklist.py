@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from collections import Counter
 from typing import List, Any, Union
 import re
 import os
@@ -87,6 +88,20 @@ class Decklist:
     def total_count_unique(self):
         """Count of unique cards in this decklist."""
         return len(self.cards)
+
+    @staticmethod
+    def from_scryfall_ids(card_ids):
+        """Construct a Decklist from scryfall ids.
+
+        Multiple instances of the same id are counted.
+
+        Args:
+            card_ids: List of scryfall ids
+        """
+        decklist = Decklist()
+        for card_id, count in Counter(card_ids).items():
+            decklist.append_card(count, scryfall.card_by_id()[card_id])
+        return decklist
 
 
 def parse_decklist(filepath):
