@@ -1,10 +1,12 @@
 from pathlib import Path
-import numpy as np
+
 import matplotlib.pyplot as plt
+import numpy as np
 from matplotlib.backends.backend_pdf import PdfPages
 from matplotlib.patches import Rectangle
-from mtgproxies.plotting import SplitPages
 from tqdm import tqdm
+
+from mtgproxies.plotting import SplitPages
 
 
 def _occupied_space(cardsize, pos, border_crop, image_size, closed=False):

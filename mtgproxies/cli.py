@@ -1,5 +1,6 @@
 from pathlib import Path
-from mtgproxies.decklists import parse_decklist, manastack, archidekt
+
+from mtgproxies.decklists import archidekt, manastack, parse_decklist
 
 
 def parse_decklist_spec(decklist_spec: str, warn_levels=["ERROR", "WARNING", "COSMETIC"]):

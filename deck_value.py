@@ -1,7 +1,9 @@
 import argparse
+
 import matplotlib.pyplot as plt
-from mtgproxies.cli import parse_decklist_spec
+
 import scryfall
+from mtgproxies.cli import parse_decklist_spec
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Show deck value decomposition.')

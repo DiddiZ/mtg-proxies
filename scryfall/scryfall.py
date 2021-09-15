@@ -5,23 +5,23 @@ See:
 """
 import io
 import json
-import time
-import requests
 import threading
-from pathlib import Path
-from tempfile import gettempdir
+import time
 from collections import defaultdict
 from functools import lru_cache
+from pathlib import Path
+from tempfile import gettempdir
+
 import numpy as np
+import requests
 from tqdm import tqdm
 
 cache = Path(gettempdir()) / 'scryfall_cache'
-cache.mkdir(parents=True, exist_ok=True)  # Create cach folder
+cache.mkdir(parents=True, exist_ok=True)  # Create cache folder
 last_scryfall_api_call = 0
 scryfall_api_call_delay = 0.1
 _scryfall_lock = threading.Lock()
 _download_lock = threading.Lock()
-_databases = {}
 
 
 def rate_limit():

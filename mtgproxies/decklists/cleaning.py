@@ -1,4 +1,4 @@
-from mtgproxies.decklists import Decklist, Card
+from mtgproxies.decklists import Card, Decklist
 
 
 def merge_duplicates(decklist, identifier="oracle_id"):

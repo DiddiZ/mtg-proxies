@@ -1,5 +1,6 @@
 import argparse
 from pathlib import Path
+
 from mtgproxies.cli import parse_decklist_spec
 
 if __name__ == "__main__":

@@ -1,6 +1,8 @@
-import numpy as np
 import argparse
-from mtgproxies import print_cards, fetch_scans_scryfall
+
+import numpy as np
+
+from mtgproxies import fetch_scans_scryfall, print_cards
 from mtgproxies.cli import parse_decklist_spec
 
 

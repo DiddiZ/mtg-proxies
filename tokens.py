@@ -1,5 +1,6 @@
 import argparse
 from pathlib import Path
+
 import scryfall
 from mtgproxies.cli import parse_decklist_spec
 

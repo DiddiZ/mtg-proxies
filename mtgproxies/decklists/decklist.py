@@ -1,9 +1,10 @@
-from dataclasses import dataclass, field
-from collections import Counter
-from typing import List, Any, Union
-import re
 import os
+import re
+from collections import Counter
+from dataclasses import dataclass, field
 from pathlib import Path
+from typing import Any, List, Union
+
 import scryfall
 from mtgproxies.decklists.sanitizing import validate_card_name, validate_print
 

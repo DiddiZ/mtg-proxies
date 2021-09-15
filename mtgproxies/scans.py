@@ -1,5 +1,6 @@
-import scryfall
 from tqdm import tqdm
+
+import scryfall
 
 
 def fetch_scans_scryfall(decklist):

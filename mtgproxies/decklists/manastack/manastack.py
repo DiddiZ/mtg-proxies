@@ -1,4 +1,5 @@
 import requests
+
 from mtgproxies.decklists import Decklist
 from mtgproxies.decklists.sanitizing import validate_card_name, validate_print
 
