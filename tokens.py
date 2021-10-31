@@ -51,7 +51,7 @@ if __name__ == "__main__":
         decklist.append_card(1, token)
 
     # Write decklist
-    out_file = args.decklist if Path(args.decklist).is_file() else f"{args.decklist}.txt"
+    out_file = args.decklist if Path(args.decklist).is_file() else f"{args.decklist.split(':')[-1]}.txt"
     decklist.save(out_file, fmt=args.format)
 
     print(f"Successfully appended to {Path(out_file).resolve()}.")
