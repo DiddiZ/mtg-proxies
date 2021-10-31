@@ -11,6 +11,15 @@ def _occupied_space(cardsize, pos, border_crop, image_size, closed=False):
     return cardsize * (pos * image_size - np.clip(2 * pos - 1 - closed, 0, None) * border_crop) / image_size
 
 
+def _crop_mark(x, y, size, thickness, color="white"):
+    from matplotlib.patches import Polygon
+
+    quad = np.array([[-0.5, -0.5], [0.5, -0.5], [0.5, 0.5], [-0.5, 0.5]])
+
+    plt.gca().add_patch(Polygon([x, y] + quad * [size[0], thickness[1]], True, facecolor=color))
+    plt.gca().add_patch(Polygon([x, y] + quad * [thickness[0], size[1]], True, facecolor=color))
+
+
 def print_cards(
     images,
     filepath,
@@ -77,12 +86,33 @@ def print_cards(
                         ) / papersize
                         extent = [lower[0], upper[0], 1 - upper[1], 1 - lower[1]]  # flip y-axis
 
+                        # Plot card image
                         plt.imshow(
                             img,
                             extent=extent,
                             aspect=papersize[1] / papersize[0],
                             interpolation=interpolation,
                         )
+
+                        # Crop marks
+                        lower = (
+                            offset + _occupied_space(cardsize, np.array([x, y]), border_crop, [745, 1040]) +
+                            cardsize * [
+                                (border_crop - left) / 745,
+                                (border_crop - top) / 1040,
+                            ]
+                        ) / papersize
+                        upper = (
+                            offset + _occupied_space(cardsize, np.array([x + 1, y + 1]), border_crop, [745, 1040])
+                        ) / papersize
+                        if x == 0 and y == 0:
+                            _crop_mark(lower[0], 1 - lower[1], 1 / 64 / papersize, 1 / 256 / papersize)
+                        if x == 0:
+                            _crop_mark(lower[0], 1 - upper[1], 1 / 64 / papersize, 1 / 256 / papersize)
+                        if y == 0:
+                            _crop_mark(upper[0], 1 - lower[1], 1 / 64 / papersize, 1 / 256 / papersize)
+                        _crop_mark(upper[0], 1 - upper[1], 1 / 64 / papersize, 1 / 256 / papersize)
+
                         pbar.update(1)
 
             plt.xlim(0, 1)
