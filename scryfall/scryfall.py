@@ -16,22 +16,12 @@ import numpy as np
 import requests
 from tqdm import tqdm
 
+from scryfall.rate_limit import RateLimiter
+
 cache = Path(gettempdir()) / 'scryfall_cache'
 cache.mkdir(parents=True, exist_ok=True)  # Create cache folder
-last_scryfall_api_call = 0
-scryfall_api_call_delay = 0.1
-_scryfall_lock = threading.Lock()
+scryfall_rate_limiter = RateLimiter(delay=0.1)
 _download_lock = threading.Lock()
-
-
-def rate_limit():
-    """Sleep to ensure 100ms delay between Scryfall API calls, as requested by Scryfall."""
-    with _scryfall_lock:
-        global last_scryfall_api_call
-        if time.time() < last_scryfall_api_call + scryfall_api_call_delay:
-            time.sleep(last_scryfall_api_call + scryfall_api_call_delay - time.time())
-        last_scryfall_api_call = time.time()
-    return
 
 
 def get_image(image_uri, silent=False):
@@ -58,9 +48,11 @@ def get_file(file_name, url, silent=False):
     file_path = cache / file_name
     with _download_lock:
         if not file_path.is_file():
-            if url.startswith("https://api.scryfall.com"):  # Images are no longer rate limited
-                rate_limit()
-            download(url, file_path, silent=silent)
+            if ".jpg" in url or ".png" in url:  # Images aren't rate limited
+                download(url, file_path, silent=silent)
+            else:
+                with scryfall_rate_limiter:
+                    download(url, file_path, silent=silent)
 
     return str(file_path)
 
@@ -91,8 +83,8 @@ def depaginate(url):
     Returns:
         list: Concatenation of all `data` entries.
     """
-    rate_limit()
-    response = requests.get(url).json()
+    with scryfall_rate_limiter:
+        response = requests.get(url).json()
     assert response["object"]
 
     if "data" not in response:
