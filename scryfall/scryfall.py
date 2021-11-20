@@ -276,7 +276,8 @@ def cards_by_oracle_id():
     """
     cards_by_oracle_id = defaultdict(list)
     for c in get_cards():
-        cards_by_oracle_id[c['oracle_id']].append(c)
+        if 'oracle_id' in c:  # Not all cards have a oracle id, *sigh*
+            cards_by_oracle_id[c['oracle_id']].append(c)
     return cards_by_oracle_id
 
 
