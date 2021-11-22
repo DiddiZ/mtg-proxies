@@ -91,7 +91,7 @@ def print_cards(
             plt.ylim(0, 1)
 
             # Hide all axis ticks and labels
-            ax.axis('off')
+            ax.axis("off")
 
             saver.savefig(dpi=dpi)
             plt.close()

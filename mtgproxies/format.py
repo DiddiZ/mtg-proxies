@@ -9,11 +9,11 @@ def format_print(card_name, set_id=None, collector_number=None):
 
 
 color_names = {
-    'W': 'white',
-    'U': 'blue',
-    'B': 'black',
-    'R': 'red',
-    'G': 'green',
+    "W": "white",
+    "U": "blue",
+    "B": "black",
+    "R": "red",
+    "G": "green",
 }
 
 
@@ -36,8 +36,8 @@ def listing(items, sep, final_sep, max_items=None):
 
 def format_token(card):
     # Double faced cards
-    if 'colors' not in card:
-        return format_token(card['card_faces'][0]) + " // " + format_token(card['card_faces'][1])
+    if "colors" not in card:
+        return format_token(card["card_faces"][0]) + " // " + format_token(card["card_faces"][1])
 
     s = ""
 
@@ -49,10 +49,10 @@ def format_token(card):
     s += format_colors(card["colors"]) + " "
 
     # Type line
-    s += card['type_line']
+    s += card["type_line"]
 
     # Oracle text
-    if card['oracle_text'] != "":
+    if card["oracle_text"] != "":
         s += f" with '{card['oracle_text']}'"
 
     return s

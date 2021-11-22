@@ -6,18 +6,18 @@ import scryfall
 from mtgproxies.cli import parse_decklist_spec
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Show deck value decomposition.')
+    parser = argparse.ArgumentParser(description="Show deck value decomposition.")
     parser.add_argument(
-        'decklist',
-        metavar='decklist_spec',
-        help='path to a decklist in text/arena format, or manastack:{manastack_id}, or archidekt:{archidekt_id}'
+        "decklist",
+        metavar="decklist_spec",
+        help="path to a decklist in text/arena format, or manastack:{manastack_id}, or archidekt:{archidekt_id}",
     )
     parser.add_argument(
-        '--lump-threshold',
-        help='lump together cards with lesser proportional value',
+        "--lump-threshold",
+        help="lump together cards with lesser proportional value",
         type=float,
         default=0.03,
-        metavar='FLOAT'
+        metavar="FLOAT",
     )
 
     args = parser.parse_args()
@@ -28,9 +28,9 @@ if __name__ == "__main__":
     # Fetch prices
     card_prices = []
     for card in decklist.cards:
-        price = scryfall.get_price(card['oracle_id'])
+        price = scryfall.get_price(card["oracle_id"])
         if price is not None:
-            card_prices.append((card['name'], card.count * price))
+            card_prices.append((card["name"], card.count * price))
         else:
             print(f"WARNING: Unable to find price for {card['name']}")
 

@@ -14,5 +14,5 @@ def fetch_scans_scryfall(decklist):
     """
     return [
         scan for card in tqdm(decklist.cards, desc="Fetching artwork") for image_uri in card.image_uris
-        for scan in [scryfall.get_image(image_uri['png'], silent=True)] * card.count
+        for scan in [scryfall.get_image(image_uri["png"], silent=True)] * card.count
     ]

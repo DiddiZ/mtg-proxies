@@ -25,10 +25,10 @@ def parse_decklist(manastack_id: str, zones=["commander", "mainboard"]):
             decklist.append_comment(zone.capitalize())
             for item in data["list"][zone]:
                 # Extract relevant data
-                count = item['count']
-                card_name = item['card']['name']
-                set_id = item['card']['set']['slug']
-                collector_number = item['card']['num']
+                count = item["count"]
+                card_name = item["card"]["name"]
+                set_id = item["card"]["set"]["slug"]
+                collector_number = item["card"]["num"]
 
                 # Validate card name
                 card_name, warnings_name = validate_card_name(card_name)
@@ -47,6 +47,6 @@ def parse_decklist(manastack_id: str, zones=["commander", "mainboard"]):
             if zone != zones[-1]:
                 decklist.append_comment("")
 
-    decklist.name = data['info']['name']
+    decklist.name = data["info"]["name"]
 
     return decklist, ok, warnings

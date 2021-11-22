@@ -10,7 +10,7 @@ from mtgproxies.decklists.sanitizing import validate_card_name, validate_print
 
 
 @dataclass
-class Card():
+class Card:
     """Card in a decklist.
 
     Composed of a count and a Scryfall object."""
@@ -40,7 +40,7 @@ class Card():
 
 
 @dataclass
-class Comment():
+class Comment:
     """Comment in a decklist."""
     text: str
 
@@ -63,13 +63,13 @@ class Decklist:
     def append_comment(self, text):
         self.entries.append(Comment(text))
 
-    def save(self, file, fmt="arena", mode='w'):
+    def save(self, file, fmt="arena", mode="w"):
         """Write decklist to a file.
 
         Args:
             fmt: Decklist format, either "arena" or "text".
         """
-        with open(file, mode, encoding="utf-8", newline='') as f:
+        with open(file, mode, encoding="utf-8", newline="") as f:
             f.write(format(self, fmt) + os.linesep)
 
     def __format__(self, format_spec):
@@ -121,7 +121,7 @@ def parse_decklist(filepath):
         ok: whether all cards could be found.
         warnings: List of (entry, warning) tuples
     """
-    with open(filepath, 'r', encoding="utf-8") as f:
+    with open(filepath, "r", encoding="utf-8") as f:
         decklist, ok, warnings = parse_decklist_stream(f)
 
     # Use file name without extension as name
@@ -140,7 +140,7 @@ def parse_decklist_stream(stream):
     warnings = []
     ok = True
     for line in stream:
-        m = re.search(r'([0-9]+)\s+(.+?)(?:\s+\((\S*)\)\s+(\S+))?\s*$', line)
+        m = re.search(r"([0-9]+)\s+(.+?)(?:\s+\((\S*)\)\s+(\S+))?\s*$", line)
         if m:
             # Extract relevant data
             count = int(m.group(1))

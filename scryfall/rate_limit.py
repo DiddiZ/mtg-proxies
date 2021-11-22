@@ -2,7 +2,7 @@ import threading
 import time
 
 
-class RateLimiter():
+class RateLimiter:
     """Context manager for enforcing a rate limit to API calls."""
     def __init__(self, delay):
         """Initialie this RateLimit.

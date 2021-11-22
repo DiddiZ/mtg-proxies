@@ -12,7 +12,7 @@ def card_names():
     """
     cards_by_name = {
         card["name"].lower(): card["name"]
-        for card in scryfall.get_cards() if card['layout'] not in ["art_series"]
+        for card in scryfall.get_cards() if card["layout"] not in ["art_series"]
     }
     double_faced_by_front = {
         name.split("//")[0].strip().lower(): name
@@ -73,7 +73,7 @@ def get_print_warnings(card):
     warnings = []
     if not card["highres_image"] or card["digital"]:
         warnings.append("low resolution scan")
-    if card["collector_number"][-1] in ['p', 's']:
+    if card["collector_number"][-1] in ["p", "s"]:
         warnings.append("promo")
     if card["lang"] != "en":
         warnings.append("non-english print")
@@ -107,8 +107,9 @@ def validate_print(card_name: str, set_id: str, collector_number: str):
             card = scryfall.recommend_print(card_name=card_name)
             warnings.append(
                 (
-                    "WARNING", f"Unable to find scan of {format_print(card_name, set_id, collector_number)}." +
-                    f" Using {format_print(card)} instead."
+                    "WARNING",
+                    f"Unable to find scan of {format_print(card_name, set_id, collector_number)}." +
+                    f" Using {format_print(card)} instead.",
                 )
             )
 
@@ -123,8 +124,9 @@ def validate_print(card_name: str, set_id: str, collector_number: str):
 
         warnings.append(
             (
-                "COSMETIC", f"{quality_warnings} for {format_print(card)}." +
-                (f" Maybe you want {format_print(recommendation)}?" if recommendation != card else "")
+                "COSMETIC",
+                f"{quality_warnings} for {format_print(card)}." +
+                (f" Maybe you want {format_print(recommendation)}?" if recommendation != card else ""),
             )
         )
     return card, warnings

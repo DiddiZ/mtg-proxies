@@ -18,7 +18,7 @@ from tqdm import tqdm
 
 from scryfall.rate_limit import RateLimiter
 
-cache = Path(gettempdir()) / 'scryfall_cache'
+cache = Path(gettempdir()) / "scryfall_cache"
 cache.mkdir(parents=True, exist_ok=True)  # Create cache folder
 scryfall_rate_limiter = RateLimiter(delay=0.1)
 _download_lock = threading.Lock()
@@ -32,8 +32,8 @@ def get_image(image_uri, silent=False):
     Returns:
         string: Path to local file.
     """
-    split = image_uri.split('/')
-    file_name = split[-5] + '_' + split[-4] + '_' + split[-1].split('?')[0]
+    split = image_uri.split("/")
+    file_name = split[-5] + "_" + split[-4] + "_" + split[-1].split("?")[0]
     return get_file(file_name, image_uri, silent=silent)
 
 
@@ -62,11 +62,11 @@ def download(url, dst, chunk_size=1024 * 4, silent=False):
     with requests.get(url, stream=True) as req:
         req.raise_for_status()
         file_size = int(req.headers["Content-Length"])
-        with open(dst, 'xb') as f, tqdm(
+        with open(dst, "xb") as f, tqdm(
             total=file_size,
-            unit='B',
+            unit="B",
             unit_scale=True,
-            desc=url.split('/')[-1],
+            desc=url.split("/")[-1],
             disable=silent,
         ) as pbar:
             for chunk in req.iter_content(chunk_size=chunk_size):
@@ -155,7 +155,7 @@ def get_cards(database="default_cards", **kwargs):
     for key, value in kwargs.items():
         if value is not None:
             value = value.lower()
-            if key == 'name':  # Normalize card name
+            if key == "name":  # Normalize card name
                 value = value.replace("æ", "ae")
             cards = [card for card in cards if key in card and card[key].lower() == value]
 
@@ -199,7 +199,7 @@ def recommend_print(current=None, card_name=None, oracle_id=None, mode="best"):
             mode != "best" or "frame_effects" not in card or "extendedart" not in card["frame_effects"]
         ):
             points += 8
-        if card["collector_number"][-1] not in ['p', 's'] and card["nonfoil"]:
+        if card["collector_number"][-1] not in ["p", "s"] and card["nonfoil"]:
             points += 16
         if card["highres_image"]:
             points += 32
@@ -231,7 +231,7 @@ def recommend_print(current=None, card_name=None, oracle_id=None, mode="best"):
     elif mode == "choices":
         artworks = np.array(
             [
-                get_faces(card)[0]["illustration_id"] if "illustration_id" in get_faces(card)[0] else card['id']
+                get_faces(card)[0]["illustration_id"] if "illustration_id" in get_faces(card)[0] else card["id"]
                 for card in alternatives
             ]  # Not all cards have illustrations, use id instead
         )
@@ -246,7 +246,7 @@ def recommend_print(current=None, card_name=None, oracle_id=None, mode="best"):
 
         # Bring current print to front
         if current is not None:
-            choices = [current] + [c for c in choices if c['id'] != current['id']]
+            choices = [current] + [c for c in choices if c["id"] != current["id"]]
 
         return choices
     else:
@@ -262,7 +262,7 @@ def card_by_id():
     Returns:
         dict {id: card}
     """
-    return {c['id']: c for c in get_cards()}
+    return {c["id"]: c for c in get_cards()}
 
 
 @lru_cache(maxsize=None)
@@ -276,8 +276,8 @@ def cards_by_oracle_id():
     """
     cards_by_oracle_id = defaultdict(list)
     for c in get_cards():
-        if 'oracle_id' in c:  # Not all cards have a oracle id, *sigh*
-            cards_by_oracle_id[c['oracle_id']].append(c)
+        if "oracle_id" in c:  # Not all cards have a oracle id, *sigh*
+            cards_by_oracle_id[c["oracle_id"]].append(c)
     return cards_by_oracle_id
 
 
@@ -295,9 +295,9 @@ def oracle_ids_by_name():
     oracle_ids_by_name = defaultdict(set)
     for oracle_id, cards in cards_by_oracle_id().items():
         card = cards[0]
-        if card['layout'] in ["art_series"]:  # Skip art series, as they have double faced names
+        if card["layout"] in ["art_series"]:  # Skip art series, as they have double faced names
             continue
-        name = card['name'].lower()
+        name = card["name"].lower()
         # Use name and also front face only for double faced cards
         oracle_ids_by_name[name].add(oracle_id)
         if "//" in name:
@@ -324,7 +324,7 @@ def get_price(oracle_id: str, currency: str = "eur", foil: bool = None):
     if (foil or foil is None) and currency != "tix":  # "TIX has no foil"
         slots += [currency + "_foil"]
 
-    prices = [float(c['prices'][slot]) for c in cards for slot in slots if c['prices'][slot] is not None]
+    prices = [float(c["prices"][slot]) for c in cards for slot in slots if c["prices"][slot] is not None]
 
     if len(prices) == 0 and currency == "eur":  # Try dollar and apply conversion
         usd = get_price(oracle_id, "usd")

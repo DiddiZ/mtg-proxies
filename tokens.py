@@ -26,14 +26,14 @@ def get_tokens(decklist):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Append the tokens created by the cards in a decklist to it.')
+    parser = argparse.ArgumentParser(description="Append the tokens created by the cards in a decklist to it.")
     parser.add_argument(
-        'decklist',
-        metavar='decklist_spec',
-        help='path to a decklist in text/arena format, or manastack:{manastack_id}, or archidekt:{archidekt_id}'
+        "decklist",
+        metavar="decklist_spec",
+        help="path to a decklist in text/arena format, or manastack:{manastack_id}, or archidekt:{archidekt_id}",
     )
     parser.add_argument(
-        '--format', help='output format (default: %(default)s)', choices=['arena', 'text'], default='arena'
+        "--format", help="output format (default: %(default)s)", choices=["arena", "text"], default="arena"
     )
     args = parser.parse_args()
 

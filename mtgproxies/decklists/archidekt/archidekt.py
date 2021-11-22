@@ -21,14 +21,14 @@ def parse_decklist(archidekt_id: str):
 
     data = r.json()
 
-    in_deck = set(cat['name'] for cat in data['categories'] if cat['includedInDeck'])
+    in_deck = set(cat["name"] for cat in data["categories"] if cat["includedInDeck"])
 
     for item in data["cards"]:
         # Extract relevant data
-        count = item['quantity']
-        card_name = item['card']['oracleCard']['name']
-        set_id = item['card']['edition']['editioncode']
-        collector_number = item['card']['collectorNumber']
+        count = item["quantity"]
+        card_name = item["card"]["oracleCard"]["name"]
+        set_id = item["card"]["edition"]["editioncode"]
+        collector_number = item["card"]["collectorNumber"]
         if item["categories"][0] not in in_deck:  # Cards are guaranteed to have atleast one dominant category
             continue
 
@@ -46,6 +46,6 @@ def parse_decklist(archidekt_id: str):
         decklist.append_card(count, card)
         warnings.extend([(decklist.entries[-1], level, msg) for level, msg in warnings_name + warnings_print])
 
-    decklist.name = data['name']
+    decklist.name = data["name"]
 
     return decklist, ok, warnings
