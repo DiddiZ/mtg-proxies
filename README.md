@@ -1,3 +1,5 @@
+[![Tests](https://github.com/DiddiZ/donk.ai/actions/workflows/python-package.yml/badge.svg)](https://github.com/DiddiZ/mtg-proxies/actions/workflows/python-package.yml)
+
 # MtG-Proxies
 
 Create a high quality printable PDF from your decklist or a list of cards you want to proxy.
