@@ -21,7 +21,7 @@ def card_names():
     return cards_by_name, double_faced_by_front
 
 
-def sanitize_name(card_name: str):
+def sanitize_name(card_name: str) -> str:
     """Get canonic name representation"""
     card_name = card_name.lower()
 

@@ -3,10 +3,11 @@
 See:
     https://scryfall.com/docs/api
 """
+from __future__ import annotations
+
 import io
 import json
 import threading
-import time
 from collections import defaultdict
 from functools import lru_cache
 from pathlib import Path
@@ -24,7 +25,7 @@ scryfall_rate_limiter = RateLimiter(delay=0.1)
 _download_lock = threading.Lock()
 
 
-def get_image(image_uri, silent=False):
+def get_image(image_uri: str, silent: bool = False) -> str:
     """Download card artwork and return the path to a local copy.
 
     Uses cache and Scryfall API call rate limit.
@@ -37,7 +38,7 @@ def get_image(image_uri, silent=False):
     return get_file(file_name, image_uri, silent=silent)
 
 
-def get_file(file_name, url, silent=False):
+def get_file(file_name: str, url: str, silent: bool = False) -> str:
     """Download a file and return the path to a local copy.
 
     Uses cache and Scryfall API call rate limit.
@@ -57,7 +58,7 @@ def get_file(file_name, url, silent=False):
     return str(file_path)
 
 
-def download(url, dst, chunk_size=1024 * 4, silent=False):
+def download(url: str, dst, chunk_size: int = 1024 * 4, silent: bool = False):
     """Download a file with a tqdm progress bar."""
     with requests.get(url, stream=True) as req:
         req.raise_for_status()
@@ -75,7 +76,7 @@ def download(url, dst, chunk_size=1024 * 4, silent=False):
                     pbar.update(chunk_size)
 
 
-def depaginate(url):
+def depaginate(url: str) -> list[dict]:
     """Depaginates Scryfall search results.
 
     Uses cache and Scryfall API call rate limit.
@@ -96,7 +97,7 @@ def depaginate(url):
     return data
 
 
-def search(q):
+def search(q: str) -> list[dict]:
     """Perform Scryfall search.
 
     Returns:
@@ -120,7 +121,7 @@ def _get_database(database_name="default_cards"):
         return json.load(json_file)
 
 
-def get_card(card_name, set_id=None, collector_number=None):
+def get_card(card_name: str, set_id: str = None, collector_number: str = None):
     """Find a card by it's name and possibly set and collector number.
 
     In case, the Scryfall database contains multiple cards, the first is returned.
@@ -138,7 +139,7 @@ def get_card(card_name, set_id=None, collector_number=None):
     return cards[0] if len(cards) > 0 else None
 
 
-def get_cards(database="default_cards", **kwargs):
+def get_cards(database: str = "default_cards", **kwargs):
     """Get all cards matching certain attributes.
 
     Matching is case insensitive.

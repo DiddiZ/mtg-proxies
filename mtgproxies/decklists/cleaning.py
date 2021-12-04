@@ -1,7 +1,7 @@
 from mtgproxies.decklists.decklist import Card, Decklist
 
 
-def merge_duplicates(decklist, identifier="oracle_id"):
+def merge_duplicates(decklist: Decklist, identifier: str = "oracle_id") -> Decklist:
     """Merge duplicates entries in a decklist.
 
     Maintains the order of the decklist. Duplicates are merged with the first occurrence.

@@ -1,7 +1,8 @@
 """String formatting utils."""
+from __future__ import annotations
 
 
-def format_print(card_name, set_id=None, collector_number=None):
+def format_print(card_name, set_id: str = None, collector_number: str = None):
     if "name" in card_name:
         card_name, set_id, collector_number = card_name["name"], card_name["set"], card_name["collector_number"]
 
@@ -17,13 +18,13 @@ color_names = {
 }
 
 
-def format_colors(colors):
+def format_colors(colors: list[str]) -> str:
     if len(colors) == 0:
         return "colorless"
     return listing([color_names[c] for c in colors], ", ", " and ")
 
 
-def listing(items, sep, final_sep, max_items=None):
+def listing(items: list[str], sep: str, final_sep: str, max_items: int = None) -> str:
     if len(items) == 0:
         return ""
     if len(items) == 1:
@@ -34,7 +35,7 @@ def listing(items, sep, final_sep, max_items=None):
         return sep.join(items[:max_items] + ["..."])
 
 
-def format_token(card):
+def format_token(card) -> str:
     # Double faced cards
     if "colors" not in card:
         return format_token(card["card_faces"][0]) + " // " + format_token(card["card_faces"][1])

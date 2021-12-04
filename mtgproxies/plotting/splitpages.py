@@ -29,7 +29,7 @@ class SplitPages:
         plt.savefig(filename, **kwargs)
         self.pagecount += 1
 
-    def get_pagecount(self):
+    def get_pagecount(self) -> int:
         """
         Returns the current number of pages in the multipage png.
         """

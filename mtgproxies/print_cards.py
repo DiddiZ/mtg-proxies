@@ -18,9 +18,9 @@ def print_cards(
     filepath,
     papersize=np.array([8.27, 11.69]),
     cardsize=np.array([2.5, 3.5]),
-    border_crop=14,
+    border_crop: int = 14,
     interpolation="lanczos",
-    dpi=600,
+    dpi: int = 600,
     background_color=None,
 ):
     """Print a list of cards to a pdf file.

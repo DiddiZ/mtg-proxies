@@ -1,9 +1,12 @@
+from __future__ import annotations
+
 from tqdm import tqdm
 
 import scryfall
+from mtgproxies.decklists.decklist import Decklist
 
 
-def fetch_scans_scryfall(decklist):
+def fetch_scans_scryfall(decklist: Decklist) -> list[str]:
     """Search Scryfall for scans of a decklist.
 
     Args:

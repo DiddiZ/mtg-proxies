@@ -1,9 +1,10 @@
+from __future__ import annotations
+
 import os
 import re
 from collections import Counter
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, List, Union
 
 import scryfall
 from mtgproxies.decklists.sanitizing import validate_card_name, validate_print
@@ -15,7 +16,7 @@ class Card:
 
     Composed of a count and a Scryfall object."""
     count: int
-    card: Any
+    card: dict
 
     def __getitem__(self, key):
         return self.card[key]
@@ -44,7 +45,7 @@ class Comment:
     """Comment in a decklist."""
     text: str
 
-    def __format__(self, format_spec):
+    def __format__(self, format_spec: str) -> str:
         return self.text
 
 
@@ -54,16 +55,20 @@ class Decklist:
 
     Contains cards and comment lines.
     """
-    entries: List[Union[Card, Comment]] = field(default_factory=list)
+    entries: list[Card | Comment] = field(default_factory=list)
     name: str = None
 
-    def append_card(self, count, card):
+    def append_card(self, count, card) -> None:
         self.entries.append(Card(count, card))
 
-    def append_comment(self, text):
+    def append_comment(self, text) -> None:
         self.entries.append(Comment(text))
 
-    def save(self, file, fmt="arena", mode="w"):
+    def extend(self, other: Decklist) -> None:
+        """Append another decklist to this."""
+        self.entries.extend(other.entries)
+
+    def save(self, file, fmt="arena", mode="w") -> None:
         """Write decklist to a file.
 
         Args:
@@ -72,26 +77,26 @@ class Decklist:
         with open(file, mode, encoding="utf-8", newline="") as f:
             f.write(format(self, fmt) + os.linesep)
 
-    def __format__(self, format_spec):
+    def __format__(self, format_spec: str) -> str:
         return os.linesep.join([format(e, format_spec) for e in self.entries])
 
     @property
-    def cards(self):
+    def cards(self) -> list[Card]:
         """List of all card objects in this decklist."""
         return [e for e in self.entries if isinstance(e, Card)]
 
     @property
-    def total_count(self):
+    def total_count(self) -> int:
         """Total count of cards in this decklist."""
         return sum(c.count for c in self.cards)
 
     @property
-    def total_count_unique(self):
+    def total_count_unique(self) -> int:
         """Count of unique cards in this decklist."""
         return len(self.cards)
 
     @staticmethod
-    def from_scryfall_ids(card_ids):
+    def from_scryfall_ids(card_ids) -> Decklist:
         """Construct a Decklist from scryfall ids.
 
         Multiple instances of the same id are counted.
@@ -105,7 +110,7 @@ class Decklist:
         return decklist
 
 
-def parse_decklist(filepath):
+def parse_decklist(filepath) -> tuple[Decklist, bool, list]:
     """Parse card information from a decklist in text or MtG Arena (or mixed) format.
 
     E.g.:
@@ -130,7 +135,7 @@ def parse_decklist(filepath):
     return decklist, ok, warnings
 
 
-def parse_decklist_stream(stream):
+def parse_decklist_stream(stream) -> tuple[Decklist, bool, list]:
     """Parse card information from a decklist in text or MtG Arena (or mixed) format from a stream
 
     See:

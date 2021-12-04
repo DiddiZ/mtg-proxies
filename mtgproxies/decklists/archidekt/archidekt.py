@@ -1,10 +1,12 @@
+from __future__ import annotations
+
 import requests
 
 from mtgproxies.decklists import Decklist
 from mtgproxies.decklists.sanitizing import validate_card_name, validate_print
 
 
-def parse_decklist(archidekt_id: str):
+def parse_decklist(archidekt_id: str) -> tuple[Decklist, bool, list]:
     """Parse a decklist from manastack.
 
     Args:
