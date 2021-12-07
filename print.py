@@ -2,7 +2,7 @@ import argparse
 
 import numpy as np
 
-from mtgproxies import fetch_scans_scryfall, print_cards_matplotlib, print_cards_fpdf
+from mtgproxies import fetch_scans_scryfall, print_cards_fpdf, print_cards_matplotlib
 from mtgproxies.cli import parse_decklist_spec
 
 
