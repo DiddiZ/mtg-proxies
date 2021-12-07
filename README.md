@@ -45,7 +45,7 @@ git clone https://github.com/DiddiZ/mtg-proxies.git
 cd mtg-proxies
 ```
 
-2. Install requirements. Requires at least [Python 3.8](https://www.python.org/downloads/).
+2. Install requirements. Requires at least [Python 3.7](https://www.python.org/downloads/).
 
 ```bash
 # On Linux, use `python3` instead of `python`

@@ -40,7 +40,7 @@ def print_cards_matplotlib(
     N = np.floor(papersize / cardsize).astype(int)
     if N[0] == 0 or N[1] == 0:
         raise ValueError(f"Paper size too small: {papersize}")
-    offset = (papersize - _occupied_space(cardsize, N, border_crop, scan_size, closed=True)) / 2
+    offset = (papersize - _occupied_space(cardsize, N, border_crop, closed=True)) / 2
 
     # Ensure directory exists
     Path(filepath).parent.mkdir(parents=True, exist_ok=True)
