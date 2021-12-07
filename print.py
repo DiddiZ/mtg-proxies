@@ -2,7 +2,7 @@ import argparse
 
 import numpy as np
 
-from mtgproxies import fetch_scans_scryfall, print_cards
+from mtgproxies import fetch_scans_scryfall, print_cards_matplotlib, print_cards_fpdf
 from mtgproxies.cli import parse_decklist_spec
 
 
@@ -62,12 +62,28 @@ if __name__ == "__main__":
     images = fetch_scans_scryfall(decklist)
 
     # Plot cards
-    print_cards(
-        images,
-        args.outfile,
-        papersize=args.paper,
-        cardsize=np.array([2.5, 3.5]) * args.scale,
-        dpi=args.dpi,
-        border_crop=args.border_crop,
-        background_color=args.background,
-    )
+    if args.outfile.endswith(".pdf"):
+        import matplotlib.colors as colors
+
+        background_color = args.background
+        if background_color is not None:
+            background_color = (np.array(colors.to_rgb(background_color)) * 255).astype(int)
+
+        print_cards_fpdf(
+            images,
+            args.outfile,
+            papersize=args.paper * 25.4,
+            cardsize=np.array([2.5, 3.5]) * 25.4 * args.scale,
+            border_crop=args.border_crop,
+            background_color=background_color,
+        )
+    else:
+        print_cards_matplotlib(
+            images,
+            args.outfile,
+            papersize=args.paper,
+            cardsize=np.array([2.5, 3.5]) * args.scale,
+            dpi=args.dpi,
+            border_crop=args.border_crop,
+            background_color=args.background,
+        )
