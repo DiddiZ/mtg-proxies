@@ -2,7 +2,7 @@ import argparse
 
 import numpy as np
 
-from mtgproxies import fetch_scans_scryfall, print_cards_fpdf, print_cards_matplotlib
+from mtgproxies import fetch_scans_scryfall, print_cards_fpdf, print_cards_matplotlib, fetch_minimalist_images
 from mtgproxies.cli import parse_decklist_spec
 
 
@@ -53,13 +53,21 @@ if __name__ == "__main__":
         default=None,
         metavar="COLOR",
     )
+    parser.add_argument(
+        "--simple",
+        help='prints a minimalist version of the proxy',
+        action='store_true'
+    )
     args = parser.parse_args()
 
     # Parse decklist
     decklist = parse_decklist_spec(args.decklist)
 
     # Fetch scans
-    images = fetch_scans_scryfall(decklist)
+    if args.simple:
+        images= fetch_minimalist_images(decklist)
+    else:
+        images = fetch_scans_scryfall(decklist)
 
     # Plot cards
     if args.outfile.endswith(".pdf"):

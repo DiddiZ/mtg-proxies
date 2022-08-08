@@ -1,183 +1,50 @@
-[![Tests](https://github.com/DiddiZ/donk.ai/actions/workflows/python-package.yml/badge.svg)](https://github.com/DiddiZ/mtg-proxies/actions/workflows/python-package.yml)
+# **PLEASE NOTE**:
+I'm not a developer (not anymore). I don't work with backend OR frontend development. I studied and worked as a developer a couple years ago, so I can get find and develop what I need, not necessarily using the best practices.
 
-# MtG-Proxies
+This is an adapted project forked from original and amazing project [Diddiz | mtg-proxies](https://github.com/DiddiZ/mtg-proxies) and from [andrewgioia - mana](https://github.com/andrewgioia/mana). This adaptation wouldn't be possible without their projects.
 
-Create a high quality printable PDF from your decklist or a list of cards you want to proxy.
+# Just... Why?
 
-![](examples/decklist.png)
+You know... Magic ain't cheap. 
 
-## Features
+Third World Countries always struggled with MTG Cards and products. 
 
-- **High resolution prints**  
-  In contrast to online tools that provide this service (e.g. [MTG Press](http://www.mtgpress.net/)), this project creates the PDF file locally.
-  This allows to use highest resolution Scryfall scans to create a large, high-dpi PDF file without regard for bandwidth limitations. For example, the generated PDF for a complete Commander decklist has a size of about 140MB.
+The first time I proxied a colored EDH deck it costed me around 25 Dollars and the quality was trash. I wanted to print high quality, minimalist (text only) proxies at home, so I adapted the project for my needs. I don't have to wait 1-2 weeks for a card to be delivered and I don't have to spend 300 dollars in a deck I don't know if I will like (Like I almost did with Atraxa super friends or Slivers).
 
-- **Up-to-date card scans**  
-  By directly utilizing the Scryfall API, all the latest sets are automatically availble as soon as they're available on Scryfall (which is usually incredibly fast). To not overrun Scryfall with requests, this project makes use of [Scryfall bulk data](https://scryfall.com/docs/api/bulk-data) to reduce API calls as much as possible. As requested by Scryfall, a small delay of 100ms is added between requests. However, as most work is done with a local copy of the bulk data, this is hardly noticeable.
-
-- **Support for both text and Arena format decklists**
-  `mtg-proxies` can work with both text and Arena format decklists.
-  The Arena format is recommended, as it allows you to keep the same prints when moving decklists between multiple tools.
-  There are even cases (i.e. tokens) where the name alone is not sufficient to uniquely specify a card.
-  The Arena format helps in these case, as set and collector number are unique identifiers.
-  However, as tools often only work with one of these formats, `mtg-proxies` is a flexible as possible, even supporting mixed mode.
-  This is especially when you are making quick additions to a decklist and don't want to search for set and collector numbers.
-  The `convert.py` tool can be used to convert decklists between the two formats.
-
-- **Sanity checks and recommender engine**  
-  `mtg-proxies` warns you if you attempt to print a low-resolution scan and is able to offer alternatives.
-  The `convert.py` tool can automatically selects the best print for each card in a decklist with high accuracy, eliminating the need to manually select good prints.
-
-- **Token support**  
-  The `tokens.py` tool appends the tokens created by the cards in a decklist to it, so you don't miss one accidentally. Caveat: This only works when Scryfall has the data on associated tokens. This is the case for cards printed or reprinted since Tenth Edition.
-
-- **ManaStack and Archidekt integration**
-  Directly use ManaStack and Archidekt deck ids as input for many functions instead of local decklist files.
-
-  Decks on Archidekt must be set to public to be read.
+**THIS VERSION DOES NOT SUPPORT SPLIT CARDS (YET) - Like [Fire // Ice](https://scryfall.com/card/mh2/290/fire-ice)**
+**THIS VERSION DOES NOT SUPPORT FLIP CARDS (YET) - Like [Rowan, Scholar of Sparks // Will, Scholar of Frost](https://scryfall.com/card/stx/A-156/a-rowan-scholar-of-sparks-a-will-scholar-of-frost)**
 
 ## Usage
+1. Read [Diddiz | mtg-proxies](https://github.com/DiddiZ/mtg-proxies) original README.md;
 
-1. Clone or download this repo.
+2. Clone my repo and run just like the original project. My pipfile has a couple extra projects;
 
-```bash
-git clone https://github.com/DiddiZ/mtg-proxies.git
-cd mtg-proxies
-```
+3. To print minimalist proxies use the ```--simple``` argument.
 
-2. Install requirements. Requires at least [Python 3.7](https://www.python.org/downloads/).
+## Template customization
 
-```bash
-# On Linux, use `python3` instead of `python`
-python -m pip install --user -U pipenv
+1. Just go read [andrewgioia - mana](https://github.com/andrewgioia/mana) original README.md;
+2. I created a new CSS class called ```bw``` (BlackWhite). If you are using the double mana icon (like G/U like in [Gilder Bairn](https://scryfall.com/card/eve/152/gilder-bairn)) it will print a simple non colored version, instead the colored one.
 
-# Make sure pipenv is included in your PATH, otherwise the next step will fail
-pipenv install --deploy
-```
+## How it works - My customization
 
-3. (Optional) Prepare your decklist in MtG Arena format.
-   This is not required, but recommended as it allows for more control over the process.
+1. I use the fetched data to generate an HTML file with the card content;
+2. Run a headless Chromium process to render the HTML and screenshot the card image to the temporary folder of your OS.
 
-```txt
-COUNT FULL_NAME (SET) COLLECTOR_NUMBER
-```
+# Known issues
+1. This is Unix/Mac only (for now) due to the path usage I used;
+2. CSS has fixed values for font size, font spacing, position. It means it won't properly work with cards with huge texts like [Reyhan, Last of the Abzan](https://scryfall.com/card/cm2/13/reyhan-last-of-the-abzan) and [Arixmethes, Slumbering Isle](https://scryfall.com/card/2xm/189/arixmethes-slumbering-isle) (it breaks the power/thoughness box);
+3. It doesn't support all mana icons for now. I will create the hybrid Phyrexian mana from cards like [Tamiyo, Compleated Sage](https://scryfall.com/card/neo/238/tamiyo-compleated-sage);
+4. The system won't replace already generated images. So if you want to generate a new version of the same card, you must first delete it before running the software;
+5. I tested it a lot and sometimes the chromium process hangs and it freezes the image generations. Just stop the process, clean the cache folder and start over again;
+6. The hybrid mana from cards like [Gilder Bairn](https://scryfall.com/card/eve/152/gilder-bairn) prints a square instead of a circle. This is an issue with the ```border-radius``` CSS property. It only happens with the Chromium version used by **pyppeteer**. When I tested directly from the Chromium browser it didn't happen.
 
-E.g.:
+### Samples
+- Broken cards: ./SAMPLES/brokenCards.pdf
+- Ok Cards: ./SAMPLES/okCards.pdf 
 
-```txt
-1 Alela, Artful Provocateur (ELD) 324
-1 Korvold, Fae-Cursed King (ELD) 329
-1 Liliana, Dreadhorde General (WAR) 97
-1 Murderous Rider // Swift End (ELD) 287
-```
-
-Or use the `convert.py` tool to convert a plain decklist to Arena format:
-
-```bash
-pipenv run python convert.py examples/decklist_text.txt examples/decklist.txt
-```
-
-4. Create a PDF file.
-
-```bash
-pipenv run python print.py examples/decklist.txt decklist.pdf
-```
-
-## Updating
-
-```bash
-git pull --ff-only
-pipenv install --deploy
-```
-
-## Help
-
-### print
-
-```txt
-pipenv run python print.py [-h] [--dpi DPI] decklist outfile
-
-Prepare a decklist for printing.
-
-positional arguments:
-  decklist_spec         path to a decklist in text/arena format, or manastack:{manastack_id}, or archidekt:{archidekt_id}
-  outfile               output file. Supports pdf, png and jpg.
-
-optional arguments:
-  -h, --help            show this help message and exit
-  --dpi DPI             dpi of output file (default: 300)
-  --paper WIDTHxHEIGHT  paper size in inches or preconfigured format (default: a4)
-  --scale FLOAT         scaling factor for printed cards (default: 1.0)
-  --border_crop PIXELS  how much to crop inner borders of printed cards (default: 14)
-  --background COLOR    background color, either by name or by hex code (e.g. black or "#ff0000", default: None)
-```
-
-### convert
-
-```txt
-usage: pipenv run python convert.py decklist outfile [OPTIONAL ARGUMENTS]
-
-Convert a decklist from text format to arena format or vice-versa.
-
-positional arguments:
-  decklist_spec         path to a decklist in text/arena format, or manastack:{manastack_id}, or archidekt:{archidekt_id}
-  outfile               output file
-
-optional arguments:
-  -h, --help            show this help message and exit
-  --format {arena,text}
-                        output format (default: arena)
-  --clean               remove all non-card lines
-```
-
-### tokens
-
-```txt
-usage: pipenv run python tokens.py decklist [OPTIONAL ARGUMENTS]
-
-Append the tokens created by the cards in a decklist to it.
-
-positional arguments:
-  decklist_spec         path to a decklist in text/arena format, or manastack:{manastack_id}, or archidekt:{archidekt_id}
-
-optional arguments:
-  -h, --help            show this help message and exit
-  --format {arena,text}
-                        output format (default: arena)
-```
-
-Example:
-
-```bash
-pipenv run python tokens.py examples/token_generators.txt
-```
-
-### Deck Value Decomposition
-
-```txt
-usage: deck_value.py decklist [OPTIONAL ARGUMENTS]
-
-Show deck value decomposition.
-
-positional arguments:
-  decklist_spec         path to a decklist in text/arena format, or manastack:{manastack_id}, or archidekt:{archidekt_id}
-
-optional arguments:
-  -h, --help            show this help message and exit
-  --lump-threshold FLOAT
-                        lump together cards with lesser proportional value
-```
-
-Example:
-
-```bash
-pipenv run python deck_value.py manastack:1234536
-pipenv run python deck_value.py archidekt:365563
-```
-
-![](examples/deck_value.png)
 
 ## Acknowledgements
 
-- [MTG Press](http://www.mtgpress.net/) for being a very handy online tool, which inspired this project.
-- [Scryfall](https://scryfall.com/) for their [excellent API](https://scryfall.com/docs/api).
+- [Diddiz | mtg-proxies](https://github.com/DiddiZ/mtg-proxies)
+- [andrewgioia - mana](https://github.com/andrewgioia/mana)
