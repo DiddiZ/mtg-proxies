@@ -42,7 +42,8 @@ The first time I proxied a colored EDH deck it costed me around 25 Dollars and t
 ### Samples
 - Broken cards: ./SAMPLES/brokenCards.pdf
 - Ok Cards: ./SAMPLES/okCards.pdf 
-
+- Printed 1: ![printedCard_1.jpeg](https://github.com/gbartholomeu/mtg-proxies/blob/master/SAMPLES/printed_1.jpeg)
+- Printed 2: ![printedCard_1.jpeg](https://github.com/gbartholomeu/mtg-proxies/blob/master/SAMPLES/printed_2.jpeg)
 
 ## Acknowledgements
 
