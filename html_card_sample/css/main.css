@@ -1,0 +1,463 @@
+/* Reset */
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+}
+
+/* HTML5 display-role reset for older browsers */
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+    display: block;
+}
+
+body {
+    line-height: 1;
+}
+
+ol,
+ul {
+    list-style: none;
+}
+
+blockquote,
+q {
+    quotes: none;
+}
+
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+    content: '';
+    content: none;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+/* End of reset */
+body*> {
+    box-sizing: border-box;
+}
+
+.card-container {
+    border: 1px solid black;
+    width: 750px;
+    height: 1050px;
+    margin: 0 auto;
+    margin-top: 0px;
+    border-radius: 25px;
+    box-sizing: border-box;
+    /*box-shadow: -8px 9px 16px -3px gray;*/
+    background: black;
+}
+
+.card-background {
+    height: 1000px;
+    margin: 20px 20px 0 20px;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    border-bottom-left-radius: 8%;
+    border-bottom-right-radius: 8%;
+    /*background-image: url(https://image.ibb.co/e1XKAS/green_background.jpg);*/
+    background-repeat: no-repeat;
+    background-size: cover;
+    display: flex;
+    background-color: #fff;
+    z-index: 0;
+}
+
+/*
+    -------------------------
+    -------------------------
+            BORDERS
+    -------------------------
+    -------------------------
+*/
+.frame-header,
+.frame-type-line {
+    /* border-bottom: 4px solid red;
+    border-left: 2px solid red;
+    border-top: 1px solid red;
+    border-right: 1px solid red; */
+}
+
+/* .frame-header,
+.frame-art,
+.frame-type-line {
+     box-shadow:
+        0 0 0 5px black,
+        0 0 0 5px black,
+        -2px 2px 2px 2px black;
+
+    margin-bottom: 7px;
+} */
+
+.frame-text-box {
+    /* box-shadow:
+        0 0 0 5px black,
+        -3px 3px 2px 5px black; */
+}
+
+/*
+    ----------------------
+    ----------------------
+            OVERFLOW
+    ----------------------
+    ----------------------
+*/
+.frame-header,
+.frame-type-line,
+.frame-text-box {
+    overflow: hidden;
+}
+
+
+/*
+  ----------------------------------------
+  ----------------------------------------
+            CARD FRAME
+  ----------------------------------------
+  ----------------------------------------
+*/
+.card-frame {
+    z-index: 1;
+    position: relative;
+    height: 108%;
+    max-width: 97%;
+    left: 1%;
+    top: 0.5%;
+    left: 1.2%;
+    display: flex;
+    flex-direction: column;
+}
+
+
+
+.frame-header,
+.frame-type-line {
+    /* background: white; */
+    display: flex;
+    margin-top: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
+    padding: 10px 0;
+    border-radius: 18px/40px;
+    width: 1300px;
+}
+
+.frame-header {
+    position: absolute;
+    top: 130px;
+    font-size: 2.3em;
+    left: 115px;
+}
+
+.frame-type-line {
+    position: absolute;
+    top: 1225px;
+    font-size: 1.8em;
+    left: 115px;
+}
+
+/*
+  Tue 27/3
+*/
+.name,
+.type {
+    font-size: 1.7em;
+    margin-left: 10px;
+    align-self: baseline;
+    font-weight: 600;
+    text-align: center;
+}
+
+.mana-frame {
+    float: right;
+    margin-left: auto;
+    margin-right: 10px;
+}
+
+#mana-icon {
+
+    font-size: 1.5em;
+    /*background: white; IMPEDE o círculo colorido da mana*/
+    /* border-radius: 50%;
+    box-sizing: border-box;
+    margin-right: 10px;
+    /*height: 20px; Muda apenas o fundo da cor
+    align-self: center; */
+}
+
+.frame-art {
+    height: 50%;
+    margin: 0 10px;
+}
+
+#set-icon {
+    height: 9%;
+    width: 6%;
+    overflow: hidden;
+    margin-right: 10px;
+    align-self: center;
+}
+
+.frame-type-line {
+    margin-top: 0;
+}
+
+.frame-text-box {
+    /* border-bottom: 4px solid red;
+    border-left: 2px solid red;
+    border-top: 1px solid red;
+    border-right: 1px solid red; */
+}
+
+.frame-text-box {
+    margin: 0 10px;
+    /*background-image: url(https://image.ibb.co/dFcNx7/tile_bg_2.jpg);*/
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding: 50px 6px;
+    line-height: 1.5em;
+    font-size: 3.5em;
+}
+
+.frame-text-box {
+    position: absolute;
+    top: 1330px;
+    left: 115px;
+    width: 1270px;
+    height: 520px;
+}
+
+.frame-power-toughness {
+    /* border-bottom: 4px solid red;
+    border-left: 2px solid red;
+    border-top: 1px solid red;
+    border-right: 1px solid red; */
+}
+
+.frame-power-toughness {
+    /* margin: 0 10px; */
+    /*background-image: url(https://image.ibb.co/dFcNx7/tile_bg_2.jpg);*/
+    /* display: flex; */
+    /* flex-direction: column; */
+    /* justify-content: space-around; */
+    /* padding: 50px 6px; */
+    /* line-height: 1.5em; */
+    font-size: 5.0em;
+}
+
+.frame-power-toughness {
+    position: absolute;
+    top: 1905px;
+    /* left: 1215px; */
+    left: 1235px;
+    width: 180px;
+    height: 80px;
+}
+
+.power-toughness {
+    position: absolute;
+    top: 1330px;
+    left: 115px;
+    width: 1270px;
+    height: 520px;
+}
+
+
+.frame-loyalty {
+    position: absolute;
+    top: 1860px;
+    left: 1200px;
+    width: 180px;
+    height: 80px;
+    font-size: 4.0em;
+}
+
+.flavour-text {
+    font-style: italic;
+    padding: 10px 0;
+}
+
+p {
+    margin: 5px;
+    text-align: left;
+}
+
+.frame-bottom-info {
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    margin: 5px 15px 0 15px;
+}
+
+fbi-left {
+    flex: 1;
+}
+
+.fbi-left p:first-of-type {
+    margin-bottom: 1px;
+}
+
+.fbi-left,
+.fbi-right {
+    font-size: 10px;
+    position: relative;
+    top: 6px;
+}
+
+.fbi-center {
+    border-radius: 60%;
+    flex-basis: 41px;
+    height: 21px;
+    position: relative;
+    bottom: 11px;
+    z-index: 2;
+    background: white;
+    box-shadow:
+        0 0 0 4px #171314;
+}
+
+.inner-margins {
+    margin: 0 10px;
+}
+
+.fbi-right {
+    flex: 1;
+    text-align: right;
+}
+
+.frame-bottom-info img {
+    overflow: hidden;
+    max-width: 10px;
+}
+
+.sprite {
+    background-repeat: no-repeat;
+    display: block;
+}
+
+.sprite-image{
+    background-image: url(../images/black_.png);
+}
+
+.sprite-image.creature{
+    background-image: url(../images/black_creature.png);
+}
+
+.sprite-image.legendary{
+    background-image: url(../images/black_legendary.png);
+}
+
+.sprite-image.legendary-creature{
+    background-image: url(../images/black_creaturelegendary.png);
+}
+
+.sprite-black{
+    width: 1540px;
+    height: 2140px;
+    background-position: -5px -5px;
+}
