@@ -26,6 +26,10 @@ The first time I proxied a colored EDH deck it costed me around 25 Dollars and t
 1. Just go read [andrewgioia - mana](https://github.com/andrewgioia/mana) original README.md;
 2. I created a new CSS class called ```bw``` (BlackWhite). If you are using the double mana icon (like G/U like in [Gilder Bairn](https://scryfall.com/card/eve/152/gilder-bairn)) it will print a simple non colored version, instead of the colored one.
 
+## Template Testing
+
+I created multiple template samples in [html_card_sample](https://github.com/gbartholomeu/mtg-minimalist-proxies/tree/master/html_card_sample) directory. Just open the desired HTML file in your browser and adjust the CSS/HTML properties as needed. To print the image, adjust the HTML source file and desired outputted image (path + file name) in the [generate_proxy.py](https://github.com/gbartholomeu/mtg-minimalist-proxies/blob/master/html_card_sample/generate_proxy.py) file and run it like any other python file.
+
 ## How it works - My customization
 
 1. I use the fetched data to generate an HTML file with the card content;
