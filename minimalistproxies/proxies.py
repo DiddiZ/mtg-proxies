@@ -104,52 +104,63 @@ def prepate_html_css(card: Card):
         setupOtherCard(card, html_file, css_file)
 
 def setupCreatureCard(card, html_file, css_file):
-    legend = 'legendary' if 'legendary' in card['type_line'].lower() else ''
-    card_template = f'black_creature{legend}.png'
-    css_data = ''
+    if card['layout'].lower() in ['split', 'adventure', 'saga', 'token']:
+        card_template = f'black_empty.png'
+        css_data = ''
 
-    with open(css_file, 'rt') as input_file:
-        data = input_file.read()
-        css_data = data.replace('##REPLACE_BACKGROUND_IMAGE', card_template)
+        with open(css_file, 'rt') as input_file:
+            data = input_file.read()
+            css_data = data.replace('##REPLACE_BACKGROUND_IMAGE', card_template)
 
-    with open(css_file, 'wt') as output_file:
-        data = output_file.write(css_data)
+        with open(css_file, 'wt') as output_file:
+            data = output_file.write(css_data)
+    else:
+        legend = 'legendary' if 'legendary' in card['type_line'].lower() else ''
+        card_template = f'black_creature{legend}.png'
+        css_data = ''
 
-    with open(html_file, 'rt') as input_file:
-        data = input_file.read()
-        data = data.replace('<!--##REPLACE_CARD_NAME-->', card['name'])
-        data = data.replace('<!--##REPLACE_CARD_TYPE-->', card['type_line'])
+        with open(css_file, 'rt') as input_file:
+            data = input_file.read()
+            css_data = data.replace('##REPLACE_BACKGROUND_IMAGE', card_template)
 
-        cost = re.findall('\{[0-9A-Z\/]+\}', card['mana_cost'])
-        mana_icons_html = ''
-        
-        #Mana Icons - Card cost
-        for mana_symbol in cost:
-            if mana_symbol in MANA_COST_MAPPING:
-                mana_icons_html += f'<i class="{MANA_COST_MAPPING[mana_symbol]}" id="mana-icon"></i>'
-            else:
-                mana_icons_html += f'<i class="{mana_symbol}" id="mana-icon"></i>'
+        with open(css_file, 'wt') as output_file:
+            data = output_file.write(css_data)
 
-        data = data.replace('<!--##REPLACE_CARD_COST-->', mana_icons_html)
+        with open(html_file, 'rt') as input_file:
+            data = input_file.read()
+            data = data.replace('<!--##REPLACE_CARD_NAME-->', card['name'])
+            data = data.replace('<!--##REPLACE_CARD_TYPE-->', card['type_line'])
 
-        unfiltered_card_text = card['oracle_text']
-        card_text = ''
+            cost = re.findall('\{[0-9A-Z\/]+\}', card['mana_cost'])
+            mana_icons_html = ''
+            
+            #Mana Icons - Card cost
+            for mana_symbol in cost:
+                if mana_symbol in MANA_COST_MAPPING:
+                    mana_icons_html += f'<i class="{MANA_COST_MAPPING[mana_symbol]}" id="mana-icon"></i>'
+                else:
+                    mana_icons_html += f'<i class="{mana_symbol}" id="mana-icon"></i>'
 
-        for icon, text in MANA_COST_MAPPING.items(): 
-            if icon in unfiltered_card_text:
-                unfiltered_card_text = unfiltered_card_text.replace(icon, f'<span class="{text}"></span>')
+            data = data.replace('<!--##REPLACE_CARD_COST-->', mana_icons_html)
+
+            unfiltered_card_text = card['oracle_text']
+            card_text = ''
+
+            for icon, text in MANA_COST_MAPPING.items(): 
+                if icon in unfiltered_card_text:
+                    unfiltered_card_text = unfiltered_card_text.replace(icon, f'<span class="{text}"></span>')
 
 
-        for line in unfiltered_card_text.splitlines():
-            card_text += f'<p class="description">{line}</p>'
+            for line in unfiltered_card_text.splitlines():
+                card_text += f'<p class="description">{line}</p>'
 
-        data = data.replace('<!--##REPLACE_CARD_TEXT-->', card_text)
-        data = data.replace('<!--##REPLACE_CARD_POWER-->', f'<h1 class="power-thoughness">{card["power"]} / {card["toughness"]}</h1>')
+            data = data.replace('<!--##REPLACE_CARD_TEXT-->', card_text)
+            data = data.replace('<!--##REPLACE_CARD_POWER-->', f'<h1 class="power-thoughness">{card["power"]} / {card["toughness"]}</h1>')
 
-        html_data = data
+            html_data = data
 
-    with open(html_file, 'wt') as output_file:
-        data = output_file.write(html_data)
+        with open(html_file, 'wt') as output_file:
+            data = output_file.write(html_data)
 
 
 def setupPlaneswalkerCard(card, html_file, css_file):
@@ -170,7 +181,7 @@ def setupPlaneswalkerCard(card, html_file, css_file):
 
         cost = re.findall('\{[0-9A-Z\/]+\}', card['mana_cost'])
         mana_icons_html = ''
-        
+
         #Mana Icons - Card cost
         for mana_symbol in cost:
             if mana_symbol in MANA_COST_MAPPING:
@@ -216,7 +227,7 @@ def setupPlaneswalkerCard(card, html_file, css_file):
         data = output_file.write(html_data)
 
 def setupOtherCard(card, html_file, css_file):
-    if 'split' == card['layout'].lower():
+    if card['layout'].lower() in ['split', 'adventure', 'saga', 'token']:
         card_template = f'black_empty.png'
         css_data = ''
 
