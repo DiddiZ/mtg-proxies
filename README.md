@@ -11,8 +11,15 @@ Third World Countries always struggled with MTG Cards and products.
 
 The first time I proxied a colored EDH deck it costed me around 25 Dollars and the quality was trash. I wanted to print high quality, minimalist (text only) proxies at home, so I adapted the project for my needs. I don't have to wait 1-2 weeks for a card to be delivered and I don't have to spend 300 dollars in a deck I don't know if I will like (Like I almost did with Atraxa super friends or Slivers).
 
-**THIS VERSION DOES NOT SUPPORT SPLIT CARDS (YET) - Like [Fire // Ice](https://scryfall.com/card/mh2/290/fire-ice)**
-**THIS VERSION DOES NOT SUPPORT FLIP CARDS (YET) - Like [Rowan, Scholar of Sparks // Will, Scholar of Frost](https://scryfall.com/card/stx/A-156/a-rowan-scholar-of-sparks-a-will-scholar-of-frost)**
+**THIS VERSION DOES NOT SUPPORT (YET)**
+- Tokens like [Saproling](https://scryfall.com/card/tddj/1/saproling);
+- Split cards like [Fire // Ice](https://scryfall.com/card/mh2/290/fire-ice);
+- Sagas like [Urza's Saga](https://scryfall.com/card/mh2/259/urzas-saga);
+- Adventures like [Murderous Rider // Swift End](https://scryfall.com/card/eld/97/murderous-rider-swift-end);
+- Flip cards like [Rowan, Scholar of Sparks // Will, Scholar of Frost](https://scryfall.com/card/stx/A-156/a-rowan-scholar-of-sparks-a-will-scholar-of-frost)
+- Card with special icons in the name like [Rowan, Scholar of Sparks // Will, Scholar of Frost](https://scryfall.com/card/stx/A-156/a-rowan-scholar-of-sparks-a-will-scholar-of-frost) and [Growing Rites of Itlimoc](https://scryfall.com/card/xln/191/growing-rites-of-itlimoc-itlimoc-cradle-of-the-sun)
+
+In case you need to print any of the cards above, I recommend "drawing" the card in the provided template [.html](https://github.com/gbartholomeu/mtg-minimalist-proxies/tree/master/html_card_sample) and css. Use the [generate_proxy.py](https://github.com/gbartholomeu/mtg-minimalist-proxies/blob/master/html_card_sample/generate_proxy.py) file to output the desired image.
 
 ## Usage
 1. Read [Diddiz | mtg-proxies](https://github.com/DiddiZ/mtg-proxies) original README.md;
