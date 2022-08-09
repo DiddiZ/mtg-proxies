@@ -170,10 +170,9 @@ def setupPlaneswalkerCard(card, html_file, css_file):
 
         cost = re.findall('\{[0-9A-Z\/]+\}', card['mana_cost'])
         mana_icons_html = ''
-        print(f'Mana Cost {card["mana_cost"]}')
+        
         #Mana Icons - Card cost
         for mana_symbol in cost:
-            print(f'Mana symbol: {mana_symbol}')
             if mana_symbol in MANA_COST_MAPPING:
                 mana_icons_html += f'<i class="{MANA_COST_MAPPING[mana_symbol]}" id="mana-icon"></i>'
             else:
