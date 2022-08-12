@@ -33,6 +33,7 @@ The flip cards tested had a variety of special symbols like:
 - Sagas like [Urza's Saga](https://scryfall.com/card/mh2/259/urzas-saga);
 - Adventures like [Murderous Rider // Swift End](https://scryfall.com/card/eld/97/murderous-rider-swift-end);
 
+Note: I have not tested this service with silver-bordered cards.
 
 In case you need to print any of the cards above, I recommend "drawing" the card in the provided template [.html](https://github.com/gbartholomeu/mtg-minimalist-proxies/tree/master/html_card_sample) and css. Use the [generate_proxy.py](https://github.com/gbartholomeu/mtg-minimalist-proxies/blob/master/html_card_sample/generate_proxy.py) file to output the desired image.
 
