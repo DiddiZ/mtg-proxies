@@ -140,6 +140,11 @@ body*> {
     box-sizing: border-box;
 }
 
+.split1,
+.split2 {
+   transform: rotate(-90deg) ;
+}
+
 .card-container {
     border: 1px solid black;
     width: 750px;
@@ -182,6 +187,98 @@ body*> {
     border-right: 1px solid red; */
 }
 
+.frame-header.split1,
+.frame-type-line.split1,
+.frame-header.split2,
+.frame-type-line.split2 {
+    /* border-bottom: 4px solid red;
+    border-left: 2px solid red;
+    border-top: 1px solid red;
+    border-right: 1px solid red; */
+}
+
+.frame-header.split1,
+.frame-header.split2,
+.frame-type-line.split1,
+.frame-type-line.split2{
+    display: flex;
+    margin-top: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
+    padding: 10px 0;
+    border-radius: 18px/40px;
+    width: 850px;
+    height: 80px;
+}
+
+
+.frame-header.split1{
+    position: absolute;
+    top: 1500px;
+    font-size: 2.3em;
+    left: -310px;
+}
+
+.frame-header.split2{
+    position: absolute;
+    top: 490px;
+    font-size: 2.3em;
+    left: -310px;
+}
+
+.frame-type-line.split1{
+    position: absolute;
+    top: 1500px;
+    font-size: 1.5em;
+    left: 500px;
+}
+
+.frame-type-line.split2{
+    position: absolute;
+    top: 490px;
+    font-size: 1.5em;
+    left: 500px;
+}
+
+.frame-text-box.split1,
+.frame-text-box.split2 {
+    /* border-bottom: 4px solid red;
+    border-left: 2px solid red;
+    border-top: 1px solid red;
+    border-right: 1px solid red; */
+}
+
+.frame-text-box.split1,
+.frame-text-box.split2 {
+    margin: 0 10px;
+    /*background-image: url(https://image.ibb.co/dFcNx7/tile_bg_2.jpg);*/
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding: 50px 6px;
+    line-height: 1.5em;
+    font-size: 2.0em;
+}
+
+.frame-text-box.split1,
+.frame-text-box.split2 {
+    width: 800px;
+    height: 370px;
+}
+
+.frame-text-box.split1 {
+    position: absolute;
+    top: 1325px;
+    font-size: 3.0em;
+    left: 800px;
+}
+
+.frame-text-box.split2 {
+    position: absolute;
+    top: 320px;
+    font-size: 3.0em;
+    left: 800px;
+}
 /* .frame-header,
 .frame-art,
 .frame-type-line {
@@ -366,6 +463,7 @@ body*> {
     justify-content: center;
 }
 
+
 .frame-power-toughness {
     /* border-bottom: 4px solid red;
     border-left: 2px solid red;
@@ -488,6 +586,10 @@ fbi-left {
 
 .sprite-image.legendary-creature{
     background-image: url(../images/black_creaturelegendary.png);
+}
+
+.sprite-image.sprite-split{
+    background-image: url(../images/black_split.png);
 }
 
 .sprite-black{

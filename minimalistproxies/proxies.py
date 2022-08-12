@@ -106,6 +106,7 @@ def prepare_html_css(card: Card, opposite_card: Card, full_card: Card):
 
 
 def prepare_files(card_name: str):
+    # I'll keep this card_name target until I finish developing most cards layouts
     src = f'{os.getcwd()}/minimalistproxies/html'
     dest = f'{cache}/html_temp_{card_name}'
 
@@ -120,23 +121,26 @@ def prepare_files(card_name: str):
 
 
 def setup_card(cards: list[Card], html_file, css_file):
-    template = get_card_template(cards[0])
+    template = get_card_template(cards)
     fill_css_file(template, css_file)
     fill_html_file(cards, html_file)
 
 
-def get_card_template(card: Card) -> str:
+def get_card_template(cards: list[Card]) -> str:
     template = 'black_'
-    if card.__contains__('layout') and card['layout'].lower() in ['split', 'adventure', 'saga', 'token']:
-        template += 'empty.png'
+
+    if cards[0].__contains__('layout') and cards[0]['layout'].lower() in ['adventure', 'saga', 'token']:
+        template += 'empty'
+    elif cards[2] and cards[2].__contains__('layout') and cards[2]['layout'].lower() == 'split':
+        template += 'split'
     else:
-        if "creature" in card['type_line'].lower():
+        if "creature" in cards[0]['type_line'].lower():
             template += 'creature'
 
-        if 'legendary' in card['type_line'].lower():
+        if 'legendary' in cards[0]['type_line'].lower():
             template += 'legendary'
 
-        template += ".png"
+    template += ".png"
 
     return template
 
@@ -151,24 +155,15 @@ def fill_css_file(template: str, css_file):
 
 
 def fill_html_file(cards: list[Card], html_file):
-    card_name = replaced_card_name(cards)
-    card_type = replace_color_indicator(cards[0])
-    card_mana_cost = replace_mana_html(cards[0]['mana_cost'])
-    card_text = replace_text_symbols(cards[0]['oracle_text'])
-    card_power_toughness = replace_card_power_toughness(cards[0])
-    card_back = replace_back_card_info(cards)
-    card_loyalty = replace_planeswalker_loyalty(cards[0])
-    html_data = ''
+    upper_part = fill_upper_part_html(cards)
+    middle_part = fill_middle_part_html(cards)
+    bottom_part = fill_bottom_part_html(cards)
 
     with open(html_file, 'rt') as input_file:
         data = input_file.read()
-        data = data.replace('<!--##REPLACE_CARD_NAME-->', card_name)
-        data = data.replace('<!--##REPLACE_CARD_TYPE-->', card_type)
-        data = data.replace('<!--##REPLACE_CARD_COST-->', card_mana_cost)
-        data = data.replace('<!--##REPLACE_CARD_TEXT-->', card_text)
-        data = data.replace('<!--##REPLACE_CARD_POWER-->', card_power_toughness)
-        data = data.replace('<!--##REPLACE_OPPOSITY_CARD-->', card_back)
-        data = data.replace('<!--##REPLACE_PLANESWALKER_LOYALTY-->', card_loyalty)
+        data = data.replace('<!--##REPLACE_UPPER_PART-->', upper_part)
+        data = data.replace('<!--##REPLACE_MIDDLE_PART-->', middle_part)
+        data = data.replace('<!--##REPLACE_BOTTOM_PART-->', bottom_part)
 
         html_data = data
 
@@ -176,7 +171,119 @@ def fill_html_file(cards: list[Card], html_file):
         data = output_file.write(html_data)
 
 
-def replaced_card_name(cards: list[Card]) -> str:
+def fill_upper_part_html(cards: list[Card]) -> str:
+    upper_html = ''
+
+    if cards[2] and cards[2].__contains__('card_faces') and cards[2]['layout'].lower() in ['split']:  #['split','flip']
+        for face in range(2):
+            card_name = replace_card_name_html([cards[2]["card_faces"][face],[]])
+            card_mana_cost= replace_mana_html(cards[2]['card_faces'][face]['mana_cost']) 
+            upper_html  += f"""
+                                <div class="frame-header split{face+1}">
+                                        <h1 class="name">{card_name}</h1>
+                                        <div class="mana-frame">
+                                            {card_mana_cost}
+                                        </div>
+                                </div>
+                                """
+
+    else: 
+        card_name = replace_card_name_html(cards)
+        card_mana_cost= replace_mana_html(cards[0]['mana_cost']) 
+        upper_html  = f"""
+                            <div class="frame-header">
+                                    <h1 class="name">{card_name}</h1>
+                                    <div class="mana-frame">
+                                        {card_mana_cost}
+                                    </div>
+                            </div>
+                            """
+
+    return upper_html
+
+def fill_middle_part_html(cards: list[Card]) -> str:
+    middle_html = ''
+    
+    if cards[2] and cards[2].__contains__('card_faces') and cards[2]['layout'].lower() in ['split']:  #['split','flip']
+        for face in range(2):
+            card_type = replace_color_indicator(cards[2]["card_faces"][face])
+            middle_html  += f"""
+                                <div class="frame-type-line split{face+1}">
+                                    <h1 class="type">{card_type}</h1>
+                                </div>
+                                """
+
+    else: 
+        card_type = replace_color_indicator(cards[0])
+        middle_html  = f"""
+                            <div class="frame-type-line">
+                                <h1 class="type">{card_type}</h1>
+                            </div>
+                            """
+
+    return middle_html
+
+def fill_bottom_part_html(cards: list[Card]) -> str:
+    bottom_html = ''
+    if cards[2] and cards[2].__contains__('card_faces') and cards[2]['layout'].lower() in ['split']:  #['split','flip']
+        for face in range(2):
+            card_text = replace_text_symbols(cards[2]["card_faces"][face]['oracle_text'])
+            card_power_toughness = replace_card_power_toughness(cards[2]["card_faces"][face])
+            card_back = replace_back_card_info(cards)
+            card_loyalty = replace_planeswalker_loyalty(cards[2]["card_faces"][face])
+
+            if card_text:
+                bottom_html += f"""
+                                <div class="frame-text-box split{face+1}">
+                                    {card_text}
+                                </div>
+                                """ 
+            if card_power_toughness:
+                bottom_html +=  f"""
+                                <div class="frame-power-toughness split{face+1}">
+                                    {card_power_toughness}
+                                </div>
+                                """ 
+            if card_back:
+                bottom_html +=  f"{card_back}" 
+            
+            if card_loyalty:
+                bottom_html +=  f"""
+                                <div class="frame-loyalty split{face+1}">
+                                    {card_loyalty}
+                                </div>
+                                """
+    else:
+        card_text = replace_text_symbols(cards[0]['oracle_text'])
+        card_power_toughness = replace_card_power_toughness(cards[0])
+        card_back = replace_back_card_info(cards)
+        card_loyalty = replace_planeswalker_loyalty(cards[0])
+
+        if card_text:
+            bottom_html += f"""
+                            <div class="frame-text-box">
+                                {card_text}
+                            </div>
+                            """ 
+        if card_power_toughness:
+            bottom_html +=  f"""
+                            <div class="frame-power-toughness">
+                                {card_power_toughness}
+                            </div>
+                            """ 
+        if card_back:
+            bottom_html +=  f"{card_back}" 
+        
+        if card_loyalty:
+            bottom_html +=  f"""
+                            <div class="frame-loyalty">
+                                {card_loyalty}
+                            </div>
+                            """
+
+    return bottom_html
+
+def replace_card_name_html(cards: list[Card]) -> str:
     card_name = cards[0]['name']
 
     if cards[1] and cards[2]['layout'].lower() in ['modal_dfc', 'transform']:
@@ -215,7 +322,8 @@ def replaced_card_name(cards: list[Card]) -> str:
 
 
 def replace_color_indicator(card: Card) -> str:
-    card_type_text = card['type_line']
+    card_type_text = card['type_line']     
+
     if card.__contains__('color_indicator'):
         filtered_mana = ''
         for color in card['color_indicator']:

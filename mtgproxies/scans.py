@@ -32,9 +32,11 @@ def fetch_minimalist_images(decklist: Decklist) -> list[str]:
     """
     file_paths = []
     for card in tqdm(decklist.cards, desc="Creating minimalist proxies"):
-        if card.__contains__('card_faces'):
+        if card.__contains__('card_faces') and card['layout'].lower() not in ['split', 'flip']:
             file_paths.append(get_minimalist_proxies(Card(card.count, card['card_faces'][0]), Card(card.count, card['card_faces'][1]), card) * card.count)
             file_paths.append(get_minimalist_proxies(Card(card.count, card['card_faces'][1]), Card(card.count, card['card_faces'][0]), card) * card.count)
+        elif card.__contains__('card_faces') and card['layout'].lower() in ['split', 'flip']:
+            file_paths.append(get_minimalist_proxies(Card(card.count, card['card_faces'][0]), Card(card.count, card['card_faces'][1]), card) * card.count)
         else:
             file_paths.append(get_minimalist_proxies(card) * card.count)
     return file_paths 
