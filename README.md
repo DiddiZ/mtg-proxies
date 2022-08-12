@@ -6,7 +6,7 @@ This is an adapted project forked from original and amazing project [Diddiz | mt
 I know the code and the CSS keeps getting uglier, but I'm happy and this prints what I need so... let's go!!! 
 
 I will fix it eventually... trust me
-![winking.gif](https://giphy.com/gifs/disneyplus-disney-wandavision-wanda-vision-6ra84Uso2hoir3YCgb)
+![](https://github.com/gbartholomeu/mtg-proxies/blob/master/SAMPLES/winking.gif)
 
 # Just... Why?
 
