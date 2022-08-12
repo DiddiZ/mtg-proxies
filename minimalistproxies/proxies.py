@@ -84,7 +84,8 @@ MODAL_ICONS_MAPPING = {
     'moon': 'ms ms-dfc-moon',
     'emrakul': 'ms ms-dfc-emrakul',
     'modal_front': 'ms ms-dfc-modal-face',
-    'modal_back': 'ms ms-dfc-modal-back'
+    'modal_back': 'ms ms-dfc-modal-back',
+    'lesson': 'ms ms-dfc-lesson'
 }
 
 
@@ -206,6 +207,9 @@ def replaced_card_name(cards: list[Card]) -> str:
                 card_name = f'<span class="{MODAL_ICONS_MAPPING["modal_front"]}"></span> {card_name}'
             else:
                 card_name = f'<span class="{MODAL_ICONS_MAPPING["modal_back"]}"></span> {card_name}'
+
+    elif cards[0].__contains__('frame_effects') and 'lesson' in cards[0]['frame_effects']:
+        card_name = f'<span class="{MODAL_ICONS_MAPPING["lesson"]}"></span> {card_name}'
 
     return card_name
 
