@@ -208,7 +208,8 @@ body*> {
 */
 .frame-header,
 .frame-type-line,
-.frame-text-box {
+.frame-text-box,
+.frame-opposite-card  {
     overflow: hidden;
 }
 
@@ -330,6 +331,39 @@ body*> {
     left: 115px;
     width: 1270px;
     height: 520px;
+}
+
+.frame-opposite-card {
+    border-bottom: 4px solid black;
+    border-left: 2px solid black;
+    border-top: 1px solid black;
+    border-right: 1px solid black;
+    border-width: 8px;
+}
+
+.frame-opposite-card {
+    position: absolute;
+    top: 1955px;
+    left: 115px;
+    width: 500px;
+    height: 75px;
+
+}
+
+.frame-opposite-card {
+    font-size: 3.5em;
+    margin-top: 10px;
+    align-self: baseline;
+    font-weight: 600;
+    text-align: center;
+    line-height: 75px;
+}
+
+.mana-frame-opposite-card {
+    float: right;
+    margin-left: auto;
+    margin-right: 10px;
+    justify-content: center;
 }
 
 .frame-power-toughness {
