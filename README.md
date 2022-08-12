@@ -32,8 +32,15 @@ The flip cards tested had a variety of special symbols like:
 - Split cards like [Fire // Ice](https://scryfall.com/card/mh2/290/fire-ice);
 - Sagas like [Urza's Saga](https://scryfall.com/card/mh2/259/urzas-saga);
 - Adventures like [Murderous Rider // Swift End](https://scryfall.com/card/eld/97/murderous-rider-swift-end);
+- Cards with huge texts like [Ob Nixilis, the Adversary](https://scryfall.com/card/snc/206/ob-nixilis-the-adversary) and [Jaya, Fiery Negotiator](https://scryfall.com/card/dmu/133/jaya-fiery-negotiator)
 
-Note: I have not tested this service with silver-bordered cards.
+Note: I have not tested this service with:
+- Silver-bordered cards;
+- Dungeons;
+- New Kamigawa Saga icon;
+- Any mechanic tracker such as Day/Night;
+- Any special card. Is it special and different? I haven't tested it.
+- Any token like Treasure, Food, Hint, so far so on.
 
 In case you need to print any of the cards above, I recommend "drawing" the card in the provided template [.html](https://github.com/gbartholomeu/mtg-minimalist-proxies/tree/master/html_card_sample) and css. Use the [generate_proxy.py](https://github.com/gbartholomeu/mtg-minimalist-proxies/blob/master/html_card_sample/generate_proxy.py) file to output the desired image.
 
