@@ -11,13 +11,27 @@ Third World Countries always struggled with MTG Cards and products.
 
 The first time I proxied a colored EDH deck it costed me around 25 Dollars and the quality was trash. I wanted to print high quality, minimalist (text only) proxies at home, so I adapted the project for my needs. I don't have to wait 1-2 weeks for a card to be delivered and I don't have to spend 300 dollars in a deck I don't know if I will like (Like I almost did with Atraxa super friends or Slivers).
 
+**WE NOW SUPPORT:**
+- Flip cards like [Rowan, Scholar of Sparks // Will, Scholar of Frost](https://scryfall.com/card/stx/A-156/a-rowan-scholar-of-sparks-a-will-scholar-of-frost)
+- Card with special icons in the name like [Rowan, Scholar of Sparks // Will, Scholar of Frost](https://scryfall.com/card/stx/A-156/a-rowan-scholar-of-sparks-a-will-scholar-of-frost) and [Growing Rites of Itlimoc](https://scryfall.com/card/xln/191/growing-rites-of-itlimoc-itlimoc-cradle-of-the-sun)
+- Color Indicator like [Aberrant Researcher // Perfected Form ](https://scryfall.com/card/soi/49/aberrant-researcher-perfected-form). Please be aware that an empty circle wouldn't be a great representation, so instead of colored circles the color indicator is the MANA SYMBOL instead. Check ![bolas_color_indicator.jpeg](https://github.com/gbartholomeu/mtg-proxies/blob/master/SAMPLES/generated_1.png) from [Nicol Bolas, the Ravager // Nicol Bolas, the Arisen](https://scryfall.com/card/m19/218/nicol-bolas-the-ravager-nicol-bolas-the-arisen?utm_source=mw_MTGWiki)
+
+Note: There is an issue with [Growing Rites of Itlimoc](https://scryfall.com/card/xln/191/growing-rites-of-itlimoc-itlimoc-cradle-of-the-sun). The API doesn't not contain the metadata used for adding the icon. I already reached Scryfall to check the reason. All other cards worked fine.
+
+The flip cards tested had a variety of special symbols like: 
+- Day/Night: [Aberrant Researcher // Perfected Form ](https://scryfall.com/card/soi/49/aberrant-researcher-perfected-form)
+- Enchantment/Land: [Arguel's Blood Fast // Temple of Aclazotz](https://scryfall.com/card/xln/90/arguels-blood-fast-temple-of-aclazotz)
+- Moon/Emrakul: [Cryptolith Fragment // Aurora of Emrakul ](https://scryfall.com/card/emn/193/cryptolith-fragment-aurora-of-emrakul)
+- Sparck/Ignite: [Nicol Bolas, the Ravager // Nicol Bolas, the Arisen](https://scryfall.com/card/m19/218/nicol-bolas-the-ravager-nicol-bolas-the-arisen)
+- Modal Double Face Cards: [Alrund, God of the Cosmos // Hakka, Whispering Raven](https://scryfall.com/card/khm/40/alrund-god-of-the-cosmos-hakka-whispering-raven?back)
+- Lessons: [Academic Probation](https://scryfall.com/card/stx/7/academic-probation)
+
 **THIS VERSION DOES NOT SUPPORT (YET)**
 - Tokens like [Saproling](https://scryfall.com/card/tddj/1/saproling);
 - Split cards like [Fire // Ice](https://scryfall.com/card/mh2/290/fire-ice);
 - Sagas like [Urza's Saga](https://scryfall.com/card/mh2/259/urzas-saga);
 - Adventures like [Murderous Rider // Swift End](https://scryfall.com/card/eld/97/murderous-rider-swift-end);
-- Flip cards like [Rowan, Scholar of Sparks // Will, Scholar of Frost](https://scryfall.com/card/stx/A-156/a-rowan-scholar-of-sparks-a-will-scholar-of-frost)
-- Card with special icons in the name like [Rowan, Scholar of Sparks // Will, Scholar of Frost](https://scryfall.com/card/stx/A-156/a-rowan-scholar-of-sparks-a-will-scholar-of-frost) and [Growing Rites of Itlimoc](https://scryfall.com/card/xln/191/growing-rites-of-itlimoc-itlimoc-cradle-of-the-sun)
+
 
 In case you need to print any of the cards above, I recommend "drawing" the card in the provided template [.html](https://github.com/gbartholomeu/mtg-minimalist-proxies/tree/master/html_card_sample) and css. Use the [generate_proxy.py](https://github.com/gbartholomeu/mtg-minimalist-proxies/blob/master/html_card_sample/generate_proxy.py) file to output the desired image.
 
@@ -60,3 +74,12 @@ I created multiple template samples in [html_card_sample](https://github.com/gba
 
 - [Diddiz | mtg-proxies](https://github.com/DiddiZ/mtg-proxies)
 - [andrewgioia - mana](https://github.com/andrewgioia/mana)
+
+
+## License
+
+All card information are copyright Wizards of the Coast ([http://magicthegathering.com](http://magicthegathering.com))
+
+
+Files are licensed under the MIT License ([http://opensource.org/licenses/mit-license.html](http://opensource.org/licenses/mit-license.html))
+!
