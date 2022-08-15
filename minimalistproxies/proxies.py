@@ -90,7 +90,13 @@ MODAL_ICONS_MAPPING = {
 
 
 def get_minimalist_proxies(card: Card, opposite_card: Card = [], full_card: Card = []) -> list[str]:
-    file_name = f"minimalist_{card['name'].replace(' ','_').replace('//', '_')}.png"
+    file_name = 'minimalist_'
+    if card.__contains__('set'):     
+        file_name += f"{card['name'].replace(' ','_').replace('//', '_')}-{card['set']}"
+    elif full_card and full_card.__contains__('set'):
+        file_name += f"{card['name'].replace(' ','_').replace('//', '_')}-{full_card['set']}"
+    file_name += '.png'
+
     prepare_html_css(card, opposite_card, full_card)
     loop = asyncio.get_event_loop()
     call = convert_html_to_png(f'{cache}/html_temp_{card["name"]}/html_template.html', str(cache / file_name))
@@ -129,7 +135,7 @@ def setup_card(cards: list[Card], html_file, css_file):
 def get_card_template(cards: list[Card]) -> str:
     template = 'black_'
 
-    if cards[0].__contains__('layout') and cards[0]['layout'].lower() in ['adventure', 'saga', 'token']:
+    if cards[0].__contains__('layout') and cards[0]['layout'].lower() in ['adventure', 'saga', 'flip']:
         template += 'empty'
     elif cards[2] and cards[2].__contains__('layout') and cards[2]['layout'].lower() == 'split':
         template += 'split'

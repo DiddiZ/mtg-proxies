@@ -18,15 +18,15 @@ Third World Countries always struggled with MTG Cards and products.
 The first time I proxied a colored EDH deck it costed me around 25 Dollars and the quality was trash. I wanted to print high quality, minimalist (text only) proxies at home, so I adapted the project for my needs. I don't have to wait 1-2 weeks for a card to be delivered and I don't have to spend 300 dollars in a deck I don't know if I will like (Like I almost did with Atraxa super friends or Slivers).
 
 **WE NOW SUPPORT:**
-- Transform cards like [Rowan, Scholar of Sparks // Will, Scholar of Frost](https://scryfall.com/card/stx/A-156/a-rowan-scholar-of-sparks-a-will-scholar-of-frost)
-- Card with special icons in the name like [Rowan, Scholar of Sparks // Will, Scholar of Frost](https://scryfall.com/card/stx/A-156/a-rowan-scholar-of-sparks-a-will-scholar-of-frost) and [Growing Rites of Itlimoc](https://scryfall.com/card/xln/191/growing-rites-of-itlimoc-itlimoc-cradle-of-the-sun)
+- Transform cards like [Rowan, Scholar of Sparks // Will, Scholar of Frost](https://scryfall.com/card/stx/156/rowan-scholar-of-sparks-will-scholar-of-frost)
+- Card with special icons in the name like [Growing Rites of Itlimoc](https://scryfall.com/card/xln/191/growing-rites-of-itlimoc-itlimoc-cradle-of-the-sun)
 - Color Indicator like [Aberrant Researcher // Perfected Form ](https://scryfall.com/card/soi/49/aberrant-researcher-perfected-form). Please be aware that an empty circle wouldn't be a great representation, so instead of colored circles the color indicator is the MANA SYMBOL instead. Check the card from [Nicol Bolas, the Ravager // Nicol Bolas, the Arisen](https://scryfall.com/card/m19/218/nicol-bolas-the-ravager-nicol-bolas-the-arisen?utm_source=mw_MTGWiki)
 ![bolas_color_indicator.jpeg](https://github.com/gbartholomeu/mtg-proxies/blob/master/SAMPLES/generated_1.png)
 - SPLIT CARDS like [Fire // Ice](https://scryfall.com/card/mh2/290/fire-ice) and [Down // Dirty](https://scryfall.com/card/dgm/126/down-dirty)
+- Tokens: No big secret here. It's just the black frame with the token information. 
+Tip: Use the arena format for printing Tokens. The plain text isn't enought to distinguish token stats.
 
-Note: There is an issue with [Growing Rites of Itlimoc](https://scryfall.com/card/xln/191/growing-rites-of-itlimoc-itlimoc-cradle-of-the-sun). The API doesn't not contain the metadata used for adding the icon. I already reached Scryfall to check the reason. All other cards worked fine.
-
-Note 2: Split cards have only one design, the rotated version like [Fire // Ice](https://scryfall.com/card/mh2/290/fire-ice). I was lazy...
+Note: Split cards have only one design, the rotated version like [Fire // Ice](https://scryfall.com/card/mh2/290/fire-ice). I was lazy...
 
 The transform cards tested had a variety of special symbols like: 
 - Day/Night: [Aberrant Researcher // Perfected Form ](https://scryfall.com/card/soi/49/aberrant-researcher-perfected-form)
@@ -37,19 +37,19 @@ The transform cards tested had a variety of special symbols like:
 - Lessons: [Academic Probation](https://scryfall.com/card/stx/7/academic-probation)
 
 **THIS VERSION DOES NOT SUPPORT (YET)**
-- Tokens like [Saproling](https://scryfall.com/card/tddj/1/saproling);
 - Sagas like [Urza's Saga](https://scryfall.com/card/mh2/259/urzas-saga);
 - Adventures like [Murderous Rider // Swift End](https://scryfall.com/card/eld/97/murderous-rider-swift-end);
 - Cards with huge texts like [Ob Nixilis, the Adversary](https://scryfall.com/card/snc/206/ob-nixilis-the-adversary) and [Jaya, Fiery Negotiator](https://scryfall.com/card/dmu/133/jaya-fiery-negotiator)
 - Flip cards like [Bushi Tenderfoot //  Kenzo the Hardhearted1](https://scryfall.com/card/chk/2/bushi-tenderfoot-kenzo-the-hardhearted)
+- Classes like [Druid Class](https://scryfall.com/card/afr/180/druid-class)
+- Dungeons like [Lost Mine of Phandelver](https://scryfall.com/card/tafr/21/lost-mine-of-phandelver?utm_source=mw_MTGWiki)
+- Level-up cards like [Beastbreaker of Bala Ged](https://scryfall.com/card/ddp/10/beastbreaker-of-bala-ged)
 
-Note: I have not tested this service with:
-- Silver-bordered cards;
-- Dungeons;
+Note: I have not tested this software with:
+- Silver-bordered cards;    
 - New Kamigawa Saga icon;
-- Any mechanic tracker such as Day/Night;
+- Any mechanic tracker such as Day/Night, Monark, City's blessing, etc...;
 - Any special card. Is it special and different? I haven't tested it.
-- Any token like Treasure, Food, Hint, so far so on.
 
 In case you need to print any of the cards above, I recommend "drawing" the card in the provided template [.html](https://github.com/gbartholomeu/mtg-minimalist-proxies/tree/master/html_card_sample) and css. Use the [generate_proxy.py](https://github.com/gbartholomeu/mtg-minimalist-proxies/blob/master/html_card_sample/generate_proxy.py) file to output the desired image.
 
