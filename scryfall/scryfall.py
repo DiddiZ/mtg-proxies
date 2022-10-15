@@ -62,7 +62,7 @@ def download(url: str, dst, chunk_size: int = 1024 * 4, silent: bool = False):
     """Download a file with a tqdm progress bar."""
     with requests.get(url, stream=True) as req:
         req.raise_for_status()
-        file_size = int(req.headers["Content-Length"])
+        file_size = int(req.headers["Content-Length"]) if "Content-Length" in req.headers else None
         with open(dst, "xb") as f, tqdm(
             total=file_size,
             unit="B",
