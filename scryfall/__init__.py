@@ -1,4 +1,5 @@
 from scryfall.scryfall import (
+    canonic_card_name,
     card_by_id,
     cards_by_oracle_id,
     get_card,
@@ -12,6 +13,7 @@ from scryfall.scryfall import (
 )
 
 __all__ = [
+    "canonic_card_name",
     "get_card",
     "get_cards",
     "get_faces",

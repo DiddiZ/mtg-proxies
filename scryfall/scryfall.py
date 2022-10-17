@@ -121,6 +121,16 @@ def _get_database(database_name="default_cards"):
         return json.load(json_file)
 
 
+def canonic_card_name(card_name: str) -> str:
+    """Get canonic card name representation."""
+    card_name = card_name.lower()
+
+    # Replace special chars
+    card_name = card_name.replace("æ", "ae")  # Sometimes used, e.g. in "Vedalken Aethermage"
+
+    return card_name
+
+
 def get_card(card_name: str, set_id: str = None, collector_number: str = None):
     """Find a card by it's name and possibly set and collector number.
 
@@ -157,7 +167,7 @@ def get_cards(database: str = "default_cards", **kwargs):
         if value is not None:
             value = value.lower()
             if key == "name":  # Normalize card name
-                value = value.replace("æ", "ae")
+                value = canonic_card_name(value)
             cards = [card for card in cards if key in card and card[key].lower() == value]
 
     return cards

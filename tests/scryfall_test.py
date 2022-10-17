@@ -20,3 +20,20 @@ def test_get_faces(id: str, n_faces: int):
     assert len(faces) == n_faces
     for face in faces:
         assert "illustration_id" in face
+
+
+@pytest.mark.parametrize(
+    "name,expected_id",
+    [
+        ("Vedalken Aethermage", "496eb37d-5c8f-4dd7-a0a7-3ed1bd2210d6"),
+        ("vedalken aethermage", "496eb37d-5c8f-4dd7-a0a7-3ed1bd2210d6"),
+        ("vedalken Æthermage", "496eb37d-5c8f-4dd7-a0a7-3ed1bd2210d6"),
+        ("vedalken æthermage", "496eb37d-5c8f-4dd7-a0a7-3ed1bd2210d6"),
+    ],
+)
+def test_canonic_card_name(name: str, expected_id: str):
+    import scryfall
+
+    card = scryfall.get_card(name)
+
+    assert card["id"] == expected_id

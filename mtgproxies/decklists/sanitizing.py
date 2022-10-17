@@ -19,16 +19,6 @@ def card_names():
     return cards_by_name, double_faced_by_front
 
 
-def sanitize_name(card_name: str) -> str:
-    """Get canonic name representation."""
-    card_name = card_name.lower()
-
-    # Replace special chars
-    card_name = card_name.replace("æ", "ae")
-
-    return card_name
-
-
 def validate_card_name(card_name: str):
     """Validate card name against the Scryfall database.
 
@@ -41,7 +31,7 @@ def validate_card_name(card_name: str):
     cards_by_name, double_faced_by_front = card_names()
 
     validated_name = None
-    sanizized_name = sanitize_name(card_name)
+    sanizized_name = scryfall.canonic_card_name(card_name)
     warnings = []
     if sanizized_name in cards_by_name:  # Exact match
         validated_name = cards_by_name[sanizized_name]
