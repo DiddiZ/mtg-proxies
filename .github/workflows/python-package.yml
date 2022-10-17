@@ -19,16 +19,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Install pipenv
-        run: pip install pipenv
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
-          cache: "pipenv"
-      - name: Install dependencies
+      - name: Install package
         run: |
-          pipenv install --deploy --python ${{ matrix.python-version }}
+          python -m pip install .
       - name: Test with pytest
         run: |
-          pipenv run python -m unittest discover -v -s "./tests" -p "*_test.py"
+          python -m unittest discover -v -s "./tests" -p "*_test.py"
