@@ -174,7 +174,7 @@ def get_faces(card):
     if "image_uris" in card:
         return [card]
     elif "card_faces" in card and "image_uris" in card["card_faces"][0]:
-        return [face for face in card["card_faces"]]
+        return card["card_faces"]
     else:
         raise ValueError(f"Unknown layout {card['layout']}")
 

@@ -144,6 +144,7 @@ setup(
         "dev": [
             "flake8",
             "flake8-docstrings",
+            "flake8-comprehensions",
             "yapf",
             "black",
             "pytest",

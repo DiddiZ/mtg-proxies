@@ -20,7 +20,7 @@ def card_names():
 
 
 def sanitize_name(card_name: str) -> str:
-    """Get canonic name representation"""
+    """Get canonic name representation."""
     card_name = card_name.lower()
 
     # Replace special chars

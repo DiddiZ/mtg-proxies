@@ -23,7 +23,7 @@ def parse_decklist(archidekt_id: str) -> tuple[Decklist, bool, list]:
 
     data = r.json()
 
-    in_deck = set(cat["name"] for cat in data["categories"] if cat["includedInDeck"])
+    in_deck = {cat["name"] for cat in data["categories"] if cat["includedInDeck"]}
 
     for item in data["cards"]:
         # Extract relevant data
