@@ -1,33 +1,32 @@
-import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
 
-class Test_Print(unittest.TestCase):
-    def test_print_pdf(self):
-        from mtgproxies import fetch_scans_scryfall, print_cards_fpdf
-        from mtgproxies.decklists import parse_decklist
+def test_print_pdf():
+    from mtgproxies import fetch_scans_scryfall, print_cards_fpdf
+    from mtgproxies.decklists import parse_decklist
 
-        decklist, _, _ = parse_decklist("examples/decklist.txt")
-        images = fetch_scans_scryfall(decklist)
+    decklist, _, _ = parse_decklist("examples/decklist.txt")
+    images = fetch_scans_scryfall(decklist)
 
-        with TemporaryDirectory() as dir:
-            out_file = Path(dir) / "decklist.pdf"
+    with TemporaryDirectory() as dir:
+        out_file = Path(dir) / "decklist.pdf"
 
-            print_cards_fpdf(images, out_file)
+        print_cards_fpdf(images, out_file)
 
-            self.assertTrue(out_file.is_file())
+        assert out_file.is_file()
 
-    def test_print_png(self):
-        from mtgproxies import fetch_scans_scryfall, print_cards_matplotlib
-        from mtgproxies.decklists import parse_decklist
 
-        decklist, _, _ = parse_decklist("examples/decklist.txt")
-        images = fetch_scans_scryfall(decklist)
+def test_print_png():
+    from mtgproxies import fetch_scans_scryfall, print_cards_matplotlib
+    from mtgproxies.decklists import parse_decklist
 
-        with TemporaryDirectory() as dir:
-            out_file = Path(dir) / "decklist.png"
+    decklist, _, _ = parse_decklist("examples/decklist.txt")
+    images = fetch_scans_scryfall(decklist)
 
-            print_cards_matplotlib(images, str(out_file))
+    with TemporaryDirectory() as dir:
+        out_file = Path(dir) / "decklist.png"
 
-            self.assertTrue((Path(dir) / "decklist_000.png").is_file())
+        print_cards_matplotlib(images, str(out_file))
+
+        assert (Path(dir) / "decklist_000.png").is_file()
