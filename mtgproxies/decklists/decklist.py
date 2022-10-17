@@ -14,7 +14,9 @@ from mtgproxies.decklists.sanitizing import validate_card_name, validate_print
 class Card:
     """Card in a decklist.
 
-    Composed of a count and a Scryfall object."""
+    Composed of a count and a Scryfall object.
+    """
+
     count: int
     card: dict
 
@@ -43,6 +45,7 @@ class Card:
 @dataclass
 class Comment:
     """Comment in a decklist."""
+
     text: str
 
     def __format__(self, format_spec: str) -> str:
@@ -55,6 +58,7 @@ class Decklist:
 
     Contains cards and comment lines.
     """
+
     entries: list[Card | Comment] = field(default_factory=list)
     name: str = None
 
@@ -136,7 +140,7 @@ def parse_decklist(filepath) -> tuple[Decklist, bool, list]:
 
 
 def parse_decklist_stream(stream) -> tuple[Decklist, bool, list]:
-    """Parse card information from a decklist in text or MtG Arena (or mixed) format from a stream
+    """Parse card information from a decklist in text or MtG Arena (or mixed) format from a stream.
 
     See:
         parse_decklist

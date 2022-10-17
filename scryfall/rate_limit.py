@@ -4,6 +4,7 @@ import time
 
 class RateLimiter:
     """Context manager for enforcing a rate limit to API calls."""
+
     def __init__(self, delay: float):
         """Initialie this RateLimit.
 

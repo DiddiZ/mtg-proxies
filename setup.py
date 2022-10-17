@@ -125,7 +125,13 @@ setup(
     #
     # For an analysis of "install_requires" vs pip's requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
-    install_requires=["numpy", "matplotlib", "requests", "tqdm", "fpdf2"],  # Optional
+    install_requires=[
+        "numpy",
+        "matplotlib",
+        "requests",
+        "tqdm",
+        "fpdf2",
+    ],
     # List additional groups of dependencies here (e.g. development
     # dependencies). Users will be able to install these using the "extras"
     # syntax, for example:
@@ -134,7 +140,7 @@ setup(
     #
     # Similar to `install_requires` above, these must be valid existing
     # projects.
-    extras_require={"dev": ["flake8", "yapf",]},  # Optional
+    extras_require={"dev": ["flake8", "flake8-docstrings", "yapf", "black"]},  # Optional
     # If there are data files included in your packages that need to be
     # installed, specify them here.
     #

@@ -6,9 +6,10 @@ class SplitPages:
 
     This mirrors the functionality of the `PdfPages` wrapper from matplotlib.
     """
+
     def __init__(self, filename):
-        self.file_basename = filename[:filename.rindex(".")]
-        self.file_extension = filename[filename.rindex("."):]
+        self.file_basename = filename[: filename.rindex(".")]
+        self.file_extension = filename[filename.rindex(".") :]
         self.pagecount = 0
 
     def __enter__(self):

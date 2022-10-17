@@ -3,7 +3,7 @@
   "python.linting.flake8Enabled": true,
   "python.linting.enabled": true,
   "editor.formatOnSave": true,
-  "python.formatting.provider": "yapf",
+  "python.formatting.provider": "black",
   "python.testing.unittestArgs": ["-v", "-s", "./tests", "-p", "*_test.py"],
   "python.testing.unittestEnabled": true
 }

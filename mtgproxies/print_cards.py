@@ -72,8 +72,9 @@ def print_cards_matplotlib(
                         # Compute extent
                         lower = (offset + _occupied_space(cardsize, np.array([x, y]), border_crop)) / papersize
                         upper = (
-                            offset + _occupied_space(cardsize, np.array([x, y]), border_crop) + cardsize *
-                            (image_size - [left, top]) / image_size
+                            offset
+                            + _occupied_space(cardsize, np.array([x, y]), border_crop)
+                            + cardsize * (image_size - [left, top]) / image_size
                         ) / papersize
                         extent = [lower[0], upper[0], 1 - upper[1], 1 - lower[1]]  # flip y-axis
 
@@ -102,7 +103,7 @@ def print_cards_fpdf(
     cardsize=np.array([2.5 * 25.4, 3.5 * 25.4]),
     border_crop: int = 14,
     background_color: tuple[int, int, int] = None,
-    cropmarks: bool = True
+    cropmarks: bool = True,
 ):
     """Print a list of cards to a pdf file.
 
@@ -126,7 +127,7 @@ def print_cards_fpdf(
     Path(filepath).parent.mkdir(parents=True, exist_ok=True)
 
     # Initialize PDF
-    pdf = FPDF(orientation='P', unit='mm', format='A4')
+    pdf = FPDF(orientation="P", unit="mm", format="A4")
 
     for i, image in enumerate(tqdm(images, desc="Plotting cards")):
         if i % cards_per_sheet == 0:  # Startign a new sheet
@@ -171,4 +172,4 @@ def print_cards_fpdf(
                     pdf.line(mark[0], mark[1] - 0.5, mark[0], mark[1] + 0.5)
 
     tqdm.write(f"Writing to {filepath}")
-    pdf.output(filepath, 'F')
+    pdf.output(filepath, "F")
