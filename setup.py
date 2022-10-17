@@ -130,7 +130,7 @@ setup(
         "matplotlib",
         "requests",
         "tqdm",
-        "fpdf2",
+        "fpdf2>=2.3.0",
     ],
     # List additional groups of dependencies here (e.g. development
     # dependencies). Users will be able to install these using the "extras"

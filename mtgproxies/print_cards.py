@@ -172,4 +172,4 @@ def print_cards_fpdf(
                     pdf.line(mark[0], mark[1] - 0.5, mark[0], mark[1] + 0.5)
 
     tqdm.write(f"Writing to {filepath}")
-    pdf.output(filepath, "F")
+    pdf.output(filepath)
