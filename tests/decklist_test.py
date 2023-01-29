@@ -19,7 +19,7 @@ def test_parsing():
 @pytest.mark.parametrize(
     "archidekt_id,expected_first_card",
     [
-        ("1212142", "Basilisk Collar"),
+        ("1212142", "Squirrel Nest"),
         ("42", "Merieke Ri Berit"),
     ],
 )
