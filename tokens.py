@@ -3,9 +3,10 @@ from pathlib import Path
 
 import scryfall
 from mtgproxies.cli import parse_decklist_spec
+from mtgproxies.decklists import Decklist
 
 
-def get_tokens(decklist):
+def get_tokens(decklist: Decklist):
     tokens = {}
     for card in decklist.cards:
         if card["layout"] in ["token", "double_faced_token"]:

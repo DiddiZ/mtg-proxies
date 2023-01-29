@@ -5,6 +5,7 @@ import re
 from collections import Counter
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import Any
 
 import scryfall
 from mtgproxies.decklists.sanitizing import validate_card_name, validate_print
@@ -18,12 +19,12 @@ class Card:
     """
 
     count: int
-    card: dict
+    card: dict[str | Any]
 
-    def __getitem__(self, key):
+    def __getitem__(self, key: str):
         return self.card[key]
 
-    def __contains__(self, key):
+    def __contains__(self, key: str):
         return key in self.card
 
     @property
@@ -34,7 +35,7 @@ class Card:
         """
         return [face["image_uris"] for face in scryfall.get_faces(self.card)]
 
-    def __format__(self, format_spec):
+    def __format__(self, format_spec: str) -> str:
         if format_spec == "text":
             return f"{self.count} {self['name']}"
         if format_spec == "arena":
@@ -63,16 +64,18 @@ class Decklist:
     name: str = None
 
     def append_card(self, count, card) -> None:
+        """Append a card line to this decklist."""
         self.entries.append(Card(count, card))
 
     def append_comment(self, text) -> None:
+        """Append a comment line to this decklist."""
         self.entries.append(Comment(text))
 
     def extend(self, other: Decklist) -> None:
         """Append another decklist to this."""
         self.entries.extend(other.entries)
 
-    def save(self, file, fmt="arena", mode="w") -> None:
+    def save(self, file: str | Path, fmt="arena", mode="w") -> None:
         """Write decklist to a file.
 
         Args:

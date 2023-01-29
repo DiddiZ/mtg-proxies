@@ -6,7 +6,7 @@ from mtgproxies import fetch_scans_scryfall, print_cards_fpdf, print_cards_matpl
 from mtgproxies.cli import parse_decklist_spec
 
 
-def papersize(string):
+def papersize(string: str) -> np.ndarray:
     spec = string.lower()
     if spec == "a4":
         return np.array([21, 29.7]) / 2.54

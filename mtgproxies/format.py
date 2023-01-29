@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 
-def format_print(card_name, set_id: str = None, collector_number: str = None):
+def format_print(card_name: str | dict, set_id: str = None, collector_number: str = None) -> str:
     if "name" in card_name:
         card_name, set_id, collector_number = card_name["name"], card_name["set"], card_name["collector_number"]
 
@@ -35,7 +35,7 @@ def listing(items: list[str], sep: str, final_sep: str, max_items: int = None) -
         return sep.join(items[:max_items] + ["..."])
 
 
-def format_token(card) -> str:
+def format_token(card: dict) -> str:
     # Double faced cards
     if "colors" not in card:
         return format_token(card["card_faces"][0]) + " // " + format_token(card["card_faces"][1])

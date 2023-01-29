@@ -5,15 +5,9 @@ https://github.com/pypa/sampleproject
 Modified by Madoshakalaka@Github (dependency links added)
 """
 
-# Always prefer setuptools over distutils
-from setuptools import setup, find_packages
 from os import path
 
-# io.open is needed for projects that support Python 2.7
-# It ensures open() defaults to text mode with universal newlines,
-# and accepts an argument to specify the text encoding
-# Python 3 only projects can skip this import
-from io import open
+from setuptools import find_packages, setup
 
 here = path.abspath(path.dirname(__file__))
 
@@ -143,10 +137,15 @@ setup(
     extras_require={
         "dev": [
             "flake8",
-            "flake8-docstrings",
+            "flake8-annotations",
             "flake8-comprehensions",
-            "yapf",
+            "flake8-docstrings",
+            "flake8-requirements",
+            "flake8-simplify",
+            "flake8-use-fstring",
+            "flake8-use-pathlib",
             "black",
+            "isort",
             "pytest",
             "pytest-cov",
         ]

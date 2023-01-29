@@ -110,7 +110,7 @@ def search(q: str) -> list[dict]:
 
 
 @lru_cache(maxsize=None)
-def _get_database(database_name="default_cards"):
+def _get_database(database_name: str = "default_cards"):
     databases = depaginate("https://api.scryfall.com/bulk-data")
     bulk_data = [database for database in databases if database["type"] == database_name]
     if len(bulk_data) != 1:
@@ -131,7 +131,7 @@ def canonic_card_name(card_name: str) -> str:
     return card_name
 
 
-def get_card(card_name: str, set_id: str = None, collector_number: str = None):
+def get_card(card_name: str, set_id: str = None, collector_number: str = None) -> dict | None:
     """Find a card by it's name and possibly set and collector number.
 
     In case, the Scryfall database contains multiple cards, the first is returned.
@@ -198,7 +198,7 @@ def recommend_print(current=None, card_name=None, oracle_id=None, mode="best"):
     else:
         alternatives = get_cards(name=card_name)
 
-    def score(card):
+    def score(card: dict):
         points = 0
         if card["set"] != "mb1" and card["border_color"] != "gold":
             points += 1
@@ -293,7 +293,7 @@ def cards_by_oracle_id():
 
 
 @lru_cache(maxsize=None)
-def oracle_ids_by_name():
+def oracle_ids_by_name() -> dict[str, list[dict]]:
     """Create dictionary to look up oracle ids by their name.
 
     Faster than repeated lookup via `get_cards(oracle_id=oracle_id)`.
@@ -319,7 +319,7 @@ def oracle_ids_by_name():
     return oracle_ids_by_name
 
 
-def get_price(oracle_id: str, currency: str = "eur", foil: bool = None):
+def get_price(oracle_id: str, currency: str = "eur", foil: bool = None) -> float | None:
     """Find lowest price for oracle id.
 
     Args:

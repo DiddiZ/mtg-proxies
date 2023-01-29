@@ -5,7 +5,7 @@ import time
 class RateLimiter:
     """Context manager for enforcing a rate limit to API calls."""
 
-    def __init__(self, delay: float):
+    def __init__(self, delay: float) -> None:
         """Initialie this RateLimit.
 
         Args:
@@ -15,7 +15,7 @@ class RateLimiter:
         self.lock = threading.Lock()
         self.last_call = 0
 
-    def __enter__(self):
+    def __enter__(self) -> None:
         with self.lock:  # Prevent asynchronous access
             # Check time since last call
             if time.time() < self.last_call + self.delay:  # Wait if neccessary
@@ -23,5 +23,5 @@ class RateLimiter:
             self.last_call = time.time()
         return self
 
-    def __exit__(self, type, value, traceback):
+    def __exit__(self, type, value, traceback) -> None:
         pass  # Nothing to do here

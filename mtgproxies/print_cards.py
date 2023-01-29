@@ -13,7 +13,7 @@ from mtgproxies.plotting import SplitPages
 image_size = np.array([745, 1040])
 
 
-def _occupied_space(cardsize, pos, border_crop, closed=False):
+def _occupied_space(cardsize, pos, border_crop, closed: bool = False):
     return cardsize * (pos * image_size - np.clip(2 * pos - 1 - closed, 0, None) * border_crop) / image_size
 
 
