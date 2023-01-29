@@ -53,6 +53,7 @@ if __name__ == "__main__":
         default=None,
         metavar="COLOR",
     )
+    parser.add_argument("--cropmarks", action=argparse.BooleanOptionalAction, default=True, help="add crop marks")
     args = parser.parse_args()
 
     # Parse decklist
@@ -76,6 +77,7 @@ if __name__ == "__main__":
             cardsize=np.array([2.5, 3.5]) * 25.4 * args.scale,
             border_crop=args.border_crop,
             background_color=background_color,
+            cropmarks=args.cropmarks,
         )
     else:
         print_cards_matplotlib(

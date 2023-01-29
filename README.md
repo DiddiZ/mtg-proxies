@@ -110,6 +110,8 @@ optional arguments:
   --scale FLOAT         scaling factor for printed cards (default: 1.0)
   --border_crop PIXELS  how much to crop inner borders of printed cards (default: 14)
   --background COLOR    background color, either by name or by hex code (e.g. black or "#ff0000", default: None)
+  --cropmarks, --no-cropmarks
+                        add crop marks (default: True)
 ```
 
 ### convert
