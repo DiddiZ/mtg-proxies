@@ -45,15 +45,14 @@ git clone https://github.com/DiddiZ/mtg-proxies.git
 cd mtg-proxies
 ```
 
-2. Install requirements. Requires at least [Python 3.7](https://www.python.org/downloads/).
+2. Install requirements. Requires at least [Python 3.9](https://www.python.org/downloads/).
 
 ```bash
 # On Linux, use `python3` instead of `python`
-python -m pip install --user -U pipenv
-
-# Make sure pipenv is included in your PATH, otherwise the next step will fail
-pipenv install --deploy
+python -m pip install .
 ```
+
+You can also use a [virtual environment](https://docs.python.org/3/library/venv.html).
 
 3. (Optional) Prepare your decklist in MtG Arena format.
    This is not required, but recommended as it allows for more control over the process.
