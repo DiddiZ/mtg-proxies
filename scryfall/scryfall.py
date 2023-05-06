@@ -191,7 +191,11 @@ def get_faces(card):
 
 def recommend_print(current=None, card_name=None, oracle_id=None, mode="best"):
     if current is not None and oracle_id is None:  # Use oracle id of current
-        oracle_id = current["oracle_id"]
+        if current.get("layout") == "reversible_card":
+            # Reversible cards have the same oracle id for both faces
+            oracle_id = current["card_faces"][0]["oracle_id"]
+        else:
+            oracle_id = current["oracle_id"]
 
     if oracle_id is not None:
         alternatives = cards_by_oracle_id()[oracle_id]
@@ -289,6 +293,8 @@ def cards_by_oracle_id():
     for c in get_cards():
         if "oracle_id" in c:  # Not all cards have a oracle id, *sigh*
             cards_by_oracle_id[c["oracle_id"]].append(c)
+        elif "card_faces" in c and "oracle_id" in c["card_faces"][0]:
+            cards_by_oracle_id[c["card_faces"][0]["oracle_id"]].append(c)
     return cards_by_oracle_id
 
 

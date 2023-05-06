@@ -30,3 +30,20 @@ def test_archidekt(archidekt_id: str, expected_first_card: str):
 
     assert ok
     assert decklist.cards[0]["name"] == expected_first_card
+
+
+def test_reversible_cards():
+    """Check that reversible cards are parsed correctly."""
+    from io import StringIO
+
+    from mtgproxies import fetch_scans_scryfall
+    from mtgproxies.decklists import parse_decklist_stream
+
+    decklist, ok, _ = parse_decklist_stream(StringIO("1 Propaganda // Propaganda (SLD) 381\n"))
+
+    assert ok
+    assert decklist.cards[0]["name"] == "Propaganda // Propaganda"
+
+    images = fetch_scans_scryfall(decklist)
+
+    assert len(images) == 2  # Front and back
