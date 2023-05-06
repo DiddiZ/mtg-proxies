@@ -33,10 +33,10 @@ def parse_colors(s):
         if word in reverse_color_names:
             colors.add(reverse_color_names[word])
 
-    return sorted(list(colors))
+    return sorted(colors)
 
 
-def parse_oracle(s):
+def parse_oracle(s: str) -> str:
     if s is None:
         return ""
 
@@ -44,7 +44,6 @@ def parse_oracle(s):
 
 
 if __name__ == "__main__":
-
     # token = find_token("Token Creature — Insect", "1", "1", None, None)
     # quit()
 

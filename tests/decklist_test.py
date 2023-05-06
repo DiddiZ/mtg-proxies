@@ -11,7 +11,7 @@ def test_parsing():
     assert ok
     assert len(warnings) == 0
 
-    with open("examples/decklist.txt", "r", encoding="utf-8") as f:
+    with open("examples/decklist.txt", encoding="utf-8") as f:
         # Ignore differences in linebreaks
         assert (format(decklist, "arena") + os.linesep).replace("\r\n", "\n") == f.read().replace("\r\n", "\n")
 

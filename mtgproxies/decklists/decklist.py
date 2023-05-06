@@ -133,7 +133,7 @@ def parse_decklist(filepath) -> tuple[Decklist, bool, list]:
         ok: whether all cards could be found.
         warnings: List of (entry, warning) tuples
     """
-    with open(filepath, "r", encoding="utf-8") as f:
+    with open(filepath, encoding="utf-8") as f:
         decklist, ok, warnings = parse_decklist_stream(f)
 
     # Use file name without extension as name

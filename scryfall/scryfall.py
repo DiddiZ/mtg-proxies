@@ -5,7 +5,6 @@ See:
 """
 from __future__ import annotations
 
-import io
 import json
 import threading
 from collections import defaultdict
@@ -117,7 +116,7 @@ def _get_database(database_name: str = "default_cards"):
         raise ValueError(f"Unknown database {database_name}")
 
     bulk_file = get_file(bulk_data[0]["download_uri"].split("/")[-1], bulk_data[0]["download_uri"])
-    with io.open(bulk_file, mode="r", encoding="utf-8") as json_file:
+    with open(bulk_file, encoding="utf-8") as json_file:
         return json.load(json_file)
 
 
@@ -189,7 +188,7 @@ def get_faces(card):
         raise ValueError(f"Unknown layout {card['layout']}")
 
 
-def recommend_print(current=None, card_name=None, oracle_id=None, mode="best"):
+def recommend_print(current=None, card_name: str | None = None, oracle_id: str | None = None, mode="best"):
     if current is not None and oracle_id is None:  # Use oracle id of current
         if current.get("layout") == "reversible_card":
             # Reversible cards have the same oracle id for both faces
