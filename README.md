@@ -49,7 +49,7 @@ cd mtg-proxies
 
 ```bash
 # On Linux, use `python3` instead of `python`
-python -m pip install .
+python -m pip install -e .
 ```
 
 You can also use a [virtual environment](https://docs.python.org/3/library/venv.html).
@@ -73,13 +73,13 @@ E.g.:
 Or use the `convert.py` tool to convert a plain decklist to Arena format:
 
 ```bash
-pipenv run python convert.py examples/decklist_text.txt examples/decklist.txt
+python convert.py examples/decklist_text.txt examples/decklist.txt
 ```
 
 4. Create a PDF file.
 
 ```bash
-pipenv run python print.py examples/decklist.txt decklist.pdf
+python print.py examples/decklist.txt decklist.pdf
 ```
 
 Examples:
@@ -87,15 +87,15 @@ Examples:
 - Create separate outputs for front and back faces
 
 ```bash
-pipenv run python print.py examples/decklist.txt decklist_fronts.pdf --face front
-pipenv run python print.py examples/decklist.txt decklist_backs.pdf --face back
+python print.py examples/decklist.txt decklist_fronts.pdf --face front
+python print.py examples/decklist.txt decklist_backs.pdf --face back
 ```
 
 ## Updating
 
 ```bash
 git pull --ff-only
-pipenv install --deploy
+python -m pip install -e .
 ```
 
 ## Help
@@ -161,7 +161,7 @@ optional arguments:
 Example:
 
 ```bash
-pipenv run python tokens.py examples/token_generators.txt
+python tokens.py examples/token_generators.txt
 ```
 
 ### Deck Value Decomposition
