@@ -1,16 +1,19 @@
 from __future__ import annotations
 
+from typing import Literal
+
 from tqdm import tqdm
 
 import scryfall
 from mtgproxies.decklists.decklist import Decklist
 
 
-def fetch_scans_scryfall(decklist: Decklist) -> list[str]:
+def fetch_scans_scryfall(decklist: Decklist, faces: Literal["all", "front", "back"] = "all") -> list[str]:
     """Search Scryfall for scans of a decklist.
 
     Args:
-        decklist: List of (count, name, set_id, collectors_number)-tuples
+        decklist: The decklist to fetch scans for
+        faces: Which faces to fetch ("all", "front", "back")
 
     Returns:
         List: List of image files
@@ -18,6 +21,7 @@ def fetch_scans_scryfall(decklist: Decklist) -> list[str]:
     return [
         scan
         for card in tqdm(decklist.cards, desc="Fetching artwork")
-        for image_uri in card.image_uris
+        for i, image_uri in enumerate(card.image_uris)
         for scan in [scryfall.get_image(image_uri["png"], silent=True)] * card.count
+        if faces == "all" or (faces == "front" and i == 0) or (faces == "back" and i > 0)
     ]

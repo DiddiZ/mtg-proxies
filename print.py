@@ -54,13 +54,19 @@ if __name__ == "__main__":
         metavar="COLOR",
     )
     parser.add_argument("--cropmarks", action=argparse.BooleanOptionalAction, default=True, help="add crop marks")
+    parser.add_argument(
+        "--faces",
+        help="which faces to print (default: %(default)s)",
+        choices=["all", "front", "back"],
+        default="all",
+    )
     args = parser.parse_args()
 
     # Parse decklist
     decklist = parse_decklist_spec(args.decklist)
 
     # Fetch scans
-    images = fetch_scans_scryfall(decklist)
+    images = fetch_scans_scryfall(decklist, faces=args.faces)
 
     # Plot cards
     if args.outfile.endswith(".pdf"):

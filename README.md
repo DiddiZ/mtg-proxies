@@ -82,6 +82,15 @@ pipenv run python convert.py examples/decklist_text.txt examples/decklist.txt
 pipenv run python print.py examples/decklist.txt decklist.pdf
 ```
 
+Examples:
+
+- Create separate outputs for front and back faces
+
+```bash
+pipenv run python print.py examples/decklist.txt decklist_fronts.pdf --face front
+pipenv run python print.py examples/decklist.txt decklist_backs.pdf --face back
+```
+
 ## Updating
 
 ```bash
@@ -111,6 +120,8 @@ optional arguments:
   --background COLOR    background color, either by name or by hex code (e.g. black or "#ff0000", default: None)
   --cropmarks, --no-cropmarks
                         add crop marks (default: True)
+  --faces {all,front,back}
+                        which faces to print (default: all)
 ```
 
 ### convert
