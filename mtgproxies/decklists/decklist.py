@@ -117,7 +117,7 @@ class Decklist:
         return decklist
 
 
-def parse_decklist(filepath) -> tuple[Decklist, bool, list]:
+def parse_decklist(filepath: str | Path) -> tuple[Decklist, bool, list]:
     """Parse card information from a decklist in text or MtG Arena (or mixed) format.
 
     E.g.:

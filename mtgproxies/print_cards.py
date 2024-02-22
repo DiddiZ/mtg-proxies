@@ -18,12 +18,12 @@ def _occupied_space(cardsize, pos, border_crop: int, closed: bool = False):
 
 
 def print_cards_matplotlib(
-    images,
-    filepath,
+    images: list[str | Path],
+    filepath: str | Path,
     papersize=np.array([8.27, 11.69]),
     cardsize=np.array([2.5, 3.5]),
     border_crop: int = 14,
-    interpolation="lanczos",
+    interpolation: str | None = "lanczos",
     dpi: int = 600,
     background_color=None,
 ):
@@ -43,10 +43,11 @@ def print_cards_matplotlib(
     offset = (papersize - _occupied_space(cardsize, N, border_crop, closed=True)) / 2
 
     # Ensure directory exists
-    Path(filepath).parent.mkdir(parents=True, exist_ok=True)
+    filepath = Path(filepath)
+    filepath.parent.mkdir(parents=True, exist_ok=True)
 
     # Choose pdf of image saver
-    if filepath[-4:] == ".pdf":
+    if filepath.suffix == ".pdf":
         saver = PdfPages
     else:
         saver = SplitPages
@@ -97,8 +98,8 @@ def print_cards_matplotlib(
 
 
 def print_cards_fpdf(
-    images,
-    filepath,
+    images: list[str | Path],
+    filepath: str | Path,
     papersize=np.array([210, 297]),
     cardsize=np.array([2.5 * 25.4, 3.5 * 25.4]),
     border_crop: int = 14,
@@ -124,7 +125,8 @@ def print_cards_fpdf(
     offset = (papersize - _occupied_space(cardsize, N, border_crop, closed=True)) / 2
 
     # Ensure directory exists
-    Path(filepath).parent.mkdir(parents=True, exist_ok=True)
+    filepath = Path(filepath)
+    filepath.parent.mkdir(parents=True, exist_ok=True)
 
     # Initialize PDF
     pdf = FPDF(orientation="P", unit="mm", format="A4")

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from pathlib import Path
 from types import TracebackType
 
 import matplotlib.pyplot as plt
@@ -11,10 +12,9 @@ class SplitPages:
     This mirrors the functionality of the `PdfPages` wrapper from matplotlib.
     """
 
-    def __init__(self, filename: str) -> None:
+    def __init__(self, filename: Path | str) -> None:
         """Create a new SplitPages object."""
-        self.file_basename = filename[: filename.rindex(".")]
-        self.file_extension = filename[filename.rindex(".") :]
+        self.filename = Path(filename)
         self.pagecount = 0
 
     def __enter__(self) -> SplitPages:
@@ -36,6 +36,6 @@ class SplitPages:
         if figure is None:
             figure = plt.gcf()
 
-        filename = self.file_basename + f"_{self.pagecount:03}" + self.file_extension
-        plt.savefig(filename, **kwargs)
+        filename = self.filename.parent / f"{self.filename.stem}_{self.pagecount:03}{self.filename.suffix}"
+        figure.savefig(filename, **kwargs)
         self.pagecount += 1
