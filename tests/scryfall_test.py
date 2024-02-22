@@ -16,7 +16,7 @@ def test_get_faces(id: str, n_faces: int):
     card = scryfall.card_by_id()[id]
     faces = scryfall.get_faces(card)
 
-    assert type(faces) == list
+    assert type(faces) is list
     assert len(faces) == n_faces
     for face in faces:
         assert "illustration_id" in face

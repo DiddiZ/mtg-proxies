@@ -104,7 +104,7 @@ def print_cards_fpdf(
     border_crop: int = 14,
     background_color: tuple[int, int, int] = None,
     cropmarks: bool = True,
-):
+) -> None:
     """Print a list of cards to a pdf file.
 
     Args:

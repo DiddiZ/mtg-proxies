@@ -24,7 +24,7 @@ def find_token(type_line, power, toughness, colors, oracle_text):
     return scryfall.recommend_print(oracle_id=cards[0]["oracle_id"])
 
 
-def parse_colors(s):
+def parse_colors(s: str):
     colors = set()
 
     reverse_color_names = {value: key for key, value in color_names.items()}

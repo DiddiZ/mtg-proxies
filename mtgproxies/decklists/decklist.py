@@ -21,10 +21,10 @@ class Card:
     count: int
     card: dict[str | Any]
 
-    def __getitem__(self, key: str):
+    def __getitem__(self, key: str) -> Any:
         return self.card[key]
 
-    def __contains__(self, key: str):
+    def __contains__(self, key: str) -> bool:
         return key in self.card
 
     @property
@@ -63,7 +63,7 @@ class Decklist:
     entries: list[Card | Comment] = field(default_factory=list)
     name: str = None
 
-    def append_card(self, count, card) -> None:
+    def append_card(self, count: int, card) -> None:
         """Append a card line to this decklist."""
         self.entries.append(Card(count, card))
 

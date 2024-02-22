@@ -19,8 +19,8 @@ def test_parsing():
 @pytest.mark.parametrize(
     "archidekt_id,expected_first_card",
     [
-        ("1212142", "Squirrel Nest"),
-        ("42", "Merieke Ri Berit"),
+        ("1212142", "Emerald Medallion"),
+        ("42", "Dromar's Cavern"),
     ],
 )
 def test_archidekt(archidekt_id: str, expected_first_card: str):

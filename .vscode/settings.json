@@ -1,10 +1,16 @@
 {
-  "python.linting.pylintEnabled": false,
-  "python.linting.flake8Enabled": true,
-  "python.linting.enabled": true,
   "editor.formatOnSave": true,
-  "python.formatting.provider": "black",
   "python.testing.pytestArgs": ["tests"],
   "python.testing.pytestEnabled": true,
-  "git.rebaseWhenSync": true
+  "git.rebaseWhenSync": true,
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit"
+    }
+  },
+  "window.title": "${dirty}${rootName}${separator}${activeEditorShort}"
 }

@@ -1,5 +1,8 @@
+from __future__ import annotations
+
 import threading
 import time
+from types import TracebackType
 
 
 class RateLimiter:
@@ -23,5 +26,10 @@ class RateLimiter:
             self.last_call = time.time()
         return self
 
-    def __exit__(self, type, value, traceback) -> None:
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: TracebackType | None,
+    ) -> None:
         pass  # Nothing to do here

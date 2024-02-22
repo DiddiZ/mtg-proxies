@@ -6,14 +6,15 @@ https://github.com/pypa/sampleproject
 Modified by Madoshakalaka@Github (dependency links added)
 """
 
-from os import path
+from pathlib import Path
 
 from setuptools import find_packages, setup
 
-here = path.abspath(path.dirname(__file__))
+here = Path(__file__).parent
+
 
 # Get the long description from the README file
-with open(path.join(here, "README.md"), encoding="utf-8") as f:
+with open(here / "README.md", encoding="utf-8") as f:
     long_description = f.read()
 
 # Arguments marked as "Required" below must be included for upload to PyPI.

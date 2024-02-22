@@ -4,7 +4,7 @@ from mtgproxies.decklists import archidekt, manastack, parse_decklist
 from mtgproxies.decklists.decklist import Decklist
 
 
-def parse_decklist_spec(decklist_spec: str, warn_levels=["ERROR", "WARNING", "COSMETIC"]) -> Decklist:
+def parse_decklist_spec(decklist_spec: str, warn_levels=("ERROR", "WARNING", "COSMETIC")) -> Decklist:
     """Attempt to parse a decklist from different locations.
 
     Args:

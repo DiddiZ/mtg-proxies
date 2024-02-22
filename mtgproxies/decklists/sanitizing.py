@@ -56,7 +56,7 @@ def validate_card_name(card_name: str):
     return validated_name, warnings
 
 
-def get_print_warnings(card):
+def get_print_warnings(card) -> list[str]:
     """Returns warnings for low-resolution scans."""
     warnings = []
     if not card["highres_image"] or card["digital"]:
