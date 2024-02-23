@@ -15,7 +15,6 @@ def example_images() -> list[str]:
 
 
 def test_example_images(example_images: list[str]):
-
     assert len(example_images) == 7
 
 

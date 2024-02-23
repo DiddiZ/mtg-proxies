@@ -47,3 +47,13 @@ repos:
         args:
           - "--tab-width"
           - "2"
+  - repo: https://github.com/shssoichiro/oxipng
+    rev: v9.0.0
+    hooks:
+      - id: oxipng
+        args:
+          - "-o"
+          - "max"
+          - "--strip"
+          - "safe"
+          - "--alpha"
