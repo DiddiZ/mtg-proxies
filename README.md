@@ -20,13 +20,13 @@ Create a high quality printable PDF from your decklist or a list of cards you wa
   The Arena format is recommended, as it allows you to keep the same prints when moving decklists between multiple tools.
   There are even cases (i.e. tokens) where the name alone is not sufficient to uniquely specify a card.
   The Arena format helps in these case, as set and collector number are unique identifiers.
-  However, as tools often only work with one of these formats, `mtg-proxies` is a flexible as possible, even supporting mixed mode.
-  This is especially when you are making quick additions to a decklist and don't want to search for set and collector numbers.
+  However, as tools often only work with one of these formats, `mtg-proxies` is as flexible as possible, even supporting mixed mode.
+  This is especially useful when you are making quick additions to a decklist and don't want to search for set and collector numbers.
   The `convert.py` tool can be used to convert decklists between the two formats.
 
 - **Sanity checks and recommender engine**  
   `mtg-proxies` warns you if you attempt to print a low-resolution scan and is able to offer alternatives.
-  The `convert.py` tool can automatically selects the best print for each card in a decklist with high accuracy, eliminating the need to manually select good prints.
+  The `convert.py` tool can automatically select the best print for each card in a decklist with high accuracy, eliminating the need to manually select good prints.
 
 - **Token support**  
   The `tokens.py` tool appends the tokens created by the cards in a decklist to it, so you don't miss one accidentally. Caveat: This only works when Scryfall has the data on associated tokens. This is the case for cards printed or reprinted since Tenth Edition.
@@ -34,53 +34,69 @@ Create a high quality printable PDF from your decklist or a list of cards you wa
 - **ManaStack and Archidekt integration**
   Directly use ManaStack and Archidekt deck ids as input for many functions instead of local decklist files.
 
-  Decks on Archidekt must be set to public to be read.
+  Decks on Archidekt must be set as public to be read.
 
 ## Usage
 
 1. Clone or download this repo.
 
-```bash
-git clone https://github.com/DiddiZ/mtg-proxies.git
-cd mtg-proxies
-```
+   ```bash
+   git clone https://github.com/DiddiZ/mtg-proxies.git
+   cd mtg-proxies
+   ```
 
 2. Install requirements. Requires at least [Python 3.9](https://www.python.org/downloads/).
+   You can use pip or PDM to install the dependencies.
 
-```bash
-# On Linux, use `python3` instead of `python`
-python -m pip install -e .
-```
-
-You can also use a [virtual environment](https://docs.python.org/3/library/venv.html).
+   - Install using pip (you can use a [virtual environment](https://docs.python.org/3/library/venv.html)).
+     ```bash
+     # On Linux, use `python3` instead of `python`
+     python -m venv .venv # Create a virtual environment
+     source .venv/bin/activate # Activate the virtual environment
+     # on Windows, run .venv\Scripts\activate.bat or .venv\Scripts\Activate.ps1
+     python -m pip install -e . # Install in editable mode
+     ```
+   - Install using PDM (recommended)
+     ```bash
+     pdm install # creates a virtual env. and installs dependencies on its own
+     ```
 
 3. (Optional) Prepare your decklist in MtG Arena format.
    This is not required, but recommended as it allows for more control over the process.
 
-```txt
-COUNT FULL_NAME (SET) COLLECTOR_NUMBER
-```
+   ```txt
+   COUNT FULL_NAME (SET) COLLECTOR_NUMBER
+   ```
 
-E.g.:
+   E.g.:
 
-```txt
-1 Alela, Artful Provocateur (ELD) 324
-1 Korvold, Fae-Cursed King (ELD) 329
-1 Liliana, Dreadhorde General (WAR) 97
-1 Murderous Rider // Swift End (ELD) 287
-```
+   ```txt
+   1 Alela, Artful Provocateur (ELD) 324
+   1 Korvold, Fae-Cursed King (ELD) 329
+   1 Liliana, Dreadhorde General (WAR) 97
+   1 Murderous Rider // Swift End (ELD) 287
+   ```
 
-Or use the `convert.py` tool to convert a plain decklist to Arena format:
+   Or use the `convert.py` tool to convert a plain decklist to Arena format:
 
-```bash
-python convert.py examples/decklist_text.txt examples/decklist.txt
-```
+   ```bash
+   python convert.py examples/decklist_text.txt examples/decklist.txt
+   ```
 
-4. Create a PDF file.
+4. Assemble your proxies into a document.
 
-```bash
-python print.py examples/decklist.txt decklist.pdf
-```
+   To find out what options are available, run:
+
+   ```bash
+   pdm run python print.py --help
+   ```
+
+   There are two commands available: `pdf` and `image`.
+
+   ```python
+   pdm run python print.py image --help
+   pdm run python print.py pdf --help
+   ```
 
 Examples:
 
@@ -103,25 +119,15 @@ python -m pip install -e .
 ### print
 
 ```txt
-pipenv run python print.py [-h] [--dpi DPI] decklist outfile
+pdm run python print.py --help
+Usage: print.py [OPTIONS] COMMAND [ARGS]...
 
-Prepare a decklist for printing.
+Options:
+  --help  Show this message and exit.
 
-positional arguments:
-  decklist_spec         path to a decklist in text/arena format, or manastack:{manastack_id}, or archidekt:{archidekt_id}
-  outfile               output file. Supports pdf, png and jpg.
-
-optional arguments:
-  -h, --help            show this help message and exit
-  --dpi DPI             dpi of output file (default: 300)
-  --paper WIDTHxHEIGHT  paper size in inches or preconfigured format (default: a4)
-  --scale FLOAT         scaling factor for printed cards (default: 1.0)
-  --border_crop PIXELS  how much to crop inner borders of printed cards (default: 14)
-  --background COLOR    background color, either by name or by hex code (e.g. black or "#ff0000", default: None)
-  --cropmarks, --no-cropmarks
-                        add crop marks (default: True)
-  --faces {all,front,back}
-                        which faces to print (default: all)
+Commands:
+  image  This command generates an image file at OUTPUT_FILE with the...
+  pdf    This command generates a PDF document at OUTPUT_FILE with the...
 ```
 
 ### convert

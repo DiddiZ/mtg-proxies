@@ -1,17 +1,18 @@
 from functools import lru_cache
+from pathlib import Path
 
-import scryfall
+from mtgproxies import scryfall
 from mtgproxies.format import format_print, format_token, listing
 
 
 @lru_cache(maxsize=None)
-def card_names():
+def card_names(cache_dir: Path):
     """Sets of valid card names.
 
     Cached for performance.
     """
     cards_by_name = {
-        card["name"].lower(): card["name"] for card in scryfall.get_cards() if card["layout"] not in ["art_series"]
+        card["name"].lower(): card["name"] for card in scryfall.get_cards(cache_dir=cache_dir) if card["layout"] not in ["art_series"]
     }
     double_faced_by_front = {
         name.split("//")[0].strip().lower(): name for name in cards_by_name.values() if "//" in name
@@ -19,7 +20,7 @@ def card_names():
     return cards_by_name, double_faced_by_front
 
 
-def validate_card_name(card_name: str):
+def validate_card_name(card_name: str, cache_dir: Path):
     """Validate card name against the Scryfall database.
 
     Returns:
@@ -28,7 +29,7 @@ def validate_card_name(card_name: str):
         ok: whether the card could be found.
     """
     # Unique names of all cards
-    cards_by_name, double_faced_by_front = card_names()
+    cards_by_name, double_faced_by_front = card_names(cache_dir=cache_dir)
 
     validated_name = None
     sanizized_name = scryfall.canonic_card_name(card_name)
@@ -70,7 +71,7 @@ def get_print_warnings(card) -> list[str]:
     return warnings
 
 
-def validate_print(card_name: str, set_id: str, collector_number: str):
+def validate_print(card_name: str, set_id: str, collector_number: str, cache_dir: Path):
     """Validate a print against the Scryfall database.
 
     Assumes card name is valid.
@@ -82,17 +83,17 @@ def validate_print(card_name: str, set_id: str, collector_number: str):
     warnings = []
 
     if set_id is None:
-        card = scryfall.recommend_print(card_name=card_name)
+        card = scryfall.recommend_print(card_name=card_name, cache_dir=cache_dir)
         # Warn for tokens, as they are not unique by name
         if card["layout"] in ["token", "double_faced_token"]:
             warnings.append(
                 ("WARNING", f"Tokens are not unique by name. Assuming '{card_name}' is a '{format_token(card)}'.")
             )
     else:
-        card = scryfall.get_card(card_name, set_id, collector_number)
+        card = scryfall.get_card(card_name=card_name, cache_dir=cache_dir, set_id=set_id, collector_number=collector_number)
         if card is None:  # No exact match
             # Find alternative print
-            card = scryfall.recommend_print(card_name=card_name)
+            card = scryfall.recommend_print(card_name=card_name, cache_dir=cache_dir)
             warnings.append(
                 (
                     "WARNING",
@@ -105,7 +106,7 @@ def validate_print(card_name: str, set_id: str, collector_number: str):
     quality_warnings = get_print_warnings(card)
     if len(quality_warnings) > 0:
         # Get recommendation
-        recommendation = scryfall.recommend_print(card)
+        recommendation = scryfall.recommend_print(current=card, cache_dir=cache_dir)
 
         # Format warnings string
         quality_warnings = listing(quality_warnings, ", ", " and ").capitalize()

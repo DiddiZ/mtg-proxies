@@ -1,12 +1,12 @@
 import argparse
 from pathlib import Path
 
-import scryfall
+from mtgproxies import scryfall
 from mtgproxies.cli import parse_decklist_spec
 from mtgproxies.decklists import Decklist
 
 
-def get_tokens(decklist: Decklist):
+def get_tokens(decklist: Decklist, cache_dir: Path):
     tokens = {}
     for card in decklist.cards:
         if card["layout"] in ["token", "double_faced_token"]:
@@ -19,11 +19,11 @@ def get_tokens(decklist: Decklist):
                     if related_card["component"] == "token":
                         # Related cards are only provided by their id.
                         # We need the oracle id to weed out duplicates
-                        related = scryfall.get_cards(id=related_card["id"])[0]
+                        related = scryfall.get_cards(cache_dir=cache_dir, id=related_card["id"])[0]
                         tokens[related["oracle_id"]] = related
 
     # Resolve oracle ids to actual cards.
-    return [scryfall.recommend_print(token) for token in tokens.values()]
+    return [scryfall.recommend_print(cache_dir=cache_dir, current=token) for token in tokens.values()]
 
 
 if __name__ == "__main__":
@@ -39,20 +39,20 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Parse decklist
-    decklist = parse_decklist_spec(args.decklist, warn_levels=["ERROR", "WARNING"])
+    decklist_ = parse_decklist_spec(args.decklist, warn_levels=["ERROR", "WARNING"])
 
     # Find tokens
-    tokens = get_tokens(decklist)
-    print(f"Found {len(tokens)} created tokens.")
+    tokens_ = get_tokens(decklist_)
+    print(f"Found {len(tokens_)} created tokens.")
 
     # Append tokens
-    decklist.append_comment("")
-    decklist.append_comment("Tokens")
-    for token in tokens:
-        decklist.append_card(1, token)
+    decklist_.append_comment("")
+    decklist_.append_comment("Tokens")
+    for t in tokens_:
+        decklist_.append_card(1, t)
 
     # Write decklist
     out_file = args.decklist if Path(args.decklist).is_file() else f"{args.decklist.split(':')[-1]}.txt"
-    decklist.save(out_file, fmt=args.format)
+    decklist_.save(out_file, fmt=args.format)
 
     print(f"Successfully appended to {Path(out_file).resolve()}.")
