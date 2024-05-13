@@ -67,7 +67,7 @@ def click_callback_cache_dir(ctx: click.Context, param: click.Parameter, value: 
 
 @click.group(name="print")
 @click.pass_context
-def ur_mom(ctx):
+def command_group_print(ctx):
     ctx.ensure_object(dict)
 
 
@@ -154,9 +154,9 @@ def common_cli_arguments(func):
     return func
 
 
-@ur_mom.command(name="pdf")
+@command_group_print.command(name="pdf")
 @common_cli_arguments
-def my_mom(
+def command_pdf(
     deck_list: list[str],
     output_file: Path,
     faces: Literal["all", "front", "back"],
@@ -209,17 +209,17 @@ def my_mom(
         cut_spacing_thickness=cut_spacing_thickness,
         border_crop=crop_border,
         background_color=background_color,
-        fill_corners=fill_corners,
+        filled_corners=fill_corners,
         page_safe_margin=page_safe_margin,
     )
 
     printer.assemble(card_image_filepaths=images, output_filepath=output_file)
 
 
-@ur_mom.command(name="image")
+@command_group_print.command(name="image")
 @common_cli_arguments
 @click.option("--dpi", "-d", type=int, default=300, help="DPI of the output image.")
-def his_mom(
+def command_image(
     deck_list: list[str],
     output_file: Path,
     faces: Literal["all", "front", "back"],
@@ -284,7 +284,7 @@ def his_mom(
 
 
 if __name__ == "__main__":
-    ur_mom(obj={})
+    command_group_print(obj={})
 
 
 #     parser = argparse.ArgumentParser(description="Prepare a decklist for printing.")

@@ -1,10 +1,7 @@
 import itertools
-
-import pytest
 from pathlib import Path
 
-
-TEST_ROOT_DIR = Path(__file__).parent
+import pytest
 
 
 @pytest.fixture(scope="session")
@@ -12,6 +9,13 @@ def cache_dir():
     test_cache = TEST_ROOT_DIR / ".test_cache"
     test_cache.mkdir(exist_ok=True)
     return test_cache
+
+
+@pytest.fixture(scope="session")
+def test_outputs_dir():
+    test_out_dir = TEST_ROOT_DIR / "outputs"
+    test_out_dir.mkdir(exist_ok=True)
+    return test_out_dir
 
 
 @pytest.fixture(scope="session")
@@ -45,3 +49,5 @@ def example_images_7(example_images_dir) -> list[Path]:
 def example_images_24(example_images_dir) -> list[Path]:
     return take_n_images(24, directory=example_images_dir)
 
+
+TEST_ROOT_DIR = Path(__file__).parent
