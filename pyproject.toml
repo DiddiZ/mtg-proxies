@@ -1,3 +1,126 @@
-[tool.black]
+[project]
+dynamic = ["version"]
+name = "MTG-Proxy-Print-Assembler"
+dependencies = [
+    "numpy",
+    "matplotlib",
+    "requests",
+    "tqdm",
+    "fpdf2>=2.3.0",
+    "nptyping>=2.5.0",
+    "Pillow>=10.3.0",
+    "click>=8.1.7",
+    "webcolors>=1.13",
+]
+requires-python = ">=3.9"
+classifiers = [  # Optional
+        # How mature is this project? Common values are
+        #   3 - Alpha
+        #   4 - Beta
+        #   5 - Production/Stable
+        "Development Status :: 4 - Beta",
+        "Topic :: Games/Entertainment :: Card Games",
+        # Pick your license as you wish
+        "License :: OSI Approved :: MIT License",
+        # Specify the Python versions you support here. In particular, ensure
+        # that you indicate whether you support Python 2, Python 3 or both.
+        # These classifiers are *not* checked by 'pip install'. See instead
+        # 'python_requires' below.
+        "Programming Language :: Python :: 3",
+]
+authors = [
+    {name = "Robin Kupper", email = "robin.kupper@rwth-aachen.de"},
+    {name = "Adam Bajger", email = "adambaj@seznam.cz"},
+]
+keywords = ["pdf", "proxies", "mtg", "magic-the-gathering", "mtg-cards", "scryfall", "decklist"]
+description="Print high-resolution MtG proxies."
+
+[project.urls]
+Homepage = "https://github.com/DiddiZ/mtg-proxies"
+
+[tool.setuptools.packages.find]
+include = ["mtgproxies", "scryfall"]
+
+
+
+[tool.pdm]
+[tool.pdm.dev-dependencies]
+dev = [
+    "mypy",
+    "pre-commit",
+    "ruff",
+]
+test = [
+    "pytest>=8.2.0",
+    "pytest-cov",
+]
+
+[tool.pdm.scripts]
+l = { composite = ["lint", "format", "mypy"] }
+test = "pytest tests"
+lint = "ruff check ."
+format = "ruff format ."
+mypy = "mypy ."
+post_install = { composite = [
+    "pre-commit install",
+    "pre-commit install --hook-type commit-msg",
+] }
+
+[build-system]
+requires = ["setuptools >= 61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.mypy]
+strict = true
+ignore_missing_imports = true
+
+[tool.ruff]
+fix = true
 line-length = 120
-target-version = ['py39', 'py310', 'py311', 'py312']
+target-version = "py311"
+extend-ignore = [
+    "ERA001", # commented out code
+    "D100",   # missing docstring in public module
+    "D101",   # missing docstring in public class
+    "D102",   # missing docstring in public method
+    "D103",   # missing docstring in public function
+    "D104",   # missing docstring in public package
+    "D105",   # missing docstring in magic method
+    "D106",   # missing docstring in public nested class
+    "D107",   # missing docstring in __init__
+]
+
+
+[tool.ruff.format]
+# Enable reformatting of code snippets in docstrings.
+docstring-code-format = true
+
+[tool.ruff.lint]
+unfixable = [
+    "ERA", # do not autoremove commented out code
+]
+extend-select = [
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "ERA", # flake8-eradicate/eradicate
+    "I",   # isort
+    "N",   # pep8-naming
+    "PIE", # flake8-pie
+    "PGH", # pygrep
+    "RUF", # ruff checks
+    "SIM", # flake8-simplify
+    "TCH", # flake8-type-checking
+    "TID", # flake8-tidy-imports
+    "UP",  # pyupgrade
+    "D",   # pydocstyle
+]
+
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"
+
+[tool.ruff.lint.isort]
+lines-after-imports = 2
+known-first-party = ["tests"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"

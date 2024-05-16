@@ -2,7 +2,7 @@ import argparse
 
 import matplotlib.pyplot as plt
 
-import scryfall
+from mtgproxies import scryfall
 from mtgproxies.cli import parse_decklist_spec
 
 if __name__ == "__main__":

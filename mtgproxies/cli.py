@@ -4,16 +4,17 @@ from mtgproxies.decklists import archidekt, manastack, parse_decklist
 from mtgproxies.decklists.decklist import Decklist
 
 
-def parse_decklist_spec(decklist_spec: str, warn_levels=("ERROR", "WARNING", "COSMETIC")) -> Decklist:
+def parse_decklist_spec(decklist_spec: str, cache_dir: Path, warn_levels=("ERROR", "WARNING", "COSMETIC")) -> Decklist:
     """Attempt to parse a decklist from different locations.
 
     Args:
         decklist_spec: File path or ManaStack id
+        cache_dir: Directory with cached files
         warn_levels: Levels of warnings to show
     """
     print("Parsing decklist ...")
     if Path(decklist_spec).is_file():  # Decklist is file
-        decklist, ok, warnings = parse_decklist(decklist_spec)
+        decklist, ok, warnings = parse_decklist(decklist_spec, cache_dir=cache_dir)
     elif decklist_spec.lower().startswith("manastack:") and decklist_spec.split(":")[-1].isdigit():
         # Decklist on Manastack
         manastack_id = decklist_spec.split(":")[-1]

@@ -7,7 +7,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-import scryfall
+from mtgproxies import scryfall
 from mtgproxies.decklists.sanitizing import validate_card_name, validate_print
 
 
@@ -117,7 +117,7 @@ class Decklist:
         return decklist
 
 
-def parse_decklist(filepath: str | Path) -> tuple[Decklist, bool, list]:
+def parse_decklist(filepath: str | Path, cache_dir: Path) -> tuple[Decklist, bool, list]:
     """Parse card information from a decklist in text or MtG Arena (or mixed) format.
 
     E.g.:
@@ -134,7 +134,7 @@ def parse_decklist(filepath: str | Path) -> tuple[Decklist, bool, list]:
         warnings: List of (entry, warning) tuples
     """
     with open(filepath, encoding="utf-8") as f:
-        decklist, ok, warnings = parse_decklist_stream(f)
+        decklist, ok, warnings = parse_decklist_stream(f, cache_dir=cache_dir)
 
     # Use file name without extension as name
     decklist.name = Path(filepath).stem
@@ -142,7 +142,7 @@ def parse_decklist(filepath: str | Path) -> tuple[Decklist, bool, list]:
     return decklist, ok, warnings
 
 
-def parse_decklist_stream(stream) -> tuple[Decklist, bool, list]:
+def parse_decklist_stream(stream, cache_dir: Path) -> tuple[Decklist, bool, list]:
     """Parse card information from a decklist in text or MtG Arena (or mixed) format from a stream.
 
     See:
@@ -152,7 +152,7 @@ def parse_decklist_stream(stream) -> tuple[Decklist, bool, list]:
     warnings = []
     ok = True
     for line in stream:
-        m = re.search(r"([0-9]+)\s+(.+?)(?:\s+\((\S*)\)\s+(\S+))?\s*$", line)
+        m = re.search(r"([0-9]+)x?\s+(.+?)(?:\s+\((\S*)\)\s+(\S+))?\s*$", line)
         if m:
             # Extract relevant data
             count = int(m.group(1))
@@ -161,7 +161,7 @@ def parse_decklist_stream(stream) -> tuple[Decklist, bool, list]:
             collector_number = m.group(4)  # May be None
 
             # Validate card name
-            card_name, warnings_name = validate_card_name(card_name)
+            card_name, warnings_name = validate_card_name(card_name, cache_dir=cache_dir)
             if card_name is None:
                 decklist.append_comment(line.rstrip())
                 warnings.extend([(decklist.entries[-1], level, msg) for level, msg in warnings_name])
@@ -169,7 +169,7 @@ def parse_decklist_stream(stream) -> tuple[Decklist, bool, list]:
                 continue
 
             # Validate card print
-            card, warnings_print = validate_print(card_name, set_id, collector_number)
+            card, warnings_print = validate_print(card_name, set_id, collector_number, cache_dir=cache_dir)
 
             decklist.append_card(count, card)
             warnings.extend([(decklist.entries[-1], level, msg) for level, msg in warnings_name + warnings_print])
