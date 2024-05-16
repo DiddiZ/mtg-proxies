@@ -131,3 +131,4 @@ dmypy.json
 # MTG Cache
 .cache_mtg/
 tests/outputs/
+tests/.test_cache/
