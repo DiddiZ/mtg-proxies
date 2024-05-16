@@ -37,7 +37,7 @@ def test_print_cards_fpdf(example_images_24: list[Path], test_outputs_dir: Path)
     assembler = FPDF2CardAssembler(
         paper_size=dimensions.PAPER_SIZE["A4"]["mm"],
         card_size=dimensions.MTG_CARD_SIZE["mm"],
-        border_crop=0,
+        border_crop=5,
         crop_marks_thickness=0.5,
         cut_spacing_thickness=0.1,
         filled_corners=True,

@@ -19,9 +19,9 @@ from mtgproxies.dimensions import UNITS_TO_IN, Units, get_pixels_from_size_and_p
 if TYPE_CHECKING:
     from collections.abc import Generator
     from pathlib import Path
-    from typing import Any, Literal
+    from typing import Literal
 
-    from nptyping import Float, NDArray, Shape
+    from nptyping import Float, NDArray
 
 
 logger = getLogger(__name__)
@@ -61,11 +61,11 @@ def blend_patch_into_image(bbox: tuple[int, int, int, int], image: PIL.Image, pa
 
 
 def blend_flipped_stripe(
-    square_image: NDArray[Shape[Any, Any, 4], Float],
+    square_image: Image,
     stripe_width_fraction: float,
     flip_how: Literal["horizontal", "vertical"],
     stripe_location: Literal["top", "bottom", "left", "right"],
-) -> NDArray[Shape[2], Float]:
+) -> Image:
     """Takes a leftmost stripe of a square image, flips it, and blends it back into the image.
 
     The stripe is blended using the alpha channel of the image to fill in the transparent regions
@@ -82,7 +82,7 @@ def blend_flipped_stripe(
         The image with the flipped stripe blended in.
     """
     corner_copy = square_image.copy()
-    width, height = corner_copy.shape[:2]
+    width, height = corner_copy.size
     if stripe_location in ["top", "bottom"]:
         transpose_method = Transpose.FLIP_LEFT_RIGHT
     elif stripe_location in ["left", "right"]:
@@ -111,43 +111,103 @@ def blend_flipped_stripe(
     else:
         raise ValueError(f"Invalid flip_how: {flip_how}")
 
-    image = PIL.Image.fromarray(corner_copy)
-    patch_inverted = image.crop(bbox).transpose(method=transpose_method)
-    return blend_patch_into_image(bbox, image, patch_inverted)
+    patch_inverted = corner_copy.crop(bbox).transpose(method=transpose_method)
+    return blend_patch_into_image(bbox, corner_copy, patch_inverted)
 
 
-def fill_corners(img: NDArray[Shape[2], Float]) -> NDArray[Shape[2], Float]:
+def fill_corners(card_image: Image) -> Image:
     """Fill the corners of the card with the closest pixels around the corners to match the border color."""
-    card_width = img.shape[0]
-    corner_size = card_width // 10
+    corner_size = card_image.width // 10
 
-    # left side
-    img[:corner_size, :corner_size] = blend_flipped_stripe(img[:corner_size, :corner_size], 1 / 6, "vertical", "left")
-    img[:corner_size, -corner_size:] = blend_flipped_stripe(
-        img[:corner_size, -corner_size:], 1 / 6, "vertical", "right"
+    # top corners, vertical stripes
+    box_left = (0, 0, corner_size, corner_size)
+    card_image.paste(
+        blend_flipped_stripe(
+            square_image=card_image.crop(box=box_left),
+            stripe_width_fraction=1 / 6,
+            flip_how="vertical",
+            stripe_location="left",
+        ),
+        box=box_left,
+    )
+    box_right = (card_image.width - corner_size, 0, card_image.width, corner_size)
+    card_image.paste(
+        blend_flipped_stripe(
+            square_image=card_image.crop(box=box_right),
+            stripe_width_fraction=1 / 6,
+            flip_how="vertical",
+            stripe_location="right",
+        ),
+        box=box_right,
     )
 
-    # right side
-    img[-corner_size:, :corner_size] = blend_flipped_stripe(img[-corner_size:, :corner_size], 1 / 6, "vertical", "left")
-    img[-corner_size:, -corner_size:] = blend_flipped_stripe(
-        img[-corner_size:, -corner_size:], 1 / 6, "vertical", "right"
+    # bottom corners, vertical stripes
+    box_left = (0, card_image.height - corner_size, corner_size, card_image.height)
+    card_image.paste(
+        blend_flipped_stripe(
+            square_image=card_image.crop(box=box_left),
+            stripe_width_fraction=1 / 6,
+            flip_how="vertical",
+            stripe_location="left",
+        ),
+        box=box_left,
+    )
+    box_right = (card_image.width - corner_size, card_image.height - corner_size, card_image.width, card_image.height)
+    card_image.paste(
+        blend_flipped_stripe(
+            square_image=card_image.crop(box=box_right),
+            stripe_width_fraction=1 / 6,
+            flip_how="vertical",
+            stripe_location="right",
+        ),
+        box=box_right,
     )
 
-    # top side
-    img[:corner_size, :corner_size] = blend_flipped_stripe(img[:corner_size, :corner_size], 1 / 6, "horizontal", "top")
-    img[-corner_size:, :corner_size] = blend_flipped_stripe(
-        img[-corner_size:, :corner_size], 1 / 6, "horizontal", "bottom"
+    # top corners, horizontal stripes
+    box_top = (0, 0, corner_size, corner_size)
+    card_image.paste(
+        blend_flipped_stripe(
+            square_image=card_image.crop(box=box_top),
+            stripe_width_fraction=1 / 6,
+            flip_how="horizontal",
+            stripe_location="top",
+        ),
+        box=box_top,
+    )
+    box_bottom = (card_image.width - corner_size, 0, card_image.width, corner_size)
+    card_image.paste(
+        blend_flipped_stripe(
+            square_image=card_image.crop(box=box_bottom),
+            stripe_width_fraction=1 / 6,
+            flip_how="horizontal",
+            stripe_location="top",
+        ),
+        box=box_bottom,
     )
 
-    # bottom side
-    img[:corner_size, -corner_size:] = blend_flipped_stripe(
-        img[:corner_size, -corner_size:], 1 / 6, "horizontal", "top"
+    # bottom corners, horizontal stripes
+    box_top = (0, card_image.height - corner_size, corner_size, card_image.height)
+    card_image.paste(
+        blend_flipped_stripe(
+            square_image=card_image.crop(box=box_top),
+            stripe_width_fraction=1 / 6,
+            flip_how="horizontal",
+            stripe_location="bottom",
+        ),
+        box=box_top,
     )
-    img[-corner_size:, -corner_size:] = blend_flipped_stripe(
-        img[-corner_size:, -corner_size:], 1 / 6, "horizontal", "bottom"
+    box_bottom = (card_image.width - corner_size, card_image.height - corner_size, card_image.width, card_image.height)
+    card_image.paste(
+        blend_flipped_stripe(
+            square_image=card_image.crop(box=box_bottom),
+            stripe_width_fraction=1 / 6,
+            flip_how="horizontal",
+            stripe_location="bottom",
+        ),
+        box=box_bottom,
     )
 
-    return img
+    return card_image
 
 
 class CardAssembler(abc.ABC):
@@ -212,15 +272,16 @@ class CardAssembler(abc.ABC):
         Args:
             card_image_filepath: Image file to process.
         """
-        img = np.asarray(PIL.Image.open(card_image_filepath)).copy()
+        img = PIL.Image.open(card_image_filepath).copy()
         # fill corners
         if self.filled_corners:
             img = fill_corners(img)
         # crop the cards
-        ppsu = get_ppsu_from_size_and_pixels(pixel_values=img.shape[:2], size=self.card_size)
-        crop_px = get_pixels_from_size_and_ppsu(ppsu=ppsu, size=self.border_crop)
-        img = img[crop_px:, crop_px:]
-        return PIL.Image.fromarray(img)
+        ppsu = get_ppsu_from_size_and_pixels(pixel_values=img.size, size=self.card_size)
+        crop_px = int(get_pixels_from_size_and_ppsu(ppsu=ppsu, size=self.border_crop))
+
+        img = img.crop(box=(crop_px, crop_px, img.width - crop_px, img.height - crop_px))
+        return img
 
     def get_page_generators(
         self,
@@ -376,7 +437,6 @@ class MatplotlibCardAssembler(CardAssembler):
                         ax.plot(x_rel, y_rel, color="black", linewidth=crop_marks_thickness_in_pt)
 
                 for bbox, image in bbox_gen:
-                    # extent = (left, right, bottom, top)
                     left, top, width, height = bbox
 
                     x0 = left / self.paper_size[0]
@@ -388,6 +448,7 @@ class MatplotlibCardAssembler(CardAssembler):
                     x1 = x0 + width_scaled
                     y1 = y0 + height_scaled
 
+                    # extent = (left, right, bottom, top)
                     extent = (x0, x1, y0, y1)
 
                     _ = ax.imshow(image, extent=extent, interpolation="lanczos", aspect="auto", origin="lower")

@@ -84,7 +84,7 @@ def common_cli_arguments(func):
         help="Thickness of crop marks in the specified units. Use 0 to disable crop marks.",
     )(func)
     func = click.option(
-        "--cut-lines-thickness",
+        "--cut-spacing-thickness",
         "-cl",
         type=float,
         default=0.0,
@@ -130,10 +130,11 @@ def common_cli_arguments(func):
         help="Units of the specified dimensions. Default is mm.",
     )(func)
     func = click.option(
-        "--fill-corners",
+        "--filled-corners",
         "-fc",
         is_flag=True,
-        help="Fill the corners of the cards with the colors of the closest pixels.",
+        help="Fill the corners of the cards with the colors from the edge of the card. "
+        "Works well for cards with uniformly colored borders (any color). May look fine even on borderless cards.",
     )(func)
     func = click.option(
         "--cache-dir",
@@ -166,7 +167,7 @@ def command_pdf(
     background_color: IntegerRGB,
     paper_size: str | NDArray[Shape["2"], Float32],
     units: Units,
-    fill_corners: bool,
+    filled_corners: bool,
     page_safe_margin: float,
     cache_dir: Path,
     card_size: NDArray[Shape["2"], Float32] | None,
@@ -179,26 +180,9 @@ def command_pdf(
     OUTPUT_FILE is the path to the output PDF file.
 
     """
-    if not cache_dir.exists():
-        cache_dir.mkdir(parents=True)
-
-    parsed_deck_list = Decklist()
-    for deck in deck_list:
-        parsed_deck_list.extend(parse_decklist_spec(deck, cache_dir=cache_dir))
-
-    # Fetch scans
-    images = fetch_scans_scryfall(decklist=parsed_deck_list, cache_dir=cache_dir, faces=faces)
-
-    # resolve paper size
-    if isinstance(paper_size, str):
-        if units in PAPER_SIZE[paper_size]:
-            resolved_paper_size = PAPER_SIZE[paper_size][units]
-        else:
-            resolved_paper_size = PAPER_SIZE[paper_size]["mm"] / UNITS_TO_MM[units]
-    else:
-        resolved_paper_size = paper_size
-
-    resolved_card_size = MTG_CARD_SIZE[units] if card_size is None else card_size
+    images, resolved_card_size, resolved_paper_size = process_dimensions_and_decklist(
+        cache_dir, card_size, deck_list, faces, paper_size, units
+    )
 
     # Plot cards
     printer = FPDF2CardAssembler(
@@ -209,7 +193,7 @@ def command_pdf(
         cut_spacing_thickness=cut_spacing_thickness,
         border_crop=crop_border,
         background_color=background_color,
-        filled_corners=fill_corners,
+        filled_corners=filled_corners,
         page_safe_margin=page_safe_margin,
     )
 
@@ -229,7 +213,7 @@ def command_image(
     background_color: IntegerRGB,
     paper_size: str | NDArray[Shape["2"], Float32],
     units: Units,
-    fill_corners: bool,
+    filled_corners: bool,
     page_safe_margin: float,
     cache_dir: Path,
     card_size: NDArray[Shape["2"], Float32] | None,
@@ -244,14 +228,31 @@ def command_image(
     supported by matplotlib are allowed.
 
     """
-    if not cache_dir.exists():
-        cache_dir.mkdir(parents=True)
-    print("CACHE:", cache_dir.absolute().as_posix())
+    images, resolved_card_size, resolved_paper_size = process_dimensions_and_decklist(
+        cache_dir, card_size, deck_list, faces, paper_size, units
+    )
 
+    # Plot cards
+    printer = MatplotlibCardAssembler(
+        units=units,
+        paper_size=resolved_paper_size,
+        card_size=resolved_card_size,
+        crop_marks_thickness=crop_mark_thickness,
+        cut_spacing_thickness=cut_spacing_thickness,
+        border_crop=crop_border,
+        background_color=background_color,
+        filled_corners=filled_corners,
+        page_safe_margin=page_safe_margin,
+        dpi=dpi,
+    )
+
+    printer.assemble(card_image_filepaths=images, output_filepath=output_file)
+
+
+def process_dimensions_and_decklist(cache_dir, card_size, deck_list, faces, paper_size, units):
     parsed_deck_list = Decklist()
     for deck in deck_list:
         parsed_deck_list.extend(parse_decklist_spec(deck, cache_dir=cache_dir))
-
     # Fetch scans
     images = fetch_scans_scryfall(decklist=parsed_deck_list, cache_dir=cache_dir, faces=faces)
 
@@ -263,105 +264,9 @@ def command_image(
             resolved_paper_size = PAPER_SIZE[paper_size]["mm"] / UNITS_TO_MM[units]
     else:
         resolved_paper_size = paper_size
-
     resolved_card_size = MTG_CARD_SIZE[units] if card_size is None else card_size
-
-    # Plot cards
-    printer = MatplotlibCardAssembler(
-        units=units,
-        paper_size=resolved_paper_size,
-        card_size=resolved_card_size,
-        crop_marks_thickness=crop_mark_thickness,
-        cut_spacing_thickness=cut_spacing_thickness,
-        border_crop=crop_border,
-        background_color=background_color,
-        fill_corners=fill_corners,
-        page_safe_margin=page_safe_margin,
-        dpi=dpi,
-    )
-
-    printer.assemble(card_image_filepaths=images, output_filepath=output_file)
+    return images, resolved_card_size, resolved_paper_size
 
 
 if __name__ == "__main__":
     command_group_print(obj={})
-
-
-#     parser = argparse.ArgumentParser(description="Prepare a decklist for printing.")
-#     parser.add_argument(
-#         "decklist",
-#         metavar="decklist_spec",
-#         help="path to a decklist in text/arena format, or manastack:{manastack_id}, or archidekt:{archidekt_id}",
-#     )
-#     parser.add_argument("outfile", help="output file. Supports pdf, png and jpg.")
-#     parser.add_argument("--dpi", help="dpi of output file (default: %(default)d)", type=int, default=300)
-#     parser.add_argument(
-#         "--paper",
-#         help="paper size in inches or preconfigured format (default: %(default)s)",
-#         type=papersize,
-#         default="a4",
-#         metavar="WIDTHxHEIGHT",
-#     )
-#     parser.add_argument(
-#         "--scale",
-#         help="scaling factor for printed cards (default: %(default)s)",
-#         type=float,
-#         default=1.0,
-#         metavar="FLOAT",
-#     )
-#     parser.add_argument(
-#         "--border_crop",
-#         help="how much to crop inner borders of printed cards (default: %(default)s)",
-#         type=int,
-#         default=14,
-#         metavar="PIXELS",
-#     )
-#     parser.add_argument(
-#         "--background",
-#         help='background color, either by name or by hex code (e.g. black or "#ff0000", default: %(default)s)',
-#         type=str,
-#         default=None,
-#         metavar="COLOR",
-#     )
-#     parser.add_argument("--cropmarks", action=argparse.BooleanOptionalAction, default=True, help="add crop marks")
-#     parser.add_argument(
-#         "--faces",
-#         help="which faces to print (default: %(default)s)",
-#         choices=["all", "front", "back"],
-#         default="all",
-#     )
-#     args = parser.parse_args()
-#
-#     # Parse decklist
-#     decklist = parse_decklist_spec(args.decklist)
-#
-#     # Fetch scans
-#     images = fetch_scans_scryfall(decklist, faces=args.faces)
-#
-#     # Plot cards
-#     if args.outfile.endswith(".pdf"):
-#         import matplotlib.colors as colors
-#
-#         background_color = args.background
-#         if background_color is not None:
-#             background_color = (np.array(colors.to_rgb(background_color)) * 255).astype(int)
-#
-#         print_cards_fpdf(
-#             images,
-#             args.outfile,
-#             papersize=args.paper * 25.4,
-#             cardsize=np.array([2.5, 3.5]) * 25.4 * args.scale,
-#             border_crop=args.border_crop,
-#             background_color=background_color,
-#             cropmarks=args.cropmarks,
-#         )
-#     else:
-#         print_cards_matplotlib(
-#             images,
-#             args.outfile,
-#             papersize=args.paper,
-#             cardsize=np.array([2.5, 3.5]) * args.scale,
-#             dpi=args.dpi,
-#             border_crop=args.border_crop,
-#             background_color=args.background,
-#         )

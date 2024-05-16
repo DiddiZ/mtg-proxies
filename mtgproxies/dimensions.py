@@ -1,10 +1,9 @@
-from logging import getLogger
-
-from typing import Literal
 from collections.abc import Iterable
+from logging import getLogger
+from typing import Any, Literal
 
 import numpy as np
-from nptyping import NDArray, Float
+from nptyping import Float, NDArray, UInt
 from nptyping.shape import Shape
 
 
@@ -79,29 +78,19 @@ PAPER_SIZE: dict[str, dict[str, NDArray[Shape["2"], Float]]] = {
     },
 }
 
-UNITS_TO_MM = {
-    "in": 25.4,
-    "mm": 1.0,
-    "cm": 10
-}
+UNITS_TO_MM = {"in": 25.4, "mm": 1.0, "cm": 10}
 
-UNITS_TO_IN = {
-    "in": 1.0,
-    "mm": 1/25.4,
-    "cm": 10/25.4
-}
+UNITS_TO_IN = {"in": 1.0, "mm": 1 / 25.4, "cm": 10 / 25.4}
 
 
 Units = Literal["in", "mm", "cm"]
 
 
-def get_pixels_from_size_and_ppsu(
-        ppsu: int,
-        size: Iterable[float] | float
-) -> Iterable[int]:
+def get_pixels_from_size_and_ppsu(ppsu: int, size: Iterable[float] | float) -> NDArray[Any, UInt]:
     """Calculate size in pixels from size and DPI.
 
     The code assumes that everything is handled in milimetres.
+
     Args:
         ppsu (int): Dots per inch. Dots here are pixels.
         size (Iterable[float] | float): Value or iterable of values representing size in inches.
@@ -113,14 +102,15 @@ def get_pixels_from_size_and_ppsu(
 
 
 def get_ppsu_from_size_and_pixels(
-        pixel_values: Iterable[int] | int,
-        size: Iterable[float] | float,
+    pixel_values: Iterable[int] | int,
+    size: Iterable[float] | float,
 ) -> int:
     """Calculate PPSU (points per size unit) from size and amount of pixels.
 
     It calculates the PPSU by dividing the amount of pixels by the size in whatever units are used.
     If multiple dimensions are provided, it averages over the DPIs for each dimension.
     If the PPSUs differ, a warning is logged.
+
     Args:
         pixel_values (Iterable[int] | int): Value or iterable of values representing size in pixels.
         size (Iterable[float] | float): Value or iterable of values representing size in any units.
@@ -143,6 +133,3 @@ def parse_papersize_from_spec(spec: str, units: Units) -> NDArray[Shape["2"], Fl
             raise ValueError(f"Units {units} not supported for papersize {spec}")
     else:
         raise ValueError(f"Paper size not supported: {spec}")
-
-
-

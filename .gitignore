@@ -127,3 +127,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# MTG Cache
+.cache_mtg/
+tests/outputs/

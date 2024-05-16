@@ -5,11 +5,11 @@ See:
 """
 
 import json
+import logging
 import threading
 from collections import defaultdict
-from functools import lru_cache
+from functools import cache
 from pathlib import Path
-import logging
 
 import numpy as np
 import requests
@@ -20,7 +20,7 @@ from mtgproxies.scryfall.rate_limit import RateLimiter
 
 logger = logging.getLogger(__name__)
 
-DEFAULT_CACHE_DIR = Path.home() / ".cache" / "mtgproxies" / "scryfall"
+DEFAULT_CACHE_DIR = Path(__file__).parent / ".cache" / "mtgproxies" / "scryfall"
 # cache.mkdir(parents=True, exist_ok=True)  # Create cache folder
 scryfall_rate_limiter = RateLimiter(delay=0.1)
 _download_lock = threading.Lock()
@@ -111,7 +111,7 @@ def search(q: str) -> list[dict]:
     return depaginate(f"https://api.scryfall.com/cards/search?q={q}&format=json")
 
 
-@lru_cache(maxsize=None)
+@cache
 def _get_database(cache_dir: Path, database_name: str = "default_cards"):
     databases = depaginate("https://api.scryfall.com/bulk-data")
     bulk_data = [database for database in databases if database["type"] == database_name]
@@ -133,8 +133,10 @@ def canonic_card_name(card_name: str) -> str:
     return card_name
 
 
-def get_card(card_name: str, cache_dir: Path, set_id: str = None, collector_number: str = None) -> dict | None:
-    """Find a card by it's name and possibly set and collector number.
+def get_card(
+    card_name: str, cache_dir: Path, set_id: str | None = None, collector_number: str | None = None
+) -> dict | None:
+    """Find a card by its name and possibly set and collector number.
 
     In case, the Scryfall database contains multiple cards, the first is returned.
 
@@ -194,8 +196,9 @@ def get_faces(card):
         raise ValueError(f"Unknown layout {card['layout']}")
 
 
-def recommend_print(cache_dir: Path, current=None, card_name: str | None = None, oracle_id: str | None = None,
-                    mode="best"):
+def recommend_print(
+    cache_dir: Path, current=None, card_name: str | None = None, oracle_id: str | None = None, mode="best"
+):
     if current is not None and oracle_id is None:  # Use oracle id of current
         if current.get("layout") == "reversible_card":
             # Reversible cards have the same oracle id for both faces
@@ -245,7 +248,7 @@ def recommend_print(cache_dir: Path, current=None, card_name: str | None = None,
         if current is not None:
             if current in recommendations:
                 recommendations.remove(current)
-            recommendations = [current] + recommendations
+            recommendations = [current, *recommendations]
 
         # Return all card in descending order
         return recommendations
@@ -274,7 +277,7 @@ def recommend_print(cache_dir: Path, current=None, card_name: str | None = None,
         raise ValueError(f"Unknown mode '{mode}'")
 
 
-@lru_cache(maxsize=None)
+@cache
 def card_by_id(cache_dir: Path):
     """Create dictionary to look up cards by their id.
 
@@ -286,7 +289,7 @@ def card_by_id(cache_dir: Path):
     return {c["id"]: c for c in get_cards(cache_dir=cache_dir)}
 
 
-@lru_cache(maxsize=None)
+@cache
 def get_cards_by_oracle_id(cache_dir: Path):
     """Create dictionary to look up cards by their oracle id.
 
@@ -304,7 +307,7 @@ def get_cards_by_oracle_id(cache_dir: Path):
     return cards_by_oracle_id
 
 
-@lru_cache(maxsize=None)
+@cache
 def get_oracle_ids_by_name(cache_dir: Path) -> dict[str, list[dict]]:
     """Create dictionary to look up oracle ids by their name.
 
@@ -331,7 +334,7 @@ def get_oracle_ids_by_name(cache_dir: Path) -> dict[str, list[dict]]:
     return oracle_ids_by_name
 
 
-def get_price(cache_dir: Path, oracle_id: str, currency: str = "eur", foil: bool = None) -> float | None:
+def get_price(cache_dir: Path, oracle_id: str, currency: str = "eur", foil: bool | None = None) -> float | None:
     """Find the lowest price for oracle id.
 
     Args:
