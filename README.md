@@ -122,6 +122,7 @@ optional arguments:
                         add crop marks (default: True)
   --faces {all,front,back}
                         which faces to print (default: all)
+  --overlay OVERLAY     image file to overlay on every card
 ```
 
 ### convert
