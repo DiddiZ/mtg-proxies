@@ -23,6 +23,34 @@ cache.mkdir(parents=True, exist_ok=True)  # Create cache folder
 scryfall_rate_limiter = RateLimiter(delay=0.1)
 _download_lock = threading.Lock()
 
+database_name = "default_cards"
+language = None
+
+def use_database(updated_database_name: str):
+    """Set the database to use for card lookups.
+
+    Args:
+        updated_database_name: Name of the database to use. "default_cards" or "all_cards" are valid options.
+    """
+    global database_name
+    database_name = updated_database_name
+
+def use_language(updated_language: str):
+    """Set the language to use for card lookups.
+
+    Args:
+        updated_language: Language of the card to find.
+    """
+    global language
+    language = updated_language
+
+def get_language():
+    """Get the language to use for card lookups.
+
+    Returns:
+        string: Language of the card to find.
+    """
+    return language
 
 def get_image(image_uri: str, silent: bool = False) -> str:
     """Download card artwork and return the path to a local copy.
@@ -109,7 +137,8 @@ def search(q: str) -> list[dict]:
 
 
 @lru_cache(maxsize=None)
-def _get_database(database_name: str = "default_cards"):
+def _get_database():
+    global database_name
     databases = depaginate("https://api.scryfall.com/bulk-data")
     bulk_data = [database for database in databases if database["type"] == database_name]
     if len(bulk_data) != 1:
@@ -143,12 +172,13 @@ def get_card(card_name: str, set_id: str = None, collector_number: str = None) -
     Returns:
         card: Dictionary of card, or `None` if not found.
     """
-    cards = get_cards(name=card_name, set=set_id, collector_number=collector_number)
+    global language
+    cards = get_cards(name=card_name, set=set_id, collector_number=collector_number, lang=language)
 
     return cards[0] if len(cards) > 0 else None
 
 
-def get_cards(database: str = "default_cards", **kwargs):
+def get_cards(**kwargs):
     """Get all cards matching certain attributes.
 
     Matching is case insensitive.
@@ -160,7 +190,7 @@ def get_cards(database: str = "default_cards", **kwargs):
     Returns:
         List of all matching cards
     """
-    cards = _get_database(database)
+    cards = _get_database()
 
     for key, value in kwargs.items():
         if value is not None:
