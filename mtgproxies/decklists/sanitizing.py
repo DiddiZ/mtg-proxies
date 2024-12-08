@@ -63,8 +63,10 @@ def get_print_warnings(card) -> list[str]:
         warnings.append("low resolution scan")
     if card["collector_number"][-1] in ["p", "s"]:
         warnings.append("promo")
-    if card["lang"] != "en":
+    if scryfall.get_language() is None and card["lang"] != "en":
         warnings.append("non-english print")
+    if scryfall.get_language() is not None and card["lang"] != scryfall.get_language():
+        warnings.append("non-" + scryfall.get_language() + " print")
     if card["border_color"] != "black":
         warnings.append(card["border_color"] + " border")
     return warnings

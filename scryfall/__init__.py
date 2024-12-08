@@ -6,6 +6,7 @@ from scryfall.scryfall import (
     get_cards,
     get_faces,
     get_image,
+    get_language,
     get_price,
     oracle_ids_by_name,
     recommend_print,
