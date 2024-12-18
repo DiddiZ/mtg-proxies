@@ -1,12 +1,14 @@
 from __future__ import annotations
 
+from collections.abc import Sequence
+
 import requests
 
 from mtgproxies.decklists import Decklist
 from mtgproxies.decklists.sanitizing import validate_card_name, validate_print
 
 
-def parse_decklist(manastack_id: str, zones: list[str] = ["commander", "mainboard"]):
+def parse_decklist(manastack_id: str, zones: Sequence[str] = ("commander", "mainboard")):
     """Parse a decklist from manastack.
 
     Args:

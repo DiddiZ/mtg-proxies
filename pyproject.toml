@@ -1,3 +1,5 @@
 [tool.black]
 line-length = 120
-target-version = ['py39', 'py310', 'py311', 'py312']
+target-version = ['py39', 'py310', 'py311', 'py312', 'py313']
+preview = true
+enable-unstable-feature = ["hug_parens_with_braces_and_square_brackets"]

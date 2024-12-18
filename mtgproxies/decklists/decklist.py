@@ -75,7 +75,7 @@ class Decklist:
         """Append another decklist to this."""
         self.entries.extend(other.entries)
 
-    def save(self, file: str | Path, fmt="arena", mode="w") -> None:
+    def save(self, file: str | Path, fmt: str = "arena", mode: str = "w") -> None:
         """Write decklist to a file.
 
         Args:

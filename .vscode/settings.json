@@ -3,6 +3,8 @@
   "python.testing.pytestArgs": ["tests"],
   "python.testing.pytestEnabled": true,
   "git.rebaseWhenSync": true,
+  "notebook.formatOnSave.enabled": true,
+  "files.eol": "\n",
   "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },

@@ -93,13 +93,11 @@ def validate_print(card_name: str, set_id: str, collector_number: str):
         if card is None:  # No exact match
             # Find alternative print
             card = scryfall.recommend_print(card_name=card_name)
-            warnings.append(
-                (
-                    "WARNING",
-                    f"Unable to find scan of {format_print(card_name, set_id, collector_number)}."
-                    + f" Using {format_print(card)} instead.",
-                )
-            )
+            warnings.append((
+                "WARNING",
+                f"Unable to find scan of {format_print(card_name, set_id, collector_number)}."
+                + f" Using {format_print(card)} instead.",
+            ))
 
     # Warnings for low-quality scans
     quality_warnings = get_print_warnings(card)
@@ -110,11 +108,9 @@ def validate_print(card_name: str, set_id: str, collector_number: str):
         # Format warnings string
         quality_warnings = listing(quality_warnings, ", ", " and ").capitalize()
 
-        warnings.append(
-            (
-                "COSMETIC",
-                f"{quality_warnings} for {format_print(card)}."
-                + (f" Maybe you want {format_print(recommendation)}?" if recommendation != card else ""),
-            )
-        )
+        warnings.append((
+            "COSMETIC",
+            f"{quality_warnings} for {format_print(card)}."
+            + (f" Maybe you want {format_print(recommendation)}?" if recommendation != card else ""),
+        ))
     return card, warnings
