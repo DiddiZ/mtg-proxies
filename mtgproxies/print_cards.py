@@ -56,9 +56,6 @@ def print_cards_matplotlib(
         while len(images) > 0:
             fig = plt.figure(figsize=papersize)
             ax = fig.add_axes([0, 0, 1, 1])  # ax covers the whole figure
-            #  Background
-            if background_color is not None:
-                plt.gca().add_patch(Rectangle((0, 0), 1, 1, color=background_color, zorder=-1000))
 
             for y in range(N[1]):
                 for x in range(N[0]):
@@ -79,6 +76,15 @@ def print_cards_matplotlib(
                         ) / papersize
                         extent = [lower[0], upper[0], 1 - upper[1], 1 - lower[1]]  # flip y-axis
 
+                        # Background
+                        if background_color is not None:
+                            bg_width = upper[0] - lower[0]
+                            bg_height = upper[1] - lower[1]
+                            bg_xy = (lower[0], 1 - upper[1]) # flip y-axis
+                            bg_rect = Rectangle(bg_xy, bg_width, bg_height, color=background_color, zorder=-1000)
+                            plt.gca().add_patch(bg_rect)
+
+                        # Draw card image
                         plt.imshow(
                             img,
                             extent=extent,
@@ -135,8 +141,8 @@ def print_cards_fpdf(
         if i % cards_per_sheet == 0:  # Startign a new sheet
             pdf.add_page()
             if background_color is not None:
+                pdf.set_draw_color(*background_color)
                 pdf.set_fill_color(*background_color)
-                pdf.rect(0, 0, papersize[0], papersize[1], "F")
 
         x = (i % cards_per_sheet) % N[0]
         y = (i % cards_per_sheet) // N[0]
@@ -157,6 +163,10 @@ def print_cards_fpdf(
         # Compute extent
         lower = offset + _occupied_space(cardsize, np.array([x, y]), border_crop)
         size = cardsize * (image_size - [left, top]) / image_size
+
+        # Plot Background
+        if background_color is not None:
+            pdf.rect(x=lower[0], y=lower[1], w=size[0], h=size[1], style="DF")
 
         # Plot image
         pdf.image(cropped_image, x=lower[0], y=lower[1], w=size[0], h=size[1])
