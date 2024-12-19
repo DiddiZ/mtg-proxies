@@ -31,7 +31,7 @@ def parse_decklist(archidekt_id: str) -> tuple[Decklist, bool, list]:
         card_name = item["card"]["oracleCard"]["name"]
         set_id = item["card"]["edition"]["editioncode"]
         collector_number = item["card"]["collectorNumber"]
-        if len(item["categories"]) > 0 and item["categories"][0] not in in_deck:
+        if item["categories"] is not None and len(item["categories"]) > 0 and item["categories"][0] not in in_deck:
             continue
 
         # Validate card name
