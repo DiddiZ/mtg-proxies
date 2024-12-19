@@ -26,6 +26,7 @@ def print_cards_matplotlib(
     interpolation: str | None = "lanczos",
     dpi: int = 600,
     background_color=None,
+    overlay: str | Path | None = None,
 ):
     """Print a list of cards to a pdf file.
 
@@ -35,12 +36,14 @@ def print_cards_matplotlib(
         papersize: Size of the paper in inches. Defaults to A4.
         cardsize: Size of a card in inches.
         border_crop: How many pixel to crop from the border of each card.
+        overlay: A path to an image file to overlay on each card.
     """
     # Cards per figure
     N = np.floor(papersize / cardsize).astype(int)
     if N[0] == 0 or N[1] == 0:
         raise ValueError(f"Paper size too small: {papersize}")
     offset = (papersize - _occupied_space(cardsize, N, border_crop, closed=True)) / 2
+    aspect = papersize[1] / papersize[0]
 
     # Ensure directory exists
     filepath = Path(filepath)
@@ -51,6 +54,15 @@ def print_cards_matplotlib(
         saver = PdfPages
     else:
         saver = SplitPages
+
+    # Initialize overlay
+    overlay_image = None
+
+    if overlay is not None:
+        overlay_path = Path(overlay)
+        if not overlay_path.is_file():
+            raise ValueError(f"Overlay specified is not a file: {overlay}")
+        overlay_image = plt.imread(overlay_path)
 
     with saver(filepath) as saver, tqdm(total=len(images), desc="Plotting cards") as pbar:
         while len(images) > 0:
@@ -82,9 +94,19 @@ def print_cards_matplotlib(
                         plt.imshow(
                             img,
                             extent=extent,
-                            aspect=papersize[1] / papersize[0],
+                            aspect=aspect,
                             interpolation=interpolation,
                         )
+                        
+                        # Add overlay on top of card image
+                        if overlay_image is not None:
+                            plt.imshow(
+                                overlay_image,
+                                extent=extent,
+                                aspect=aspect,
+                                interpolation=interpolation,
+                            )
+                        
                         pbar.update(1)
 
             plt.xlim(0, 1)
@@ -105,6 +127,7 @@ def print_cards_fpdf(
     border_crop: int = 14,
     background_color: tuple[int, int, int] = None,
     cropmarks: bool = True,
+    overlay: str | Path | None = None,
 ) -> None:
     """Print a list of cards to a pdf file.
 
@@ -114,6 +137,7 @@ def print_cards_fpdf(
         papersize: Size of the paper in inches. Defaults to A4.
         cardsize: Size of a card in inches.
         border_crop: How many pixel to crop from the border of each card.
+        overlay: A path to an image file to overlay on each card.
     """
     from fpdf import FPDF
 
@@ -127,6 +151,14 @@ def print_cards_fpdf(
     # Ensure directory exists
     filepath = Path(filepath)
     filepath.parent.mkdir(parents=True, exist_ok=True)
+
+    # Initialize overlay
+    overlay_path = None
+
+    if overlay is not None:
+        overlay_path = Path(overlay)
+        if not overlay_path.is_file():
+            raise ValueError(f"Overlay specified is not a file: {overlay}")
 
     # Initialize PDF
     pdf = FPDF(orientation="P", unit="mm", format="A4")
@@ -160,6 +192,10 @@ def print_cards_fpdf(
 
         # Plot image
         pdf.image(cropped_image, x=lower[0], y=lower[1], w=size[0], h=size[1])
+
+        # Plot overlay on top of card image
+        if overlay_path is not None:
+            pdf.image(overlay_path, x=lower[0], y=lower[1], w=size[0], h=size[1])
 
         if cropmarks and ((i + 1) % cards_per_sheet == 0 or i + 1 == len(images)):
             # If this was the last card on a page, add crop marks

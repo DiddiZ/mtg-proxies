@@ -60,6 +60,12 @@ if __name__ == "__main__":
         choices=["all", "front", "back"],
         default="all",
     )
+    parser.add_argument(
+        "--overlay", 
+        help="image file to overlay on every card",
+        type=str,
+        default=None,
+    )
     args = parser.parse_args()
 
     # Parse decklist
@@ -84,6 +90,7 @@ if __name__ == "__main__":
             border_crop=args.border_crop,
             background_color=background_color,
             cropmarks=args.cropmarks,
+            overlay=args.overlay,
         )
     else:
         print_cards_matplotlib(
@@ -94,4 +101,5 @@ if __name__ == "__main__":
             dpi=args.dpi,
             border_crop=args.border_crop,
             background_color=args.background,
+            overlay=args.overlay,
         )
