@@ -4,6 +4,7 @@ import numpy as np
 
 from mtgproxies import fetch_scans_scryfall, print_cards_fpdf, print_cards_matplotlib
 from mtgproxies.cli import parse_decklist_spec
+from scryfall.scryfall import use_database, use_language
 
 
 def papersize(string: str) -> np.ndarray:
@@ -60,7 +61,19 @@ if __name__ == "__main__":
         choices=["all", "front", "back"],
         default="all",
     )
+    parser.add_argument(
+        '--language',
+        help='language of the cards',
+        type=str,
+        default=None,
+        choices=["en", "es", "fr", "de", "it", "pt", "ja", "ko", "ru", "zhs", "zht", "he", "la", "grc", "ar", "sa", "ph"],
+    )
     args = parser.parse_args()
+
+    # Switch database and language if language is set
+    if args.language is not None:
+        use_database('all_cards')
+        use_language(args.language)
 
     # Parse decklist
     decklist = parse_decklist_spec(args.decklist)
