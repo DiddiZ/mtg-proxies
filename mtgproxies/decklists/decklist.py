@@ -5,7 +5,7 @@ import re
 from collections import Counter
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal, TextIO
 
 import scryfall
 from mtgproxies.decklists.sanitizing import validate_card_name, validate_print
@@ -19,16 +19,16 @@ class Card:
     """
 
     count: int
-    card: dict[str | Any]
+    card: dict[str, Any]
 
-    def __getitem__(self, key: str) -> Any:
+    def __getitem__(self, key: str) -> Any:  # noqa: ANN401
         return self.card[key]
 
     def __contains__(self, key: str) -> bool:
         return key in self.card
 
     @property
-    def image_uris(self):
+    def image_uris(self) -> list[dict[str, str]]:
         """Image uris of all faces on this card.
 
         For single faced cards, this is just the front.
@@ -53,6 +53,9 @@ class Comment:
         return self.text
 
 
+type DecklistEntry = Card | Comment
+
+
 @dataclass
 class Decklist:
     """Container class for a decklist.
@@ -60,14 +63,14 @@ class Decklist:
     Contains cards and comment lines.
     """
 
-    entries: list[Card | Comment] = field(default_factory=list)
-    name: str = None
+    entries: list[DecklistEntry] = field(default_factory=list)
+    name: str | None = None
 
-    def append_card(self, count: int, card) -> None:
+    def append_card(self, count: int, card: dict) -> None:
         """Append a card line to this decklist."""
         self.entries.append(Card(count, card))
 
-    def append_comment(self, text) -> None:
+    def append_comment(self, text: str) -> None:
         """Append a comment line to this decklist."""
         self.entries.append(Comment(text))
 
@@ -75,12 +78,8 @@ class Decklist:
         """Append another decklist to this."""
         self.entries.extend(other.entries)
 
-    def save(self, file: str | Path, fmt: str = "arena", mode: str = "w") -> None:
-        """Write decklist to a file.
-
-        Args:
-            fmt: Decklist format, either "arena" or "text".
-        """
+    def save(self, file: str | Path, fmt: Literal["arena", "text"] = "arena", mode: str = "w") -> None:
+        """Write decklist to a file."""
         with open(file, mode, encoding="utf-8", newline="") as f:
             f.write(format(self, fmt) + os.linesep)
 
@@ -103,7 +102,7 @@ class Decklist:
         return len(self.cards)
 
     @staticmethod
-    def from_scryfall_ids(card_ids) -> Decklist:
+    def from_scryfall_ids(card_ids: list[str]) -> Decklist:
         """Construct a Decklist from scryfall ids.
 
         Multiple instances of the same id are counted.
@@ -142,7 +141,7 @@ def parse_decklist(filepath: str | Path) -> tuple[Decklist, bool, list]:
     return decklist, ok, warnings
 
 
-def parse_decklist_stream(stream) -> tuple[Decklist, bool, list]:
+def parse_decklist_stream(stream: TextIO) -> tuple[Decklist, bool, list]:
     """Parse card information from a decklist in text or MtG Arena (or mixed) format from a stream.
 
     See:

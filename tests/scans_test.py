@@ -1,8 +1,12 @@
+from __future__ import annotations
+
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 import pytest
 
-from mtgproxies.decklists import Decklist
+if TYPE_CHECKING:
+    from mtgproxies.decklists import Decklist
 
 
 @pytest.fixture(scope="module")
@@ -15,14 +19,14 @@ def example_decklist() -> Decklist:
 
 
 @pytest.mark.parametrize(
-    "faces,expected_images",
+    ("faces", "expected_images"),
     [
         ("all", 7),
         ("front", 6),
         ("back", 1),
     ],
 )
-def test_fetch_scans_scryfall(example_decklist: Decklist, faces: str, expected_images: int):
+def test_fetch_scans_scryfall(example_decklist: Decklist, faces: str, expected_images: int) -> None:
     from mtgproxies import fetch_scans_scryfall
 
     images = fetch_scans_scryfall(example_decklist, faces=faces)

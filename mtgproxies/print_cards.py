@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Sequence
 from pathlib import Path
 
 import matplotlib.pyplot as plt
@@ -13,20 +14,20 @@ from mtgproxies.plotting import SplitPages
 image_size = np.array([745, 1040])
 
 
-def _occupied_space(cardsize, pos, border_crop: int, closed: bool = False):
+def _occupied_space(cardsize: np.ndarray, pos: np.ndarray, border_crop: int, closed: bool = False) -> np.ndarray:
     return cardsize * (pos * image_size - np.clip(2 * pos - 1 - closed, 0, None) * border_crop) / image_size
 
 
 def print_cards_matplotlib(
-    images: list[str | Path],
+    images: Sequence[str | Path],
     filepath: str | Path,
-    papersize=np.array([8.27, 11.69]),
-    cardsize=np.array([2.5, 3.5]),
+    papersize: np.ndarray = np.array([8.27, 11.69]),
+    cardsize: np.ndarray = np.array([2.5, 3.5]),
     border_crop: int = 14,
     interpolation: str | None = "lanczos",
     dpi: int = 600,
-    background_color=None,
-):
+    background_color: str | None = None,
+) -> None:
     """Print a list of cards to a pdf file.
 
     Args:
@@ -35,6 +36,9 @@ def print_cards_matplotlib(
         papersize: Size of the paper in inches. Defaults to A4.
         cardsize: Size of a card in inches.
         border_crop: How many pixel to crop from the border of each card.
+        interpolation: Interpolation method for resizing images.
+        dpi: Dots per inch for the output PDF.
+        background_color: Background color of the PDF as name or hex code.
     """
     # Cards per figure
     N = np.floor(papersize / cardsize).astype(int)
@@ -47,23 +51,22 @@ def print_cards_matplotlib(
     filepath.parent.mkdir(parents=True, exist_ok=True)
 
     # Choose pdf of image saver
-    if filepath.suffix == ".pdf":
-        saver = PdfPages
-    else:
-        saver = SplitPages
+    saver = PdfPages if filepath.suffix == ".pdf" else SplitPages
 
     with saver(filepath) as saver, tqdm(total=len(images), desc="Plotting cards") as pbar:
-        while len(images) > 0:
+        idx = 0
+        while idx < len(images):  # Loop over pages
             fig = plt.figure(figsize=papersize)
-            ax = fig.add_axes([0, 0, 1, 1])  # ax covers the whole figure
+            ax = fig.add_axes((0, 0, 1, 1))  # ax covers the whole figure
             #  Background
             if background_color is not None:
                 plt.gca().add_patch(Rectangle((0, 0), 1, 1, color=background_color, zorder=-1000))
 
             for y in range(N[1]):
                 for x in range(N[0]):
-                    if len(images) > 0:
-                        img = plt.imread(images.pop(0))
+                    if idx < len(images):
+                        img = plt.imread(images[idx])
+                        idx += 1
 
                         # Crop left and top if not on border of sheet
                         left = border_crop if x > 0 else 0
@@ -77,7 +80,7 @@ def print_cards_matplotlib(
                             + _occupied_space(cardsize, np.array([x, y]), border_crop)
                             + cardsize * (image_size - [left, top]) / image_size
                         ) / papersize
-                        extent = [lower[0], upper[0], 1 - upper[1], 1 - lower[1]]  # flip y-axis
+                        extent = (lower[0], upper[0], 1 - upper[1], 1 - lower[1])  # flip y-axis
 
                         plt.imshow(
                             img,
@@ -98,12 +101,12 @@ def print_cards_matplotlib(
 
 
 def print_cards_fpdf(
-    images: list[str | Path],
+    images: Sequence[str | Path],
     filepath: str | Path,
-    papersize=np.array([210, 297]),
-    cardsize=np.array([2.5 * 25.4, 3.5 * 25.4]),
+    papersize: np.ndarray = np.array([210, 297]),
+    cardsize: np.ndarray = np.array([2.5 * 25.4, 3.5 * 25.4]),
     border_crop: int = 14,
-    background_color: tuple[int, int, int] = None,
+    background_color: tuple[int, int, int] | None = None,
     cropmarks: bool = True,
 ) -> None:
     """Print a list of cards to a pdf file.
@@ -114,6 +117,8 @@ def print_cards_fpdf(
         papersize: Size of the paper in inches. Defaults to A4.
         cardsize: Size of a card in inches.
         border_crop: How many pixel to crop from the border of each card.
+        background_color: Background color of the PDF as an RGB tuple.
+        cropmarks: Whether to add crop marks to the PDF.
     """
     from fpdf import FPDF
 

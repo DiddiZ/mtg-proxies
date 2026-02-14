@@ -10,9 +10,10 @@ import json
 import pickle
 import threading
 from collections import defaultdict
-from functools import lru_cache
+from functools import cache
 from pathlib import Path
 from tempfile import gettempdir
+from typing import Literal, overload
 
 import numpy as np
 import requests
@@ -20,13 +21,13 @@ from tqdm import tqdm
 
 from scryfall.rate_limit import RateLimiter
 
-cache = Path(gettempdir()) / "scryfall_cache"
-cache.mkdir(parents=True, exist_ok=True)  # Create cache folder
+_cache_folder = Path(gettempdir()) / "scryfall_cache"
+_cache_folder.mkdir(parents=True, exist_ok=True)  # Create cache folder
 scryfall_rate_limiter = RateLimiter(delay=0.1)
 _download_lock = threading.Lock()
 
 
-def get_image(image_uri: str, silent: bool = False) -> str:
+def get_image(image_uri: str, *, silent: bool = False) -> str:
     """Download card artwork and return the path to a local copy.
 
     Uses cache and Scryfall API call rate limit.
@@ -39,7 +40,7 @@ def get_image(image_uri: str, silent: bool = False) -> str:
     return get_file(file_name, image_uri, silent=silent)
 
 
-def get_file(file_name: str, url: str, silent: bool = False) -> str:
+def get_file(file_name: str, url: str, *, silent: bool = False) -> str:
     """Download a file and return the path to a local copy.
 
     Uses cache and Scryfall API call rate limit.
@@ -47,7 +48,7 @@ def get_file(file_name: str, url: str, silent: bool = False) -> str:
     Returns:
         string: Path to local file.
     """
-    file_path = cache / file_name
+    file_path = _cache_folder / file_name
     with _download_lock:
         if not file_path.is_file():
             if "api.scryfall.com" in url:  # Apply rate limit
@@ -59,7 +60,7 @@ def get_file(file_name: str, url: str, silent: bool = False) -> str:
     return str(file_path)
 
 
-def download(url: str, dst, chunk_size: int = 1024 * 4, silent: bool = False):
+def download(url: str, dst: Path | str, *, chunk_size: int = 1024 * 4, silent: bool = False) -> None:
     """Download a file with a tqdm progress bar."""
     with requests.get(url, stream=True) as req:
         req.raise_for_status()
@@ -113,8 +114,8 @@ def search(q: str) -> list[dict]:
     return depaginate(f"https://api.scryfall.com/cards/search?q={q}&format=json")
 
 
-@lru_cache(maxsize=None)
-def _get_database(database_name: str = "default_cards"):
+@cache
+def _get_database(database_name: str = "default_cards") -> list[dict]:
     databases = depaginate("https://api.scryfall.com/bulk-data")
     bulk_data = [database for database in databases if database["type"] == database_name]
     if len(bulk_data) != 1:
@@ -128,9 +129,8 @@ def _get_database(database_name: str = "default_cards"):
         with open(pickle_file, "wb") as pickle_file:
             pickle.dump(data, pickle_file, protocol=pickle.HIGHEST_PROTOCOL)
         return data
-    else:
-        with open(pickle_file, "rb") as f:
-            return pickle.load(f)
+    with open(pickle_file, "rb") as f:
+        return pickle.load(f)
 
 
 def canonic_card_name(card_name: str) -> str:
@@ -138,12 +138,10 @@ def canonic_card_name(card_name: str) -> str:
     card_name = card_name.lower()
 
     # Replace special chars
-    card_name = card_name.replace("æ", "ae")  # Sometimes used, e.g. in "Vedalken Aethermage"
-
-    return card_name
+    return card_name.replace("æ", "ae")  # Sometimes used, e.g. in "Vedalken Aethermage"
 
 
-def get_card(card_name: str, set_id: str = None, collector_number: str = None) -> dict | None:
+def get_card(card_name: str, set_id: str | None = None, collector_number: str | None = None) -> dict | None:
     """Find a card by it's name and possibly set and collector number.
 
     In case, the Scryfall database contains multiple cards, the first is returned.
@@ -161,14 +159,15 @@ def get_card(card_name: str, set_id: str = None, collector_number: str = None) -
     return cards[0] if len(cards) > 0 else None
 
 
-def get_cards(database: str = "default_cards", **kwargs):
+def get_cards(database: str = "default_cards", **kwargs: str | None) -> list[dict]:
     """Get all cards matching certain attributes.
 
     Matching is case insensitive.
 
     Args:
+        database: Scryfall bulk data type, e.g. `default_cards` or `oracle_cards`
         kwargs: (key, value) pairs, e.g. `name="Tendershoot Dryad", set="RIX"`.
-                keys with a `None` value are ignored
+            Keys with a `None` value are ignored
 
     Returns:
         List of all matching cards
@@ -185,7 +184,7 @@ def get_cards(database: str = "default_cards", **kwargs):
     return cards
 
 
-def get_faces(card):
+def get_faces(card: dict) -> list[dict]:
     """All faces on this card.
 
     For single faced cards, this is just the card.
@@ -195,13 +194,39 @@ def get_faces(card):
     """
     if "image_uris" in card:
         return [card]
-    elif "card_faces" in card and "image_uris" in card["card_faces"][0]:
+    if "card_faces" in card and "image_uris" in card["card_faces"][0]:
         return card["card_faces"]
-    else:
-        raise ValueError(f"Unknown layout {card['layout']}")
+    raise ValueError(f"Unknown layout {card['layout']}")
 
 
-def recommend_print(current=None, card_name: str | None = None, oracle_id: str | None = None, mode="best"):
+@overload
+def recommend_print(
+    current: dict | None = None,
+    *,
+    card_name: str | None = None,
+    oracle_id: str | None = None,
+    mode: Literal["best"] = "best",
+) -> dict: ...
+
+
+@overload
+def recommend_print(
+    current: dict | None = None,
+    *,
+    card_name: str | None = None,
+    oracle_id: str | None = None,
+    mode: Literal["all", "choices"],
+) -> list[dict]: ...
+
+
+def recommend_print(
+    current: dict | None = None,
+    *,
+    card_name: str | None = None,
+    oracle_id: str | None = None,
+    mode: Literal["best", "all", "choices"] = "best",
+) -> dict | list[dict]:
+    """Recommend a (better) print of a card."""
     if current is not None and oracle_id is None:  # Use oracle id of current
         if current.get("layout") == "reversible_card":
             # Reversible cards have the same oracle id for both faces
@@ -209,12 +234,9 @@ def recommend_print(current=None, card_name: str | None = None, oracle_id: str |
         else:
             oracle_id = current["oracle_id"]
 
-    if oracle_id is not None:
-        alternatives = cards_by_oracle_id()[oracle_id]
-    else:
-        alternatives = get_cards(name=card_name)
+    alternatives = cards_by_oracle_id()[oracle_id] if oracle_id is not None else get_cards(name=card_name)
 
-    def score(card: dict):
+    def score(card: dict) -> int:
         points = 0
         if card["set"] != "mb1" and card["border_color"] != "gold":
             points += 1
@@ -242,20 +264,19 @@ def recommend_print(current=None, card_name: str | None = None, oracle_id: str |
             return current  # No better recommendation
 
         # Return print with highest score
-        recommendation = alternatives[np.argmax(scores)]
-        return recommendation
-    elif mode == "all":
+        return alternatives[np.argmax(scores)]
+    if mode == "all":
         recommendations = list(np.array(alternatives)[np.argsort(scores)][::-1])
 
         # Bring current print to front
         if current is not None:
             if current in recommendations:
                 recommendations.remove(current)
-            recommendations = [current] + recommendations
+            recommendations = [current, *recommendations]
 
         # Return all card in descending order
         return recommendations
-    elif mode == "choices":
+    if mode == "choices":
         artworks = np.array([
             get_faces(card)[0]["illustration_id"] if "illustration_id" in get_faces(card)[0] else card["id"]
             for card in alternatives
@@ -266,20 +287,19 @@ def recommend_print(current=None, card_name: str | None = None, oracle_id: str |
             artwork_scores = np.array(scores)[artworks == artwork]
 
             recommendations = artwork_alternatives[artwork_scores == np.max(artwork_scores)]
-            # TODO Sort again
+            # TODO: Sort again
             choices.extend(recommendations)
 
         # Bring current print to front
         if current is not None:
-            choices = [current] + [c for c in choices if c["id"] != current["id"]]
+            choices = [current, *(c for c in choices if c["id"] != current["id"])]
 
         return choices
-    else:
-        raise ValueError(f"Unknown mode '{mode}'")
+    raise ValueError(f"Unknown mode '{mode}'")
 
 
-@lru_cache(maxsize=None)
-def card_by_id():
+@cache
+def card_by_id() -> dict[str, dict]:
     """Create dictionary to look up cards by their id.
 
     Faster than repeated lookup via get_cards().
@@ -290,8 +310,8 @@ def card_by_id():
     return {c["id"]: c for c in get_cards()}
 
 
-@lru_cache(maxsize=None)
-def cards_by_oracle_id():
+@cache
+def cards_by_oracle_id() -> dict[str, list[dict]]:
     """Create dictionary to look up cards by their oracle id.
 
     Faster than repeated lookup via get_cards().
@@ -308,8 +328,8 @@ def cards_by_oracle_id():
     return cards_by_oracle_id
 
 
-@lru_cache(maxsize=None)
-def oracle_ids_by_name() -> dict[str, list[dict]]:
+@cache
+def oracle_ids_by_name() -> dict[str, list[str]]:
     """Create dictionary to look up oracle ids by their name.
 
     Faster than repeated lookup via `get_cards(oracle_id=oracle_id)`.
@@ -322,7 +342,7 @@ def oracle_ids_by_name() -> dict[str, list[dict]]:
     oracle_ids_by_name = defaultdict(set)
     for oracle_id, cards in cards_by_oracle_id().items():
         card = cards[0]
-        if card["layout"] in ["art_series"]:  # Skip art series, as they have double faced names
+        if card["layout"] == "art_series":  # Skip art series, as they have double faced names
             continue
         name = card["name"].lower()
         # Use name and also front face only for double faced cards
@@ -331,11 +351,10 @@ def oracle_ids_by_name() -> dict[str, list[dict]]:
             oracle_ids_by_name[name.split(" // ")[0]].add(oracle_id)
 
     # Converts sets to lists
-    oracle_ids_by_name = {k: list(v) for k, v in oracle_ids_by_name.items()}
-    return oracle_ids_by_name
+    return {k: list(v) for k, v in oracle_ids_by_name.items()}
 
 
-def get_price(oracle_id: str, currency: str = "eur", foil: bool = None) -> float | None:
+def get_price(oracle_id: str, currency: str = "eur", foil: bool | None = None) -> float | None:
     """Find lowest price for oracle id.
 
     Args:

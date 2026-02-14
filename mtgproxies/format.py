@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 
-def format_print(card_name: str | dict, set_id: str = None, collector_number: str = None) -> str:
+def format_print(card_name: str | dict, set_id: str | None = None, collector_number: str | None = None) -> str:
+    """Format a card into a human-readable string."""
     if "name" in card_name:
         card_name, set_id, collector_number = card_name["name"], card_name["set"], card_name["collector_number"]
 
@@ -20,23 +21,25 @@ color_names = {
 
 
 def format_colors(colors: list[str]) -> str:
+    """Format a list of color codes into a human-readable string."""
     if len(colors) == 0:
         return "colorless"
     return listing([color_names[c] for c in colors], ", ", " and ")
 
 
-def listing(items: list[str], sep: str, final_sep: str, max_items: int = None) -> str:
+def listing(items: list[str], sep: str, final_sep: str, max_items: int | None = None) -> str:
+    """Format a list of items into a human-readable string."""
     if len(items) == 0:
         return ""
     if len(items) == 1:
         return items[0]
     if max_items is None or len(items) <= max_items:
         return sep.join(items[:-1]) + final_sep + items[-1]
-    else:
-        return sep.join(items[:max_items] + ["..."])
+    return sep.join([*items[:max_items], "..."])
 
 
 def format_token(card: dict) -> str:
+    """Format a token card into a human-readable string."""
     # Double faced cards
     if "colors" not in card:
         return format_token(card["card_faces"][0]) + " // " + format_token(card["card_faces"][1])

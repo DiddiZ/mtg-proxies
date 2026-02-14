@@ -6,7 +6,8 @@ from mtgproxies.cli import parse_decklist_spec
 from mtgproxies.decklists import Decklist
 
 
-def get_tokens(decklist: Decklist):
+def get_tokens(decklist: Decklist) -> list[dict]:
+    """Find all tokens related to the cards in a decklist."""
     tokens = {}
     for card in decklist.cards:
         if card["layout"] in ["token", "double_faced_token"]:

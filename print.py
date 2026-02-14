@@ -7,6 +7,10 @@ from mtgproxies.cli import parse_decklist_spec
 
 
 def papersize(string: str) -> np.ndarray:
+    """Parse paper size from string.
+
+    Supports preconfigured formats (e.g. "a4") and custom formats (e.g. "8.5x11" in inches).
+    """
     spec = string.lower()
     if spec == "a4":
         return np.array([21, 29.7]) / 2.54

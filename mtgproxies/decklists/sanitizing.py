@@ -1,17 +1,17 @@
-from functools import lru_cache
+from functools import cache
 
 import scryfall
 from mtgproxies.format import format_print, format_token, listing
 
 
-@lru_cache(maxsize=None)
-def card_names():
-    """Sets of valid card names.
+@cache
+def card_names() -> tuple[dict[str, str], dict[str, str]]:
+    """Return sets of valid card names.
 
     Cached for performance.
     """
     cards_by_name = {
-        card["name"].lower(): card["name"] for card in scryfall.get_cards() if card["layout"] not in ["art_series"]
+        card["name"].lower(): card["name"] for card in scryfall.get_cards() if card["layout"] != "art_series"
     }
     double_faced_by_front = {
         name.split("//")[0].strip().lower(): name for name in cards_by_name.values() if "//" in name
@@ -19,7 +19,7 @@ def card_names():
     return cards_by_name, double_faced_by_front
 
 
-def validate_card_name(card_name: str):
+def validate_card_name(card_name: str) -> tuple[str | None, list[tuple[str, str]]]:
     """Validate card name against the Scryfall database.
 
     Returns:
@@ -56,8 +56,8 @@ def validate_card_name(card_name: str):
     return validated_name, warnings
 
 
-def get_print_warnings(card) -> list[str]:
-    """Returns warnings for low-resolution scans."""
+def get_print_warnings(card: dict) -> list[str]:
+    """Return warnings for low-resolution scans."""
     warnings = []
     if not card["highres_image"] or card["digital"]:
         warnings.append("low resolution scan")
@@ -70,7 +70,7 @@ def get_print_warnings(card) -> list[str]:
     return warnings
 
 
-def validate_print(card_name: str, set_id: str, collector_number: str):
+def validate_print(card_name: str, set_id: str, collector_number: str) -> tuple[dict, list[tuple[str, str]]]:
     """Validate a print against the Scryfall database.
 
     Assumes card name is valid.
@@ -85,9 +85,10 @@ def validate_print(card_name: str, set_id: str, collector_number: str):
         card = scryfall.recommend_print(card_name=card_name)
         # Warn for tokens, as they are not unique by name
         if card["layout"] in ["token", "double_faced_token"]:
-            warnings.append(
-                ("WARNING", f"Tokens are not unique by name. Assuming '{card_name}' is a '{format_token(card)}'.")
-            )
+            warnings.append((
+                "WARNING",
+                f"Tokens are not unique by name. Assuming '{card_name}' is a '{format_token(card)}'.",
+            ))
     else:
         card = scryfall.get_card(card_name, set_id, collector_number)
         if card is None:  # No exact match
