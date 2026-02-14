@@ -4,15 +4,19 @@
   "python.testing.pytestEnabled": true,
   "git.rebaseWhenSync": true,
   "notebook.formatOnSave.enabled": true,
+  "notebook.codeActionsOnSave": {
+    "notebook.source.organizeImports.ruff": "explicit"
+  },
   "files.eol": "\n",
   "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[python]": {
-    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.defaultFormatter": "charliermarsh.ruff",
     "editor.codeActionsOnSave": {
-      "source.organizeImports": "explicit"
+      "source.organizeImports.ruff": "explicit"
     }
   },
-  "window.title": "${dirty}${rootName}${separator}${activeEditorShort}"
+  "window.title": "${dirty}${rootName}${separator}${activeEditorShort}",
+  "evenBetterToml.formatter.arrayAutoCollapse": false
 }

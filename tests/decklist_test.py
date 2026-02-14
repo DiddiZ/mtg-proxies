@@ -1,9 +1,10 @@
 import os
+from pathlib import Path
 
 import pytest
 
 
-def test_parsing():
+def test_parsing() -> None:
     from mtgproxies.decklists import parse_decklist
 
     decklist, ok, warnings = parse_decklist("examples/decklist.txt")
@@ -11,19 +12,19 @@ def test_parsing():
     assert ok
     assert len(warnings) == 0
 
-    with open("examples/decklist.txt", encoding="utf-8") as f:
-        # Ignore differences in linebreaks
-        assert (format(decklist, "arena") + os.linesep).replace("\r\n", "\n") == f.read().replace("\r\n", "\n")
+    # Ignore differences in linebreaks
+    expected = Path("examples/decklist.txt").read_text(encoding="utf-8")
+    assert (format(decklist, "arena") + os.linesep).replace("\r\n", "\n") == expected.replace("\r\n", "\n")
 
 
 @pytest.mark.parametrize(
-    "archidekt_id,expected_first_card",
+    ("archidekt_id", "expected_first_card"),
     [
         ("1212142", "Emerald Medallion"),
         ("42", "Dromar's Cavern"),
     ],
 )
-def test_archidekt(archidekt_id: str, expected_first_card: str):
+def test_archidekt(archidekt_id: str, expected_first_card: str) -> None:
     from mtgproxies.decklists.archidekt import parse_decklist
 
     decklist, ok, _ = parse_decklist(archidekt_id)
@@ -32,7 +33,7 @@ def test_archidekt(archidekt_id: str, expected_first_card: str):
     assert decklist.cards[0]["name"] == expected_first_card
 
 
-def test_reversible_cards():
+def test_reversible_cards() -> None:
     """Check that reversible cards are parsed correctly."""
     from io import StringIO
 

@@ -1,10 +1,11 @@
+from collections.abc import Container
 from pathlib import Path
 
 from mtgproxies.decklists import archidekt, manastack, parse_decklist
 from mtgproxies.decklists.decklist import Decklist
 
 
-def parse_decklist_spec(decklist_spec: str, warn_levels=("ERROR", "WARNING", "COSMETIC")) -> Decklist:
+def parse_decklist_spec(decklist_spec: str, warn_levels: Container[str] = ("ERROR", "WARNING", "COSMETIC")) -> Decklist:
     """Attempt to parse a decklist from different locations.
 
     Args:
@@ -20,8 +21,8 @@ def parse_decklist_spec(decklist_spec: str, warn_levels=("ERROR", "WARNING", "CO
         decklist, ok, warnings = manastack.parse_decklist(manastack_id)
     elif decklist_spec.lower().startswith("archidekt:") and decklist_spec.split(":")[-1].isdigit():
         # Decklist on Archidekt
-        manastack_id = decklist_spec.split(":")[-1]
-        decklist, ok, warnings = archidekt.parse_decklist(manastack_id)
+        archidekt_id = decklist_spec.split(":")[-1]
+        decklist, ok, warnings = archidekt.parse_decklist(archidekt_id)
     else:
         print(f"Cant find decklist '{decklist_spec}'")
         quit()

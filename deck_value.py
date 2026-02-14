@@ -1,4 +1,5 @@
 import argparse
+from operator import itemgetter
 
 import matplotlib.pyplot as plt
 
@@ -34,7 +35,7 @@ if __name__ == "__main__":
         else:
             print(f"WARNING: Unable to find price for {card['name']}")
 
-    card_prices.sort(key=lambda x: x[1], reverse=True)
+    card_prices.sort(key=itemgetter(1), reverse=True)
     price_total = sum(p for _, p in card_prices)
 
     # Partition cards in named and bulk
@@ -45,7 +46,7 @@ if __name__ == "__main__":
     plt.pie(
         [price for _, price in cards_named] + [sum(p for _, p in cards_lump)],
         labels=[name for name, _ in cards_named] + ["other"],
-        autopct=lambda pct: f"{pct / 100. * price_total:0.2f}€",
+        autopct=lambda pct: f"{pct / 100.0 * price_total:0.2f}€",
         shadow=True,
         startangle=90,
     )

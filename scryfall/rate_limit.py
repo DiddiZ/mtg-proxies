@@ -3,6 +3,7 @@ from __future__ import annotations
 import threading
 import time
 from types import TracebackType
+from typing import Self
 
 
 class RateLimiter:
@@ -18,7 +19,7 @@ class RateLimiter:
         self.lock = threading.Lock()
         self.last_call = 0
 
-    def __enter__(self) -> None:
+    def __enter__(self) -> Self:
         with self.lock:  # Prevent asynchronous access
             # Check time since last call
             if time.time() < self.last_call + self.delay:  # Wait if neccessary

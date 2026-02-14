@@ -2,8 +2,10 @@ from __future__ import annotations
 
 from pathlib import Path
 from types import TracebackType
+from typing import Any
 
 import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
 
 
 class SplitPages:
@@ -25,10 +27,10 @@ class SplitPages:
         exc_type: type[BaseException] | None,
         exc_val: BaseException | None,
         exc_tb: TracebackType | None,
-    ):
+    ) -> None:
         pass
 
-    def savefig(self, figure=None, **kwargs):
+    def savefig(self, figure: Figure | None = None, **kwargs: Any) -> None:  # noqa: ANN401
         """Save figure to a new file.
 
         The file name is suffixed with the current page number.
