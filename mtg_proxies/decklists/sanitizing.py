@@ -1,7 +1,7 @@
 from functools import cache
 
-import scryfall
-from mtgproxies.format import format_print, format_token, listing
+import mtg_proxies.scryfall as scryfall
+from mtg_proxies.format import format_print, format_token, listing
 
 
 @cache

@@ -2,8 +2,8 @@ import argparse
 
 import numpy as np
 
-from mtgproxies import fetch_scans_scryfall, print_cards_fpdf, print_cards_matplotlib
-from mtgproxies.cli import parse_decklist_spec
+from mtg_proxies import fetch_scans_scryfall, print_cards_fpdf, print_cards_matplotlib
+from mtg_proxies.cli import parse_decklist_spec
 
 
 def papersize(string: str) -> np.ndarray:

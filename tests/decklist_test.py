@@ -5,7 +5,7 @@ import pytest
 
 
 def test_parsing() -> None:
-    from mtgproxies.decklists import parse_decklist
+    from mtg_proxies.decklists import parse_decklist
 
     decklist, ok, warnings = parse_decklist("examples/decklist.txt")
 
@@ -25,7 +25,7 @@ def test_parsing() -> None:
     ],
 )
 def test_archidekt(archidekt_id: str, expected_first_card: str) -> None:
-    from mtgproxies.decklists.archidekt import parse_decklist
+    from mtg_proxies.decklists.archidekt import parse_decklist
 
     decklist, ok, _ = parse_decklist(archidekt_id)
 
@@ -37,8 +37,8 @@ def test_reversible_cards() -> None:
     """Check that reversible cards are parsed correctly."""
     from io import StringIO
 
-    from mtgproxies import fetch_scans_scryfall
-    from mtgproxies.decklists import parse_decklist_stream
+    from mtg_proxies import fetch_scans_scryfall
+    from mtg_proxies.decklists import parse_decklist_stream
 
     decklist, ok, _ = parse_decklist_stream(StringIO("1 Propaganda // Propaganda (SLD) 381\n"))
 

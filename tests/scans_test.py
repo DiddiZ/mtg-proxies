@@ -6,12 +6,12 @@ from typing import TYPE_CHECKING
 import pytest
 
 if TYPE_CHECKING:
-    from mtgproxies.decklists import Decklist
+    from mtg_proxies.decklists import Decklist
 
 
 @pytest.fixture(scope="module")
 def example_decklist() -> Decklist:
-    from mtgproxies.decklists import parse_decklist
+    from mtg_proxies.decklists import parse_decklist
 
     decklist, _, _ = parse_decklist(Path(__file__).parent.parent / "examples/decklist.txt")
 
@@ -27,7 +27,7 @@ def example_decklist() -> Decklist:
     ],
 )
 def test_fetch_scans_scryfall(example_decklist: Decklist, faces: str, expected_images: int) -> None:
-    from mtgproxies import fetch_scans_scryfall
+    from mtg_proxies import fetch_scans_scryfall
 
     images = fetch_scans_scryfall(example_decklist, faces=faces)
 
