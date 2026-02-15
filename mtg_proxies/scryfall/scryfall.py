@@ -19,7 +19,7 @@ import numpy as np
 import requests
 from tqdm import tqdm
 
-from scryfall.rate_limit import RateLimiter
+from mtg_proxies.scryfall.rate_limit import RateLimiter
 
 _cache_folder = Path(gettempdir()) / "scryfall_cache"
 _cache_folder.mkdir(parents=True, exist_ok=True)  # Create cache folder

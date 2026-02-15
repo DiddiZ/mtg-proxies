@@ -1,9 +1,9 @@
 import argparse
 from pathlib import Path
 
-import scryfall
-from mtgproxies.cli import parse_decklist_spec
-from mtgproxies.decklists import Decklist
+from mtg_proxies import scryfall
+from mtg_proxies.cli import parse_decklist_spec
+from mtg_proxies.decklists import Decklist
 
 
 def get_tokens(decklist: Decklist) -> list[dict]:

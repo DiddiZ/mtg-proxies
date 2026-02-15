@@ -3,8 +3,8 @@ from operator import itemgetter
 
 import matplotlib.pyplot as plt
 
-import scryfall
-from mtgproxies.cli import parse_decklist_spec
+from mtg_proxies import scryfall
+from mtg_proxies.cli import parse_decklist_spec
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Show deck value decomposition.")

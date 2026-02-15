@@ -5,8 +5,8 @@ import pytest
 
 @pytest.fixture(scope="module")
 def example_images() -> list[str]:
-    from mtgproxies import fetch_scans_scryfall
-    from mtgproxies.decklists import parse_decklist
+    from mtg_proxies import fetch_scans_scryfall
+    from mtg_proxies.decklists import parse_decklist
 
     decklist, _, _ = parse_decklist(Path(__file__).parent.parent / "examples/decklist.txt")
     return fetch_scans_scryfall(decklist)
@@ -17,7 +17,7 @@ def test_example_images(example_images: list[str]) -> None:
 
 
 def test_print_cards_fpdf(example_images: list[str], tmp_path: Path) -> None:
-    from mtgproxies import print_cards_fpdf
+    from mtg_proxies import print_cards_fpdf
 
     out_file = tmp_path / "decklist.pdf"
     print_cards_fpdf(example_images, out_file)
@@ -26,7 +26,7 @@ def test_print_cards_fpdf(example_images: list[str], tmp_path: Path) -> None:
 
 
 def test_print_cards_matplotlib_pdf(example_images: list[str], tmp_path: Path) -> None:
-    from mtgproxies import print_cards_matplotlib
+    from mtg_proxies import print_cards_matplotlib
 
     out_file = tmp_path / "decklist.pdf"
     print_cards_matplotlib(example_images, out_file)
@@ -36,7 +36,7 @@ def test_print_cards_matplotlib_pdf(example_images: list[str], tmp_path: Path) -
 
 @pytest.mark.skip(reason="for some reason this fails on github actions, but works locally.")
 def test_print_cards_matplotlib_png(example_images: list[str], tmp_path: Path) -> None:
-    from mtgproxies import print_cards_matplotlib
+    from mtg_proxies import print_cards_matplotlib
 
     out_file = tmp_path / "decklist.png"
     print_cards_matplotlib(example_images, out_file)
