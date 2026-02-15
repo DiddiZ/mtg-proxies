@@ -1,6 +1,6 @@
 [project]
 name = "mtg-proxies"
-version = "0.2.0"
+version = "0.2.1"
 authors = [{ name = "Robin More", email = "more@diddiz.de" }]
 description = "Print high-resolution MtG proxies."
 requires-python = ">=3.12"

@@ -11,6 +11,7 @@ import pickle
 import threading
 from collections import defaultdict
 from functools import cache
+from importlib.metadata import version
 from pathlib import Path
 from tempfile import gettempdir
 from typing import Literal, overload
@@ -62,7 +63,9 @@ def get_file(file_name: str, url: str, *, silent: bool = False) -> str:
 
 def download(url: str, dst: Path | str, *, chunk_size: int = 1024 * 4, silent: bool = False) -> None:
     """Download a file with a tqdm progress bar."""
-    with requests.get(url, stream=True) as req:
+    with requests.get(
+        url, stream=True, headers={"User-Agent": f"mtg-proxies/{version('mtg-proxies')}", "Accept": "*/*"}
+    ) as req:
         req.raise_for_status()
         file_size = int(req.headers["Content-Length"]) if "Content-Length" in req.headers else None
         with (
