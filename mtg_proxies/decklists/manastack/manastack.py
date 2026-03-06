@@ -4,13 +4,13 @@ from collections.abc import Sequence
 
 import requests
 
-from mtg_proxies.decklists import Decklist, DecklistEntry
+from mtg_proxies.decklists import Decklist, ParseWarning
 from mtg_proxies.decklists.sanitizing import validate_card_name, validate_print
 
 
 def parse_decklist(
     manastack_id: str, zones: Sequence[str] = ("commander", "mainboard")
-) -> tuple[Decklist, bool, list[tuple[DecklistEntry, str, str]]]:
+) -> tuple[Decklist, bool, list[ParseWarning]]:
     """Parse a decklist from manastack.
 
     Args:
@@ -40,7 +40,7 @@ def parse_decklist(
                 card_name, warnings_name = validate_card_name(raw_card_name)
                 if card_name is None:
                     decklist.append_comment(raw_card_name)
-                    warnings.extend([(decklist.entries[-1], level, msg) for level, msg in warnings_name])
+                    warnings.extend(warnings_name)
                     ok = False
                     continue
 
@@ -48,7 +48,7 @@ def parse_decklist(
                 card, warnings_print = validate_print(card_name, set_id, collector_number)
 
                 decklist.append_card(count, card)
-                warnings.extend([(decklist.entries[-1], level, msg) for level, msg in warnings_name + warnings_print])
+                warnings.extend(warnings_name + warnings_print)
 
             if zone != zones[-1]:
                 decklist.append_comment("")

@@ -1,21 +1,11 @@
 from __future__ import annotations
 
-from pathlib import Path
 from typing import TYPE_CHECKING
 
 import pytest
 
 if TYPE_CHECKING:
     from mtg_proxies.decklists import Decklist
-
-
-@pytest.fixture(scope="module")
-def example_decklist() -> Decklist:
-    from mtg_proxies.decklists import parse_decklist
-
-    decklist, _, _ = parse_decklist(Path(__file__).parent.parent / "examples/decklist.txt")
-
-    return decklist
 
 
 @pytest.mark.parametrize(

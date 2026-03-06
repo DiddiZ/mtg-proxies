@@ -73,13 +73,13 @@ E.g.:
 Or use the `convert.py` tool to convert a plain decklist to Arena format:
 
 ```bash
-python convert.py examples/decklist_text.txt examples/decklist.txt
+python convert.py tests/data/decklist_text.txt tests/data/decklist.txt
 ```
 
 4. Create a PDF file.
 
 ```bash
-python print.py examples/decklist.txt decklist.pdf
+python print.py tests/data/decklist.txt decklist.pdf
 ```
 
 Examples:
@@ -87,8 +87,8 @@ Examples:
 - Create separate outputs for front and back faces
 
 ```bash
-python print.py examples/decklist.txt decklist_fronts.pdf --face front
-python print.py examples/decklist.txt decklist_backs.pdf --face back
+python print.py tests/data/decklist.txt decklist_fronts.pdf --face front
+python print.py tests/data/decklist.txt decklist_backs.pdf --face back
 ```
 
 ## Updating
@@ -161,7 +161,7 @@ optional arguments:
 Example:
 
 ```bash
-python tokens.py examples/token_generators.txt
+python tokens.py tests/data/token_generators.txt
 ```
 
 ### Deck Value Decomposition

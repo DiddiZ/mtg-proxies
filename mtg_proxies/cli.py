@@ -28,9 +28,9 @@ def parse_decklist_spec(decklist_spec: str, warn_levels: Container[str] = ("ERRO
         quit()
 
     # Print warnings
-    for _, level, msg in warnings:
-        if level in warn_levels:
-            print(f"{level}: {msg}")
+    for warning in warnings:
+        if warning.level in warn_levels:
+            print(warning)
 
     # Check for grave errors
     if not ok:

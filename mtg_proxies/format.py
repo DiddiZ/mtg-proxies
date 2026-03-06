@@ -8,7 +8,7 @@ def format_print(card_name: str | dict, set_id: str | None = None, collector_num
     if "name" in card_name:
         card_name, set_id, collector_number = card_name["name"], card_name["set"], card_name["collector_number"]
 
-    return f"'{card_name} ({set_id.upper()}) {collector_number}'"
+    return f"{card_name} ({set_id.upper()}) {collector_number}"
 
 
 color_names = {

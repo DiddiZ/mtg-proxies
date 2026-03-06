@@ -10,7 +10,7 @@ repos:
       - id: check-shebang-scripts-are-executable
       - id: end-of-file-fixer
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.15.1
+    rev: v0.15.5
     hooks:
       - id: ruff-check
       - id: ruff-format
@@ -42,7 +42,7 @@ repos:
         args:
           - "--tab-width=2"
   - repo: https://github.com/shssoichiro/oxipng
-    rev: v10.0.0
+    rev: v10.1.0
     hooks:
       - id: oxipng
         args:
