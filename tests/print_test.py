@@ -36,7 +36,6 @@ def test_print_cards_matplotlib_pdf(example_images: list[str], tmp_path: Path) -
     assert out_file.is_file()
 
 
-@pytest.mark.skip(reason="for some reason this fails on github actions, but works locally.")
 def test_print_cards_matplotlib_png(example_images: list[str], tmp_path: Path) -> None:
     from mtg_proxies import print_cards_matplotlib
 
