@@ -21,6 +21,21 @@ def test_parsing(data_dir: Path) -> None:
 @pytest.mark.parametrize(
     ("line", "expected_card_name", "expected_warnings"),
     [
+        (  # Everything is correct
+            "1 Ajani's Pridemate (M11) 3",
+            "1 Ajani's Pridemate (M11) 3",
+            [],  # No warnings
+        ),
+        (  # Additional whitespaces
+            " 1  Ajani's Pridemate  (M11)  3 ",
+            "1 Ajani's Pridemate (M11) 3",
+            [],  # No warnings
+        ),
+        (  # Used 1x instead of 1 for quantity
+            "1x Ajani's Pridemate (M11) 3",
+            "1 Ajani's Pridemate (M11) 3",
+            [],  # No warnings
+        ),
         (  # Wrong set
             "1 Liliana, Dreadhorde General (WAR2) 97",
             "1 Liliana, Dreadhorde General (RVR) 80",

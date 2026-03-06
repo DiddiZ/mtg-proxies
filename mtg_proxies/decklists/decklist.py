@@ -151,7 +151,7 @@ def parse_decklist_stream(stream: TextIO) -> tuple[Decklist, bool, list[ParseWar
     warnings = []
     ok = True
     for line in stream:
-        m = re.search(r"([0-9]+)\s+(.+?)(?:\s+\((\S*)\)\s+(\S+))?\s*$", line)
+        m = re.search(r"([0-9]+)x?\s+(.+?)(?:\s+\((\S*)\)\s+(\S+))?\s*$", line)
         if m:
             # Extract relevant data
             count = int(m.group(1))
