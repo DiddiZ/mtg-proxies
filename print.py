@@ -28,7 +28,7 @@ if __name__ == "__main__":
         help="path to a decklist in text/arena format, or manastack:{manastack_id}, or archidekt:{archidekt_id}",
     )
     parser.add_argument("outfile", help="output file. Supports pdf, png and jpg.")
-    parser.add_argument("--dpi", help="dpi of output file (default: %(default)d)", type=int, default=300)
+    parser.add_argument("--dpi", help="dpi of output file for raster formats (png, jpg); ignored for pdf (default: %(default)d)", type=int, default=300)
     parser.add_argument(
         "--paper",
         help="paper size in inches or preconfigured format (default: %(default)s)",
@@ -45,7 +45,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--border_crop",
-        help="how much to crop inner borders of printed cards (default: %(default)s)",
+        help="how much to crop inner borders of printed cards, in source image pixels (default: %(default)s)",
         type=int,
         default=14,
         metavar="PIXELS",
