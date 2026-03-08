@@ -113,10 +113,10 @@ positional arguments:
 
 options:
   -h, --help            show this help message and exit
-  --dpi DPI             dpi of output file (default: 300)
+  --dpi DPI             dpi of output file for raster formats (png, jpg); ignored for pdf (default: 300)
   --paper WIDTHxHEIGHT  paper size in inches or preconfigured format (default: a4)
   --scale FLOAT         scaling factor for printed cards (default: 1.0)
-  --border_crop PIXELS  how much to crop inner borders of printed cards (default: 14)
+  --border_crop PIXELS  how much to crop inner borders of printed cards, in source image pixels (default: 14)
   --background COLOR    background color, either by name or by hex code (e.g. black or "#ff0000", default: None)
   --cropmarks, --no-cropmarks
                         add crop marks
