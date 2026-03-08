@@ -45,14 +45,11 @@ git clone https://github.com/DiddiZ/mtg-proxies.git
 cd mtg-proxies
 ```
 
-2. Install requirements. Requires at least [Python 3.12](https://www.python.org/downloads/).
+2. Install requirements using [uv](https://docs.astral.sh/uv/). Requires at least [Python 3.12](https://www.python.org/downloads/).
 
 ```bash
-# On Linux, use `python3` instead of `python`
-python -m pip install -e .
+uv sync
 ```
-
-You can also use a [virtual environment](https://docs.python.org/3/library/venv.html).
 
 3. (Optional) Prepare your decklist in MtG Arena format.
    This is not required, but recommended as it allows for more control over the process.
@@ -73,13 +70,13 @@ E.g.:
 Or use the `convert.py` tool to convert a plain decklist to Arena format:
 
 ```bash
-python convert.py tests/data/decklist_text.txt tests/data/decklist.txt
+uv run convert.py tests/data/decklist_text.txt tests/data/decklist.txt
 ```
 
 4. Create a PDF file.
 
 ```bash
-python print.py tests/data/decklist.txt decklist.pdf
+uv run print.py tests/data/decklist.txt decklist.pdf
 ```
 
 Examples:
@@ -87,15 +84,15 @@ Examples:
 - Create separate outputs for front and back faces
 
 ```bash
-python print.py tests/data/decklist.txt decklist_fronts.pdf --face front
-python print.py tests/data/decklist.txt decklist_backs.pdf --face back
+uv run print.py tests/data/decklist.txt decklist_fronts.pdf --face front
+uv run print.py tests/data/decklist.txt decklist_backs.pdf --face back
 ```
 
 ## Updating
 
 ```bash
 git pull --ff-only
-python -m pip install -e .
+uv sync
 ```
 
 ## Help
@@ -103,7 +100,10 @@ python -m pip install -e .
 ### print
 
 ```txt
-pipenv run python print.py [-h] [--dpi DPI] decklist outfile
+uv run print.py [-h] [--dpi DPI] [--paper WIDTHxHEIGHT] [--scale FLOAT]
+                [--border_crop PIXELS] [--background COLOR]
+                [--cropmarks | --no-cropmarks] [--faces {all,front,back}]
+                decklist_spec outfile
 
 Prepare a decklist for printing.
 
@@ -111,7 +111,7 @@ positional arguments:
   decklist_spec         path to a decklist in text/arena format, or manastack:{manastack_id}, or archidekt:{archidekt_id}
   outfile               output file. Supports pdf, png and jpg.
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
   --dpi DPI             dpi of output file (default: 300)
   --paper WIDTHxHEIGHT  paper size in inches or preconfigured format (default: a4)
@@ -119,7 +119,7 @@ optional arguments:
   --border_crop PIXELS  how much to crop inner borders of printed cards (default: 14)
   --background COLOR    background color, either by name or by hex code (e.g. black or "#ff0000", default: None)
   --cropmarks, --no-cropmarks
-                        add crop marks (default: True)
+                        add crop marks
   --faces {all,front,back}
                         which faces to print (default: all)
 ```
@@ -127,7 +127,7 @@ optional arguments:
 ### convert
 
 ```txt
-usage: pipenv run python convert.py decklist outfile [OPTIONAL ARGUMENTS]
+usage: uv run convert.py [-h] [--format {arena,text}] [--clean] decklist_spec outfile
 
 Convert a decklist from text format to arena format or vice-versa.
 
@@ -135,7 +135,7 @@ positional arguments:
   decklist_spec         path to a decklist in text/arena format, or manastack:{manastack_id}, or archidekt:{archidekt_id}
   outfile               output file
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
   --format {arena,text}
                         output format (default: arena)
@@ -145,14 +145,14 @@ optional arguments:
 ### tokens
 
 ```txt
-usage: pipenv run python tokens.py decklist [OPTIONAL ARGUMENTS]
+usage: uv run tokens.py [-h] [--format {arena,text}] decklist_spec
 
 Append the tokens created by the cards in a decklist to it.
 
 positional arguments:
   decklist_spec         path to a decklist in text/arena format, or manastack:{manastack_id}, or archidekt:{archidekt_id}
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
   --format {arena,text}
                         output format (default: arena)
@@ -161,20 +161,20 @@ optional arguments:
 Example:
 
 ```bash
-python tokens.py tests/data/token_generators.txt
+uv run tokens.py tests/data/token_generators.txt
 ```
 
 ### Deck Value Decomposition
 
 ```txt
-usage: deck_value.py decklist [OPTIONAL ARGUMENTS]
+usage: uv run deck_value.py [-h] [--lump-threshold FLOAT] decklist_spec
 
 Show deck value decomposition.
 
 positional arguments:
   decklist_spec         path to a decklist in text/arena format, or manastack:{manastack_id}, or archidekt:{archidekt_id}
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
   --lump-threshold FLOAT
                         lump together cards with lesser proportional value
@@ -183,8 +183,8 @@ optional arguments:
 Example:
 
 ```bash
-pipenv run python deck_value.py manastack:1234536
-pipenv run python deck_value.py archidekt:365563
+uv run deck_value.py manastack:1234536
+uv run deck_value.py archidekt:365563
 ```
 
 ![](examples/deck_value.png)
