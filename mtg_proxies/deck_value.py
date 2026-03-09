@@ -1,31 +1,13 @@
-import argparse
 from operator import itemgetter
 
 import matplotlib.pyplot as plt
 
 from mtg_proxies import scryfall
-from mtg_proxies.cli import parse_decklist_spec
+from mtg_proxies.decklists.decklist import Decklist
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Show deck value decomposition.")
-    parser.add_argument(
-        "decklist",
-        metavar="decklist_spec",
-        help="path to a decklist in text/arena format, or manastack:{manastack_id}, or archidekt:{archidekt_id}",
-    )
-    parser.add_argument(
-        "--lump-threshold",
-        help="lump together cards with lesser proportional value",
-        type=float,
-        default=0.03,
-        metavar="FLOAT",
-    )
 
-    args = parser.parse_args()
-
-    # Parse decklist
-    decklist = parse_decklist_spec(args.decklist, warn_levels=["ERROR", "WARNING"])
-
+def show_deck_value(decklist: Decklist, lump_threshold: float = 0.03) -> None:
+    """Show deck value decomposition."""
     # Fetch prices
     card_prices = []
     for card in decklist.cards:
@@ -39,8 +21,8 @@ if __name__ == "__main__":
     price_total = sum(p for _, p in card_prices)
 
     # Partition cards in named and bulk
-    cards_named = [(card, price) for card, price in card_prices if price >= args.lump_threshold * price_total]
-    cards_lump = [(card, price) for card, price in card_prices if price < args.lump_threshold * price_total]
+    cards_named = [(card, price) for card, price in card_prices if price >= lump_threshold * price_total]
+    cards_lump = [(card, price) for card, price in card_prices if price < lump_threshold * price_total]
 
     # Plot
     plt.pie(

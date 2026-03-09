@@ -22,14 +22,14 @@ Create a high quality printable PDF from your decklist or a list of cards you wa
   The Arena format helps in these case, as set and collector number are unique identifiers.
   However, as tools often only work with one of these formats, `mtg-proxies` is a flexible as possible, even supporting mixed mode.
   This is especially when you are making quick additions to a decklist and don't want to search for set and collector numbers.
-  The `convert.py` tool can be used to convert decklists between the two formats.
+  The `mtg-proxies convert` tool can be used to convert decklists between the two formats.
 
 - **Sanity checks and recommender engine**  
   `mtg-proxies` warns you if you attempt to print a low-resolution scan and is able to offer alternatives.
-  The `convert.py` tool can automatically selects the best print for each card in a decklist with high accuracy, eliminating the need to manually select good prints.
+  The `mtg-proxies convert` tool can automatically selects the best print for each card in a decklist with high accuracy, eliminating the need to manually select good prints.
 
 - **Token support**  
-  The `tokens.py` tool appends the tokens created by the cards in a decklist to it, so you don't miss one accidentally. Caveat: This only works when Scryfall has the data on associated tokens. This is the case for cards printed or reprinted since Tenth Edition.
+  The `mtg-proxies tokens` tool appends the tokens created by the cards in a decklist to it, so you don't miss one accidentally. Caveat: This only works when Scryfall has the data on associated tokens. This is the case for cards printed or reprinted since Tenth Edition.
 
 - **ManaStack and Archidekt integration**
   Directly use ManaStack and Archidekt deck ids as input for many functions instead of local decklist files.
@@ -38,20 +38,13 @@ Create a high quality printable PDF from your decklist or a list of cards you wa
 
 ## Usage
 
-1. Clone or download this repo.
+1. Install `mtg-proxies` using [uv](https://docs.astral.sh/uv/#installation).
 
 ```bash
-git clone https://github.com/DiddiZ/mtg-proxies.git
-cd mtg-proxies
+uv tool install git+https://github.com/DiddiZ/mtg-proxies
 ```
 
-2. Install requirements using [uv](https://docs.astral.sh/uv/). Requires at least [Python 3.12](https://www.python.org/downloads/).
-
-```bash
-uv sync
-```
-
-3. (Optional) Prepare your decklist in MtG Arena format.
+2. (Optional) Prepare your decklist in MtG Arena format.
    This is not required, but recommended as it allows for more control over the process.
 
 ```txt
@@ -67,16 +60,16 @@ E.g.:
 1 Murderous Rider // Swift End (ELD) 287
 ```
 
-Or use the `convert.py` tool to convert a plain decklist to Arena format:
+Or use the `convert` tool to convert a plain decklist to Arena format:
 
 ```bash
-uv run convert.py tests/data/decklist_text.txt tests/data/decklist.txt
+mtg-proxies convert tests/data/decklist_text.txt decklist.txt
 ```
 
 4. Create a PDF file.
 
 ```bash
-uv run print.py tests/data/decklist.txt decklist.pdf
+mtg-proxies print tests/data/decklist.txt decklist.pdf
 ```
 
 Examples:
@@ -84,15 +77,14 @@ Examples:
 - Create separate outputs for front and back faces
 
 ```bash
-uv run print.py tests/data/decklist.txt decklist_fronts.pdf --face front
-uv run print.py tests/data/decklist.txt decklist_backs.pdf --face back
+mtg-proxies print tests/data/decklist.txt decklist_fronts.pdf --face front
+mtg-proxies print tests/data/decklist.txt decklist_backs.pdf --face back
 ```
 
 ## Updating
 
 ```bash
-git pull --ff-only
-uv sync
+uv tool upgrade mtg-proxies
 ```
 
 ## Help
@@ -100,15 +92,12 @@ uv sync
 ### print
 
 ```txt
-uv run print.py [-h] [--dpi DPI] [--paper WIDTHxHEIGHT] [--scale FLOAT]
-                [--border_crop PIXELS] [--background COLOR]
-                [--cropmarks | --no-cropmarks] [--faces {all,front,back}]
-                decklist_spec outfile
+usage: mtg-proxies print [-h] [--dpi DPI] [--paper WIDTHxHEIGHT] [--scale FLOAT] [--border_crop PIXELS] [--background COLOR] [--cropmarks | --no-cropmarks] [--faces {all,front,back}] decklist outfile
 
 Prepare a decklist for printing.
 
 positional arguments:
-  decklist_spec         path to a decklist in text/arena format, or manastack:{manastack_id}, or archidekt:{archidekt_id}
+  decklist              path to a decklist in text/arena format, or manastack:{manastack_id}, or archidekt:{archidekt_id}
   outfile               output file. Supports pdf, png and jpg.
 
 options:
@@ -119,7 +108,7 @@ options:
   --border_crop PIXELS  how much to crop inner borders of printed cards, in source image pixels (default: 14)
   --background COLOR    background color, either by name or by hex code (e.g. black or "#ff0000", default: None)
   --cropmarks, --no-cropmarks
-                        add crop marks
+                        add crop marks (png, jpg); ignored for pdf
   --faces {all,front,back}
                         which faces to print (default: all)
 ```
@@ -127,12 +116,12 @@ options:
 ### convert
 
 ```txt
-usage: uv run convert.py [-h] [--format {arena,text}] [--clean] decklist_spec outfile
+usage: mtg-proxies convert [-h] [--format {arena,text}] [--clean] decklist outfile
 
-Convert a decklist from text format to arena format or vice-versa.
+Convert a decklist to text or arena format.
 
 positional arguments:
-  decklist_spec         path to a decklist in text/arena format, or manastack:{manastack_id}, or archidekt:{archidekt_id}
+  decklist              path to a decklist in text/arena format, or manastack:{manastack_id}, or archidekt:{archidekt_id}
   outfile               output file
 
 options:
@@ -145,12 +134,12 @@ options:
 ### tokens
 
 ```txt
-usage: uv run tokens.py [-h] [--format {arena,text}] decklist_spec
+usage: mtg-proxies tokens [-h] [--format {arena,text}] decklist
 
-Append the tokens created by the cards in a decklist to it.
+Append the created tokens to a decklist.
 
 positional arguments:
-  decklist_spec         path to a decklist in text/arena format, or manastack:{manastack_id}, or archidekt:{archidekt_id}
+  decklist              path to a decklist in text/arena format, or manastack:{manastack_id}, or archidekt:{archidekt_id}
 
 options:
   -h, --help            show this help message and exit
@@ -161,30 +150,30 @@ options:
 Example:
 
 ```bash
-uv run tokens.py tests/data/token_generators.txt
+tokens.py tests/data/token_generators.txt
 ```
 
 ### Deck Value Decomposition
 
 ```txt
-usage: uv run deck_value.py [-h] [--lump-threshold FLOAT] decklist_spec
+usage: mtg-proxies deck_value [-h] [--lump-threshold FLOAT] decklist
 
 Show deck value decomposition.
 
 positional arguments:
-  decklist_spec         path to a decklist in text/arena format, or manastack:{manastack_id}, or archidekt:{archidekt_id}
+  decklist              path to a decklist in text/arena format, or manastack:{manastack_id}, or archidekt:{archidekt_id}
 
 options:
   -h, --help            show this help message and exit
   --lump-threshold FLOAT
-                        lump together cards with lesser proportional value
+                        lump together cards with lesser proportional value (default: 0.03)
 ```
 
 Example:
 
 ```bash
-uv run deck_value.py manastack:1234536
-uv run deck_value.py archidekt:365563
+mtg-proxies deck_value manastack:1234536
+mtg-proxies deck_value archidekt:365563
 ```
 
 ![](examples/deck_value.png)
