@@ -1,6 +1,6 @@
 [project]
 name = "mtg-proxies"
-version = "0.2.1"
+version = "0.3.0"
 authors = [{ name = "Robin More", email = "more@diddiz.de" }]
 description = "Print high-resolution MtG proxies."
 requires-python = ">=3.12"
@@ -120,6 +120,7 @@ known-modules = "fpdf2:[fpdf]"
 [tool.commitizen]
 name = "cz_conventional_commits"
 tag_format = "$version"
+legacy_tag_formats = ["${version}"]
 version_scheme = "pep440"
 version_provider = "pep621"
 update_changelog_on_bump = true
