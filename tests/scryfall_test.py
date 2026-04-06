@@ -19,6 +19,27 @@ def test_get_image_evicts_stale_cache() -> None:
     assert os.path.getmtime(path) > _TIMESTAMP - 1, "stale cached file should have been re-downloaded"
 
 
+def test_get_image_evicts_stale_cropped_variants() -> None:
+    from pathlib import Path
+
+    from mtg_proxies.scryfall.scryfall import _cache_folder, get_image
+
+    # Populate cache then make the file appear stale
+    path = get_image(_IMAGE_URI, silent=True)
+    stem = Path(path).stem
+    suffix = Path(path).suffix
+
+    # Plant a cropped variant (as the PDF printer would create)
+    variant = _cache_folder / f"{stem}_14_14{suffix}"
+    variant.write_bytes(b"stale variant")
+
+    os.utime(path, (_TIMESTAMP - 1, _TIMESTAMP - 1))
+
+    get_image(_IMAGE_URI, silent=True)
+
+    assert not variant.exists(), "cropped variant should have been evicted along with the base file"
+
+
 def test_get_image_keeps_fresh_cache() -> None:
     from mtg_proxies.scryfall.scryfall import get_image
 
