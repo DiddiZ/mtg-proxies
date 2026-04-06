@@ -38,6 +38,16 @@ def get_image(image_uri: str, *, silent: bool = False) -> str:
     """
     split = image_uri.split("/")
     file_name = split[-5] + "_" + split[-4] + "_" + split[-1].split("?")[0]
+
+    # Scryfall embeds a Unix timestamp in the image URI (e.g. "…png?1774978609")
+    # indicating when the scan was last updated. Evict the cached file if it
+    # predates that timestamp so stale scans (e.g. early low-quality previews)
+    # are replaced on the next download.
+    file_path = _cache_folder / file_name
+    query = split[-1].partition("?")[2]
+    if query.isdigit() and file_path.is_file() and file_path.stat().st_mtime < int(query):
+        file_path.unlink()
+
     return get_file(file_name, image_uri, silent=silent)
 
 
