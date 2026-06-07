@@ -26,6 +26,10 @@ _cache_folder = Path(gettempdir()) / "scryfall_cache"
 _cache_folder.mkdir(parents=True, exist_ok=True)  # Create cache folder
 scryfall_rate_limiter = RateLimiter(delay=0.1)
 _download_lock = threading.Lock()
+_headers: dict[str, str] = {
+    "User-Agent": f"mtg-proxies/{version('mtg-proxies')}",
+    "Accept": "*/*",
+}
 
 
 def get_image(image_uri: str, *, silent: bool = False) -> str:
@@ -63,9 +67,7 @@ def get_file(file_name: str, url: str, *, silent: bool = False) -> str:
 
 def download(url: str, dst: Path | str, *, chunk_size: int = 1024 * 4, silent: bool = False) -> None:
     """Download a file with a tqdm progress bar."""
-    with requests.get(
-        url, stream=True, headers={"User-Agent": f"mtg-proxies/{version('mtg-proxies')}", "Accept": "*/*"}
-    ) as req:
+    with requests.get(url, stream=True, headers=_headers) as req:
         req.raise_for_status()
         file_size = int(req.headers["Content-Length"]) if "Content-Length" in req.headers else None
         with (
@@ -93,7 +95,7 @@ def depaginate(url: str) -> list[dict]:
         list: Concatenation of all `data` entries.
     """
     with scryfall_rate_limiter:
-        response = requests.get(url).json()
+        response = requests.get(url, headers=_headers).json()
     assert response["object"]
 
     if "data" not in response:
