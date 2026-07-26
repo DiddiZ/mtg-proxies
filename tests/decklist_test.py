@@ -74,7 +74,7 @@ def test_parsing(data_dir: Path) -> None:
             "1 Counter",
             None,
             [
-                "ERROR: Unable to find card 'Counter'. Did you mean 'Cackling Counterpart', 'Counterspell', 'Counters', 'Countermand', 'Feral Encounter', 'Countervailing Winds', ...?"  # noqa: E501
+                "ERROR: Unable to find card 'Counter'. Did you mean 'Cackling Counterpart', 'Counterspell', 'Counters', 'Countermand', 'Feral Encounter', 'Counterflux', ...?"  # noqa: E501
             ],
         ),
         (  # Non-black border with alternative
