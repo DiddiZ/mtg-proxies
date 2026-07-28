@@ -1,4 +1,55 @@
+import os
+
 import pytest
+
+# Vedalken Aethermage — stable old card, timestamp won't change
+_IMAGE_URI = "https://cards.scryfall.io/png/front/4/9/49999b95-5e62-414c-b975-4191b9c1ab39.png?1562402358"
+_TIMESTAMP = 1562402358
+
+
+def test_get_image_evicts_stale_cache() -> None:
+    from mtg_proxies.scryfall.scryfall import get_image
+
+    # Populate cache then make the file appear stale
+    path = get_image(_IMAGE_URI, silent=True)
+    os.utime(path, (_TIMESTAMP - 1, _TIMESTAMP - 1))
+
+    get_image(_IMAGE_URI, silent=True)
+
+    assert os.path.getmtime(path) > _TIMESTAMP - 1, "stale cached file should have been re-downloaded"
+
+
+def test_get_image_evicts_stale_cropped_variants() -> None:
+    from pathlib import Path
+
+    from mtg_proxies.scryfall.scryfall import _cache_folder, get_image
+
+    # Populate cache then make the file appear stale
+    path = get_image(_IMAGE_URI, silent=True)
+    stem = Path(path).stem
+    suffix = Path(path).suffix
+
+    # Plant a cropped variant (as the PDF printer would create)
+    variant = _cache_folder / f"{stem}_14_14{suffix}"
+    variant.write_bytes(b"stale variant")
+
+    os.utime(path, (_TIMESTAMP - 1, _TIMESTAMP - 1))
+
+    get_image(_IMAGE_URI, silent=True)
+
+    assert not variant.exists(), "cropped variant should have been evicted along with the base file"
+
+
+def test_get_image_keeps_fresh_cache() -> None:
+    from mtg_proxies.scryfall.scryfall import get_image
+
+    # Populate cache then mark the file as newer than the URI timestamp
+    path = get_image(_IMAGE_URI, silent=True)
+    os.utime(path, (_TIMESTAMP + 1, _TIMESTAMP + 1))
+
+    get_image(_IMAGE_URI, silent=True)
+
+    assert os.path.getmtime(path) == _TIMESTAMP + 1, "fresh cached file should not be re-downloaded"
 
 
 @pytest.mark.parametrize(
