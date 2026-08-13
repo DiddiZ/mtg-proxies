@@ -1,4 +1,47 @@
+from pathlib import Path
+from unittest import mock
+
 import pytest
+
+
+def test_get_database_supports_scryfall_jsonl_bulk_data(tmp_path: Path) -> None:
+    from mtg_proxies.scryfall import scryfall
+
+    download_url = "https://data.scryfall.io/default-cards/default-cards.jsonl.gz"
+    bulk_file = tmp_path / "default-cards.jsonl.gz"
+    bulk_file.write_bytes(b"")
+
+    with (
+        mock.patch.object(
+            scryfall,
+            "depaginate",
+            return_value=[{"type": "default_cards", "jsonl_download_uri": download_url}],
+        ),
+        mock.patch.object(scryfall, "get_file", return_value=str(bulk_file)),
+        mock.patch("gzip.open", mock.mock_open(read_data='{"name": "Lightning Bolt"}\n')),
+    ):
+        scryfall._get_database.cache_clear()
+        assert scryfall._get_database() == [{"name": "Lightning Bolt"}]
+        scryfall._get_database.cache_clear()
+
+
+def test_download_keeps_partial_file_after_failure_for_resume(tmp_path: Path) -> None:
+    from mtg_proxies.scryfall import scryfall
+
+    destination = tmp_path / "default-cards.jsonl.gz"
+    response = mock.MagicMock()
+    response.headers = {}
+    response.iter_content.side_effect = OSError("connection interrupted")
+    request = mock.MagicMock()
+    request.__enter__.return_value = response
+
+    with mock.patch.object(scryfall.requests, "get", return_value=request):
+        with pytest.raises(OSError, match="connection interrupted"):
+            scryfall.download("https://data.scryfall.io/default-cards/default-cards.jsonl.gz", destination)
+
+    assert not destination.exists()
+    assert destination.with_suffix(".gz.partial").exists()
+
 
 
 @pytest.mark.parametrize(
