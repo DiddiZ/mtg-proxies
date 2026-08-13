@@ -6,6 +6,7 @@ See:
 
 from __future__ import annotations
 
+import gzip
 import json
 import pickle
 import threading
@@ -67,23 +68,39 @@ def get_file(file_name: str, url: str, *, silent: bool = False) -> str:
 
 def download(url: str, dst: Path | str, *, chunk_size: int = 1024 * 4, silent: bool = False) -> None:
     """Download a file with a tqdm progress bar."""
-    with requests.get(url, stream=True, headers=_headers) as req:
-        req.raise_for_status()
-        file_size = int(req.headers["Content-Length"]) if "Content-Length" in req.headers else None
-        with (
-            open(dst, "xb") as f,
-            tqdm(
-                total=file_size,
-                unit="B",
-                unit_scale=True,
-                desc=url.split("/")[-1],
-                disable=silent,
-            ) as pbar,
-        ):
-            for chunk in req.iter_content(chunk_size=chunk_size):
-                if chunk:
-                    f.write(chunk)
-                    pbar.update(chunk_size)
+    destination = Path(dst)
+    partial = destination.with_suffix(destination.suffix + ".partial")
+    for attempt in range(3):
+        headers = _headers.copy()
+        initial_size = partial.stat().st_size if partial.is_file() else 0
+        if initial_size:
+            headers["Range"] = f"bytes={initial_size}-"
+        try:
+            with requests.get(url, stream=True, headers=headers) as req:
+                req.raise_for_status()
+                if initial_size and req.status_code != 206:
+                    initial_size = 0
+                file_size = int(req.headers["Content-Length"]) if "Content-Length" in req.headers else None
+                with (
+                    open(partial, "ab" if initial_size else "wb") as f,
+                    tqdm(
+                        total=initial_size + file_size if file_size is not None else None,
+                        initial=initial_size,
+                        unit="B",
+                        unit_scale=True,
+                        desc=url.split("/")[-1],
+                        disable=silent,
+                    ) as pbar,
+                ):
+                    for chunk in req.iter_content(chunk_size=chunk_size):
+                        if chunk:
+                            f.write(chunk)
+                            pbar.update(len(chunk))
+            partial.replace(destination)
+            return
+        except requests.RequestException:
+            if attempt == 2:
+                raise
 
 
 def depaginate(url: str) -> list[dict]:
@@ -126,11 +143,16 @@ def _get_database(database_name: str = "default_cards") -> list[dict]:
     if len(bulk_data) != 1:
         raise ValueError(f"Unknown database {database_name}")
 
-    bulk_file = Path(get_file(bulk_data[0]["download_uri"].split("/")[-1], bulk_data[0]["download_uri"]))
+    bulk_url = bulk_data[0].get("download_uri") or bulk_data[0]["jsonl_download_uri"]
+    bulk_file = Path(get_file(bulk_url.split("/")[-1], bulk_url))
     pickle_file = bulk_file.with_suffix(".pickle")
     if not pickle_file.is_file():  # Convert json to pickle
-        with open(bulk_file, encoding="utf-8") as json_file:
-            data = json.load(json_file)
+        if bulk_file.suffixes[-2:] == [".jsonl", ".gz"]:
+            with gzip.open(bulk_file, "rt", encoding="utf-8") as json_file:
+                data = [json.loads(line) for line in json_file]
+        else:
+            with open(bulk_file, encoding="utf-8") as json_file:
+                data = json.load(json_file)
         with open(pickle_file, "wb") as pickle_file:
             pickle.dump(data, pickle_file, protocol=pickle.HIGHEST_PROTOCOL)
         return data
