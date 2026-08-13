@@ -6,6 +6,7 @@ See:
 
 from __future__ import annotations
 
+import gzip
 import json
 import pickle
 import threading
@@ -83,7 +84,7 @@ def download(url: str, dst: Path | str, *, chunk_size: int = 1024 * 4, silent: b
             for chunk in req.iter_content(chunk_size=chunk_size):
                 if chunk:
                     f.write(chunk)
-                    pbar.update(chunk_size)
+                    pbar.update(len(chunk))
 
 
 def depaginate(url: str) -> list[dict]:
@@ -126,11 +127,12 @@ def _get_database(database_name: str = "default_cards") -> list[dict]:
     if len(bulk_data) != 1:
         raise ValueError(f"Unknown database {database_name}")
 
-    bulk_file = Path(get_file(bulk_data[0]["download_uri"].split("/")[-1], bulk_data[0]["download_uri"]))
-    pickle_file = bulk_file.with_suffix(".pickle")
+    bulk_url = bulk_data[0]["jsonl_download_uri"]
+    bulk_file = Path(get_file(bulk_url.split("/")[-1], bulk_url))
+    pickle_file = bulk_file.with_name(f"{bulk_file.stem}.pickle")
     if not pickle_file.is_file():  # Convert json to pickle
-        with open(bulk_file, encoding="utf-8") as json_file:
-            data = json.load(json_file)
+        with gzip.open(bulk_file, "rt", encoding="utf-8") as json_file:
+            data = [json.loads(line) for line in json_file]
         with open(pickle_file, "wb") as pickle_file:
             pickle.dump(data, pickle_file, protocol=pickle.HIGHEST_PROTOCOL)
         return data

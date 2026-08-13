@@ -1,4 +1,28 @@
+import gzip
+from pathlib import Path
+from unittest.mock import patch
+
 import pytest
+
+
+def test_get_database_supports_scryfall_jsonl_bulk_data(tmp_path: Path) -> None:
+    from mtg_proxies.scryfall import scryfall
+
+    download_url = "https://data.scryfall.io/default-cards/default-cards.jsonl.gz"
+    bulk_file = tmp_path / "default-cards.jsonl.gz"
+
+    with gzip.open(bulk_file, "wt") as f:
+        f.write('{"name": "Lightning Bolt"}\n')
+
+    with (
+        patch.object(
+            scryfall, "depaginate", return_value=[{"type": "default_cards", "jsonl_download_uri": download_url}]
+        ),
+        patch.object(scryfall, "get_file", return_value=str(bulk_file)),
+    ):
+        scryfall._get_database.cache_clear()
+        assert scryfall._get_database() == [{"name": "Lightning Bolt"}]
+        scryfall._get_database.cache_clear()
 
 
 @pytest.mark.parametrize(
