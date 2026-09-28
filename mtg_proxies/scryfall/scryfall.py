@@ -140,7 +140,7 @@ def _get_database(database_name: str = "default_cards") -> list[dict]:
 
 def canonic_card_name(card_name: str) -> str:
     """Get canonic card name representation."""
-    card_name = card_name.lower()
+    card_name = card_name.casefold()
 
     # Replace special chars
     return card_name.replace("æ", "ae")  # Sometimes used, e.g. in "Vedalken Aethermage"
@@ -164,7 +164,7 @@ def get_card(card_name: str, set_id: str | None = None, collector_number: str | 
     return cards[0] if len(cards) > 0 else None
 
 
-def get_cards(database: str = "default_cards", **kwargs: str | None) -> list[dict]:
+def get_cards(database: str = "default_cards", **kwargs: str | int | bool | None) -> list[dict]:
     """Get all cards matching certain attributes.
 
     Matching is case insensitive.
@@ -180,12 +180,14 @@ def get_cards(database: str = "default_cards", **kwargs: str | None) -> list[dic
     cards = _get_database(database)
 
     for key, value in kwargs.items():
-        if value is not None:
-            value = value.lower()
-            if key == "name":  # Normalize card name
-                value = canonic_card_name(value)
-            cards = [card for card in cards if key in card and card[key].lower() == value]
-
+        if value is None:
+            continue
+        if isinstance(value, str):  # Compare strings case-insensitively
+            # Normalize card name
+            value = canonic_card_name(value) if key == "name" else value.casefold()
+            cards = [card for card in cards if key in card and card[key].casefold() == value]
+        else:  # Compare other types directly
+            cards = [card for card in cards if key in card and card[key] == value]
     return cards
 
 
@@ -347,9 +349,9 @@ def oracle_ids_by_name() -> dict[str, list[str]]:
     oracle_ids_by_name = defaultdict(set)
     for oracle_id, cards in cards_by_oracle_id().items():
         card = cards[0]
-        if card["layout"] == "art_series":  # Skip art series, as they have double faced names
+        if card["layout"] in ("art_series", "double_faced_token"):  # Skip art series, as they have double faced names
             continue
-        name = card["name"].lower()
+        name = canonic_card_name(card["name"])
         # Use name and also front face only for double faced cards
         oracle_ids_by_name[name].add(oracle_id)
         if "//" in name:

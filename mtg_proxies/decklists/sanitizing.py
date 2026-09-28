@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from functools import cache
 from typing import Literal
 
 import mtg_proxies.scryfall as scryfall
@@ -17,21 +16,6 @@ class ParseWarning:
         return f"{self.level}: {self.message}"
 
 
-@cache
-def card_names() -> tuple[dict[str, str], dict[str, str]]:
-    """Return sets of valid card names.
-
-    Cached for performance.
-    """
-    cards_by_name = {
-        card["name"].lower(): card["name"] for card in scryfall.get_cards() if card["layout"] != "art_series"
-    }
-    double_faced_by_front = {
-        name.split("//")[0].strip().lower(): name for name in cards_by_name.values() if "//" in name
-    }
-    return cards_by_name, double_faced_by_front
-
-
 def validate_card_name(card_name: str) -> tuple[str | None, list[ParseWarning]]:
     """Validate card name against the Scryfall database.
 
@@ -41,34 +25,40 @@ def validate_card_name(card_name: str) -> tuple[str | None, list[ParseWarning]]:
         ok: whether the card could be found.
     """
     # Unique names of all cards
-    cards_by_name, double_faced_by_front = card_names()
+    oracle_ids_by_name = scryfall.oracle_ids_by_name()
+    cards_by_oracle_id = scryfall.cards_by_oracle_id()
 
     validated_name = None
-    sanizized_name = scryfall.canonic_card_name(card_name)
+    canonical_name = scryfall.canonic_card_name(card_name)
     warnings: list[ParseWarning] = []
-    if sanizized_name in cards_by_name:  # Exact match
-        validated_name = cards_by_name[sanizized_name]
-    elif sanizized_name in double_faced_by_front:  # Exact match of front of double faced card
-        validated_name = double_faced_by_front[sanizized_name]
-        warnings.append(
-            ParseWarning("WARNING", f"Misspelled card name {card_name!r}. Assuming you mean {validated_name!r}.")
-        )
-    else:  # No exact match
-        # Try partial matching
-        candidates = [
-            cards_by_name[name] for name in cards_by_name if all(elem in name for elem in sanizized_name.split(" "))
+
+    oracle_ids = oracle_ids_by_name.get(canonical_name, [])
+
+    if len(oracle_ids) > 1:
+        
+
+
+    if len(oracle_ids) == 0:  # No exact match, try partial matching
+        oracle_ids = [
+            oracle_id
+            for name in oracle_ids_by_name
+            if all(elem in name for elem in canonical_name.split(" "))
+            for oracle_id in oracle_ids_by_name[name]
         ]
 
-        if len(candidates) == 1:  # Found unique candidate
-            validated_name = candidates[0]
+    if len(oracle_ids) == 1:  # Unique match
+        validated_name = cards_by_oracle_id[oracle_ids[0]][0]["name"]
+        if validated_name != card_name:
             warnings.append(
                 ParseWarning("WARNING", f"Misspelled card name {card_name!r}. Assuming you mean {validated_name!r}.")
             )
-        elif len(candidates) == 0:  # No matching card
-            warnings.append(ParseWarning("ERROR", f"Unable to find card {card_name!r}."))
-        else:  # Multiple matching cards
-            alternatives = listing([repr(card) for card in candidates], ", ", " or ", 6)
-            warnings.append(ParseWarning("ERROR", f"Unable to find card {card_name!r}. Did you mean {alternatives}?"))
+    elif len(oracle_ids) == 0:  # No matching card
+        warnings.append(ParseWarning("ERROR", f"Unable to find card {card_name!r}."))
+    else:  # Multiple matching cards
+        alternatives = listing(
+            [repr(cards_by_oracle_id[oracle_id][0]["name"]) for oracle_id in oracle_ids], ", ", " or ", 6
+        )
+        warnings.append(ParseWarning("ERROR", f"Unable to find card {card_name!r}. Did you mean {alternatives}?"))
 
     return validated_name, warnings
 

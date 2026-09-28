@@ -126,6 +126,11 @@ def test_parsing(data_dir: Path) -> None:
                 "WARNING: Tokens are not unique by name. Assuming 'Illusion' is a '*/* blue Token Creature — Illusion'.",  # noqa: E501
             ],  # TODO: There should be a warning about the ambiguity
         ),
+        (  # Card name with special characters (Æ)
+            "1 Vedalken Æthermage (FUT) 61",
+            "1 Vedalken Aethermage (FUT) 61",
+            ["WARNING: Misspelled card name 'Vedalken Æthermage'. Assuming you mean 'Vedalken Aethermage'."],
+        ),
     ],
 )
 def test_parse_decklist_warnings(line: str, expected_card_name: str | None, expected_warnings: list[str]) -> None:
@@ -133,6 +138,7 @@ def test_parse_decklist_warnings(line: str, expected_card_name: str | None, expe
 
     decklist, ok, warnings = parse_decklist_stream(StringIO(f"{line}\n"))
 
+    assert [str(w) for w in warnings] == expected_warnings
     assert len(decklist.entries) == 1  # One line input, so one entry
     if expected_card_name is None:  # There was an error, so no valid card
         assert not ok
@@ -145,8 +151,6 @@ def test_parse_decklist_warnings(line: str, expected_card_name: str | None, expe
         assert len(decklist.cards) == 1
         assert type(decklist.entries[0]) is Card
         assert f"{decklist.entries[0]:arena}" == expected_card_name
-
-    assert [str(w) for w in warnings] == expected_warnings
 
 
 @pytest.mark.parametrize(

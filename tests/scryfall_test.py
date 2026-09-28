@@ -23,17 +23,36 @@ def test_get_faces(id: str, n_faces: int) -> None:
 
 
 @pytest.mark.parametrize(
-    ("name", "expected_id"),
+    ("name", "oracle_id"),
     [
-        ("Vedalken Aethermage", "496eb37d-5c8f-4dd7-a0a7-3ed1bd2210d6"),
-        ("vedalken aethermage", "496eb37d-5c8f-4dd7-a0a7-3ed1bd2210d6"),
-        ("vedalken Æthermage", "496eb37d-5c8f-4dd7-a0a7-3ed1bd2210d6"),
-        ("vedalken æthermage", "496eb37d-5c8f-4dd7-a0a7-3ed1bd2210d6"),
+        ("Vedalken Aethermage", "271b37b6-b60b-4687-bd82-ecacf3b66cb3"),
+        ("vedalken aethermage", "271b37b6-b60b-4687-bd82-ecacf3b66cb3"),
+        ("Vedalken Æthermage", "271b37b6-b60b-4687-bd82-ecacf3b66cb3"),
+        ("vedalken æthermage", "271b37b6-b60b-4687-bd82-ecacf3b66cb3"),
+        # ("Demon's Disciple", "d5a33091-a348-4b13-8dbd-79ab0ad99afe"),
+        # ("Demons Disciple", "d5a33091-a348-4b13-8dbd-79ab0ad99afe"),
     ],
 )
-def test_canonic_card_name(name: str, expected_id: str) -> None:
+def test_canonic_card_name(name: str, oracle_id: str) -> None:
     from mtg_proxies import scryfall
 
     card = scryfall.get_card(name)
 
-    assert card["id"] == expected_id
+    assert card is not None
+    assert card["oracle_id"] == oracle_id
+
+
+def test_get_cards() -> None:
+    from mtg_proxies import scryfall
+
+    cards = scryfall.get_cards(highres_image=True)
+    for card in cards:
+        assert card["highres_image"] is True
+
+    cards = scryfall.get_cards(highres_image=False)
+    for card in cards:
+        assert card["highres_image"] is False
+
+    cards = scryfall.get_cards(edhrec_rank=1)
+    for card in cards:
+        assert card["edhrec_rank"] == 1
