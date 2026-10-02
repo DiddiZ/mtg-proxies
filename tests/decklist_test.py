@@ -40,7 +40,8 @@ def test_parsing(data_dir: Path) -> None:
             "1 Liliana, Dreadhorde General (WAR2) 97",
             "1 Liliana, Dreadhorde General (RVR) 80",
             [
-                "WARNING: Unable to find scan of 'Liliana, Dreadhorde General (WAR2) 97'. Using 'Liliana, Dreadhorde General (RVR) 80' instead."  # noqa: E501
+                "WARNING: Unable to find scan of 'Liliana, Dreadhorde General (WAR2) 97'."
+                + " Using 'Liliana, Dreadhorde General (RVR) 80' instead."
             ],
         ),
         (  # Only front of double faced card (adventure layout)
@@ -57,7 +58,8 @@ def test_parsing(data_dir: Path) -> None:
             "1 Forbidden Friendship (IKO) 120",
             "1 Forbidden Friendship (IKO) 367",
             [
-                "WARNING: Unable to find scan of 'Forbidden Friendship (IKO) 120'. Using 'Forbidden Friendship (IKO) 367' instead."  # noqa: E501
+                "WARNING: Unable to find scan of 'Forbidden Friendship (IKO) 120'."
+                + " Using 'Forbidden Friendship (IKO) 367' instead."
             ],
         ),
         (  # Incomplete name (but unique)
@@ -74,7 +76,8 @@ def test_parsing(data_dir: Path) -> None:
             "1 Counter",
             None,
             [
-                "ERROR: Unable to find card 'Counter'. Did you mean 'Cackling Counterpart', 'Counterspell', 'Counters', 'Countermand', 'Feral Encounter', 'Counterflux', ...?"  # noqa: E501
+                "ERROR: Unable to find card 'Counter'. Did you mean 'Cackling Counterpart', 'Counterspell', 'Counters',"
+                + " 'Countermand', 'Feral Encounter', 'Counterflux', ...?"
             ],
         ),
         (  # Non-black border with alternative
@@ -101,7 +104,8 @@ def test_parsing(data_dir: Path) -> None:
             "1 Saproling",
             "1 Saproling (TC16) 16",
             [
-                "WARNING: Tokens are not unique by name. Assuming 'Saproling' is a '1/1 green Token Creature — Saproling'.",  # noqa: E501
+                "WARNING: Tokens are not unique by name."
+                + " Assuming 'Saproling' is a '1/1 green Token Creature — Saproling'.",
             ],
         ),
         (  # Token with same name as the front of a double faced card (with set and collector number)
@@ -123,7 +127,8 @@ def test_parsing(data_dir: Path) -> None:
             "1 Illusion",
             "1 Illusion (TBLC) 13",  # Remains the token
             [
-                "WARNING: Tokens are not unique by name. Assuming 'Illusion' is a '*/* blue Token Creature — Illusion'.",  # noqa: E501
+                "WARNING: Tokens are not unique by name."
+                + " Assuming 'Illusion' is a '*/* blue Token Creature — Illusion'.",
             ],  # TODO: There should be a warning about the ambiguity
         ),
     ],

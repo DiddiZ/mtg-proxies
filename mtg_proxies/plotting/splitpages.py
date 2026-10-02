@@ -30,7 +30,7 @@ class SplitPages:
     ) -> None:
         pass
 
-    def savefig(self, figure: Figure | None = None, **kwargs: Any) -> None:  # noqa: ANN401
+    def savefig(self, figure: Figure | None = None, **kwargs: Any) -> None:
         """Save figure to a new file.
 
         The file name is suffixed with the current page number.

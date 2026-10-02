@@ -10,39 +10,32 @@ repos:
       - id: check-shebang-scripts-are-executable
       - id: end-of-file-fixer
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.15.5
+    rev: v0.16.9
     hooks:
       - id: ruff-check
       - id: ruff-format
-  - repo: https://github.com/PyCQA/flake8
-    rev: 7.3.0
+  - repo: https://github.com/osprey-oss/deptry
+    rev: 0.25.1
     hooks:
-      - id: flake8
-        additional_dependencies:
-          - flake8-pyproject
-          - flake8-requirements
-  # - repo: https://github.com/nbQA-dev/nbQA
-  #   rev: 1.9.1
-  #   hooks:
-  #     - id: nbqa-flake8
-  #       additional_dependencies:
-  #         - flake8-pyproject
-  #         - flake8-requirements
+      - id: deptry
+        language: python
+  # Note: This notebook hook is only required if the project contains Jupyter notebooks.
   # - repo: https://github.com/kynan/nbstripout
-  #   rev: 0.8.2
+  #   rev: 0.9.1
   #   hooks:
   #     - id: nbstripout
   #       args:
   #         - "--extra-keys=metadata.kernelspec metadata.language_info"
   #         - "--drop-empty-cells"
   - repo: https://github.com/rbubley/mirrors-prettier
-    rev: v3.8.1
+    rev: v3.9.9
     hooks:
       - id: prettier
         args:
           - "--tab-width=2"
+  # Note: The oxipng hook is only required if the project contains PNG images
   - repo: https://github.com/shssoichiro/oxipng
-    rev: v10.1.0
+    rev: v10.2.1
     hooks:
       - id: oxipng
         args:

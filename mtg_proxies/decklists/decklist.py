@@ -21,7 +21,7 @@ class Card:
     count: int
     card: dict[str, Any]
 
-    def __getitem__(self, key: str) -> Any:  # noqa: ANN401
+    def __getitem__(self, key: str) -> Any:  # ruff: ignore[any-type]
         return self.card[key]
 
     def __contains__(self, key: str) -> bool:

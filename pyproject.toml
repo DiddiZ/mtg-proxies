@@ -21,7 +21,7 @@ dev = [
 mtg-proxies = "mtg_proxies.cli:main"
 
 [build-system]
-requires = ["uv_build >= 0.10.0, <0.11"]
+requires = ["uv_build>=0.11.2,<0.12"]
 build-backend = "uv_build"
 
 [tool.uv.build-backend]
@@ -44,8 +44,9 @@ select = [
     "I",      # isort
     "UP",     # pyupgrade
     "W605",   # pyupgrade
-    "ANN",    # flake8-annotations
     "A",      # flake8-builtins
+    "ANN",    # flake8-annotations
+    "ARG",    # flake8-unused-arguments
     "C4",     # flake8-comprehensions
     "COM818", # Trailing comma on bare tuple prohibited
     "D",      # pydocstyle
@@ -72,12 +73,13 @@ select = [
     "TRY",    # tryceratops
 ]
 ignore = [
-    "A00",
     "B019",    # Use of functools.lru_cache or functools.cache on methods can lead to memory leaks
     "B905",    # zip-without-explicit-strict
     "D100",    # Missing docstring in public module
     "D104",    # Missing docstring in public package
     "D105",    # Missing docstring in magic method
+    "FURB140", # Starmap is slower and less readable than comprehensions
+    "G003",    # Logging statement uses +
     "G004",    # Logging statement uses f-string TODO: Include this at some point
     "ISC003",  # Explicitly concatenated string should be implicitly concatenated
     "N806",    # Variable {name} in function should be lowercase
@@ -87,10 +89,13 @@ ignore = [
     "PLR2004", # Magic value used in comparison
     "PT003",   # scope='function' is implied in @pytest.fixture()
     "PTH123",  # open() should be replaced by Path.open()
+    "RUF201",  # Rule code used instead of name in selectors
     "TD002",   # Missing author in TODO
     "TD003",   # Missing issue link for this TODO
     "TRY003",  # Avoid specifying long messages outside the exception class
     "TRY004",  # Prefer TypeError exception for invalid type
+    "TRY300",  # try-consider-else Less readable than returning inside the try block
+    "TRY301",  # raise-within-try Raise can make sense within the try block
 ]
 future-annotations = true
 
@@ -103,6 +108,9 @@ future-annotations = true
 "deck_value.py" = ["T20"]
 "tokens.py" = ["T20"]
 
+[tool.ruff.lint.flake8-annotations]
+allow-star-arg-any = true
+
 [tool.ruff.lint.flake8-tidy-imports]
 banned-module-level-imports = ["mtg_proxies"]
 
@@ -113,10 +121,6 @@ known-local-folder = ["mtg_proxies"]
 [tool.ruff.lint.pydocstyle]
 convention = "google"
 
-[tool.flake8]
-select = ["I900"]
-known-modules = "fpdf2:[fpdf]"
-
 [tool.commitizen]
 name = "cz_conventional_commits"
 tag_format = "$version"
@@ -125,3 +129,19 @@ version_scheme = "pep440"
 version_provider = "pep621"
 update_changelog_on_bump = true
 major_version_zero = true
+
+[tool.mypy]
+python_version = "3.12"
+
+# [[tool.mypy.overrides]]
+# module = ["package_without_stubs"]
+# ignore_missing_imports = true
+
+[tool.deptry]
+exclude = [".venv"]
+
+[tool.deptry.package_module_name_map]
+"fpdf2" = ["fpdf"]
+
+[tool.deptry.per_rule_ignores] # To ignore specific rules for certain packages
+# e.g.: DEP002 = ["nbformat"] # nbformat is indirectly used by plotly in notebooks but not imported directly in the codebase
