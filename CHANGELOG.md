@@ -1,3 +1,10 @@
+## 0.3.1 (2026-10-03)
+
+### Fix
+
+- support Scryfall JSONL bulk data
+- provide user-agent during initial bulk data fetch
+
 ## 0.3.0 (2026-03-09)
 
 ### BREAKING CHANGE
